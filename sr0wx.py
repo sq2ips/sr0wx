@@ -77,6 +77,7 @@ import pygame
 import sys
 import logging, logging.handlers
 import numpy
+import urllib.request, urllib.error, urllib.parse
 
 # ``os``, ``sys`` and ``time`` doesn't need further explanation, these are
 # syandard Python packages.
@@ -160,6 +161,18 @@ if len(args) > 0:
 else:
     modules = config.modules
 
+try:
+    dane = urllib.request.urlopen('http://google.pl', None, 30);
+except urllib.request.URLError as e:
+    modules = config.ofline_modules
+    message += " ".join(config.data_sources_error_msg)
+    logger.info(COLOR_FAIL + "Brak połączenia z internetem" + COLOR_ENDC + "\n")
+except socket.timeout:
+    modules = config.ofline_modules
+    message += " ".join(config.data_sources_error_msg)
+    logger.info(COLOR_FAIL + "Brak połączenia z internetem" + COLOR_ENDC + "\n")
+
+
 lang = my_import('.'.join((config.lang, config.lang)))
 sources = [lang.source, ]
 
@@ -225,9 +238,9 @@ for el in message:
         if el[0:7] == 'file://':
             sound_samples[el] = pygame.mixer.Sound(el[7:])
 
-        if el is not "_" and el not in sound_samples:
+        if el != "_" and el not in sound_samples:
             if not os.path.isfile(config.lang + "/" + el + ".ogg"):
-                logger.warn(COLOR_FAIL + "Couldn't find %s" % (config.lang + "/" + el + ".ogg" + COLOR_ENDC))
+                logger.warning(COLOR_FAIL + "Couldn't find %s" % (config.lang + "/" + el + ".ogg" + COLOR_ENDC))
                 sound_samples[el] = pygame.mixer.Sound(config.lang + "/beep.ogg")
             else:
                 sound_samples[el] = pygame.mixer.Sound(config.lang + "/" + el + ".ogg")
@@ -248,25 +261,25 @@ if(nopi == False):
 # Program should be able to "press PTT" via RSS232. See ``config`` for
 # details.
 
-#if config.serial_port is not None:
-#    
-#    import serial
-#    try:
-#		ser = serial.Serial(config.serial_port, config.serial_baud_rate)
-#		if config.serial_signal == 'DTR':
-#		    logger.info(COLOR_OKGREEN + "DTR/PTT set to ON\n" + COLOR_ENDC)
-#		    ser.setDTR(1)
-#		    ser.setRTS(0)
-#		else:
-#		    logger.info(COLOR_OKGREEN + "RTS/PTT set to ON\n" + COLOR_ENDC)
-#		    ser.setDTR(0)
-#		    ser.setRTS(1)
-#    except:
-#        log = COLOR_FAIL + "Failed to open serial port %s@%i\n" + COLOR_ENDC
-#        logger.error(log, config.serial_port, config.serial_baud_rate)
-#
-#
-#pygame.time.delay(1000)
+if config.serial_port is not None:
+
+    import serial
+    try:
+        ser = serial.Serial(config.serial_port, config.serial_baud_rate)
+        if config.serial_signal == 'DTR':
+            logger.info(COLOR_OKGREEN + "DTR/PTT set to ON\n" + COLOR_ENDC)
+            ser.setDTR(1)
+            ser.setRTS(0)
+        else:
+            logger.info(COLOR_OKGREEN + "RTS/PTT set to ON\n" + COLOR_ENDC)
+            ser.setDTR(0)
+            ser.setRTS(1)
+    except:
+        log = COLOR_FAIL + "Failed to open serial port %s@%i\n" + COLOR_ENDC
+        logger.error(log, config.serial_port, config.serial_baud_rate)
+
+
+pygame.time.delay(1000)
 
 # OK, data prepared, samples loaded, let the party begin!
 #
@@ -308,13 +321,13 @@ logger.info(COLOR_WARNING + "finishing...\n" + COLOR_ENDC)
 pygame.time.delay(1000)
 
 # If we've opened serial it's now time to close it.
-#try:
-#    if config.serial_port is not None:
-#        ser.close()
-#        logger.info(COLOR_OKGREEN + "RTS/PTT set to OFF\n" + COLOR_ENDC)
-#except NameError:
-#    # sudo gpasswd --add ${USER} dialout 
-#    logger.exception(COLOR_FAIL + "Couldn't close serial port" + COLOR_ENDC)
+try:
+    if config.serial_port is not None:
+        ser.close()
+        logger.info(COLOR_OKGREEN + "RTS/PTT set to OFF\n" + COLOR_ENDC)
+except NameError:
+    # sudo gpasswd --add ${USER} dialout 
+    logger.exception(COLOR_FAIL + "Couldn't close serial port" + COLOR_ENDC)
 
 
 
