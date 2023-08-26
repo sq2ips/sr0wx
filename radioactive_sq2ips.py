@@ -22,7 +22,7 @@ class RadioactiveSq2ips(SR0WXModule):
         self.__logger = logging.getLogger(__name__)
 
     def request(self, url, id):
-        self.__logger.info("Pobieranie danych...")
+        self.__logger.info("::: Pobieranie danych...")
         data = requests.get(url).json()
         dataw=''
         try:
@@ -33,7 +33,7 @@ class RadioactiveSq2ips(SR0WXModule):
                     break
         except KeyError as e:
             if str(e) == "'features'":
-                raise ValueError("Źródło zwraca puste dane")
+                raise ValueError("Źródło zwraca puste dane.")
             else:
                 raise KeyError(e)
         if dataw == "":
@@ -41,7 +41,7 @@ class RadioactiveSq2ips(SR0WXModule):
         return dataw
 
     def processData(self, data):
-        self.__logger.info(int(datetime.now().strftime("%d")) - int(datetime.strptime(data["tip_date"], "%Y-%m-%d %H:%M").strftime("%d")))
+        #self.__logger.info(int(datetime.now().strftime("%d")) - int(datetime.strptime(data["tip_date"], "%Y-%m-%d %H:%M").strftime("%d")))
         if datetime.strptime(data["tip_date"], "%Y-%m-%d %H:%M").strftime("%Y-%m-%d") != datetime.now().strftime("%Y-%m-%d"):
             if((int(datetime.now().strftime("%d")) - int(datetime.strptime(data["tip_date"], "%Y-%m-%d %H:%M").strftime("%d"))) > 1):
                 raise ValueError("Dane są nieaktualne o więcej niż jeden dzień! oczekiwane: " + datetime.now().strftime("%Y-%m-%d") + ", otrzymane: " + datetime.strptime(data["tip_date"], "%Y-%m-%d %H:%M").strftime("%Y-%m-%d"))
@@ -63,10 +63,10 @@ class RadioactiveSq2ips(SR0WXModule):
         value = self.processData(data)
         self.__logger.info("Wartość przetwożona: " + str(value))
         va=int(value*100)
-        self.__logger.info(va)
+        #self.__logger.info(va)
         curentValue = " ".join(["wartos_c__aktualna",self.__language.read_decimal( va )+" ","mikrosjiwerta","na_godzine_"])
         message = " ".join([" _ poziom_promieniowania _ ", curentValue, " _ "])
         return {
             "message": message,
-            "source": "",
+            "source": "PAA",
         }

@@ -1,5 +1,5 @@
 #!/usr/env/python -tt
-# -*- encoding=utf8 -*-
+
 #
 #   Copyright 2009-2014 Michal Sadowski (sq6jnx at hamradio dot pl)
 #
@@ -79,13 +79,13 @@ Parameters:
 
         self.__logger.info("::: Odpytuję adres: " + url.decode())
 
-
+        url=url.decode()
         try:
             request = urllib.request.Request(url)
             webFile = urllib.request.urlopen(request, None, 5)
             response = webFile.read()
 
-            if response == 'OK':
+            if response == 'OK'.encode():
                 self.__logger.info("::: Dane wysłano, status OK\n")
             else:
                 log = "Non-OK response from %s, (%s)"
