@@ -14,4 +14,4 @@ pyserial==3.5
 numpy==1.25.1
 pygame==2.4.0
 importlib-metadata==5.0.0
-RPi.GPIO==0.7.0
+RPi.GPIO==20.7.0
