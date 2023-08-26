@@ -73,11 +73,11 @@ Parameters:
         }
 
         dump = json.dumps(station_info, separators=(',', ':'))
-        b64data = base64.urlsafe_b64encode(dump)
+        b64data = base64.urlsafe_b64encode(dump.encode())
 
-        url = self.__service_url + b64data
+        url = self.__service_url.encode() + b64data
 
-        self.__logger.info("::: Odpytuję adres: " + url)
+        self.__logger.info("::: Odpytuję adres: " + url.decode())
 
 
         try:

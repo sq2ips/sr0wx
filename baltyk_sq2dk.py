@@ -40,20 +40,20 @@ class BaltykSq2dk(SR0WXModule):
         return webFile.read()
 	
     def validityText(self,string):
-        pos1=string.find("validity", 0)
-        pos2=string.find('"',pos1+11,pos1+255)
+        pos1=string.find("validity".encode())
+        pos2=string.find('"'.encode(),pos1+11,pos1+255)
         valiString=string[11+pos1:pos2]
-        valiString=valiString.replace("Ważność od","waz_na_od_godziny")
-        firstDatePos=valiString.find("UTC",0)+4
-        firstDotPos=valiString.find(".",firstDatePos)
-        secondDotPos=valiString.find(".",firstDotPos+1)
+        valiString=valiString.replace("Ważność od".encode(),"waz_na_od_godziny".encode())
+        firstDatePos=valiString.find("UTC".encode(),0)+4
+        firstDotPos=valiString.find(".".encode(),firstDatePos)
+        secondDotPos=valiString.find(".".encode(),firstDotPos+1)
         firstDay=valiString[firstDatePos:firstDotPos]
         firstMonth=valiString[firstDotPos+1:secondDotPos]
         firstYear=valiString[secondDotPos+1:secondDotPos+5]
         
-        secondDatePos=valiString.find("UTC",firstDatePos)+4
-        thirdDotPos=valiString.find(".",secondDatePos)
-        fourthDotPos=valiString.find(".",thirdDotPos+1)
+        secondDatePos=valiString.find("UTC".encode(),firstDatePos)+4
+        thirdDotPos=valiString.find(".".encode(),secondDatePos)
+        fourthDotPos=valiString.find(".".encode(),thirdDotPos+1)
         secondDay=valiString[secondDatePos:thirdDotPos]
         secondMonth=valiString[thirdDotPos+1:fourthDotPos]
         secondYear=valiString[fourthDotPos+1:fourthDotPos+5]
@@ -84,32 +84,32 @@ class BaltykSq2dk(SR0WXModule):
         ("11"," listopada "),("12"," grudnia ")}
         
         for k, v in monthVer:
-            firstMonth = firstMonth.replace(k, v)
+            firstMonth = firstMonth.replace(k.encode(), v.encode())
         for k, v in monthVer:
-            secondMonth = secondMonth.replace(k, v)
-        return valiString[0:firstDatePos]+" "+firstDay+" "+firstMonth+" "+firstYear+" "+\
-        valiString[secondDotPos+5:secondDatePos]+" "+secondDay+" "+secondMonth+" "+secondYear
+            secondMonth = secondMonth.replace(k.encode(), v.encode())
+        space=" ".encode()
+        return valiString[0:firstDatePos]+space+firstDay.encode()+space+firstMonth+space+firstYear+space+valiString[secondDotPos+5:secondDatePos]+secondDay.encode()+space+secondMonth+space+secondYear
 
     def regionPos(self,string):
-        return string.find(self.__region_id,0)+len(self.__region_id)+1
+        return string.find(self.__region_id.encode(),0)+len(self.__region_id)+1
 
     def alertDescr(self,string):
-        pos1=string.find("alert_level",self.regionPos(string))
-        pos2=string.find('"',pos1+14,pos1+16)
+        pos1=string.find("alert_level".encode(),self.regionPos(string))
+        pos2=string.find('"'.encode(),pos1+14,pos1+16)
         alert_level=string[pos1+14:pos2]
-        alert_level=alert_level.replace('"','')
-        return "baltyk_alert_"+alert_level
+        alert_level=alert_level.replace('"'.encode(),''.encode())
+        return "baltyk_alert_".encode()+alert_level
 
     def forecast_now(self,string):
-        pos1=string.find("forecast_now",self.regionPos(string))
-        pos2=string.find('"',pos1+15,pos1+1000)
+        pos1=string.find("forecast_now".encode(),self.regionPos(string))
+        pos2=string.find('"'.encode(),pos1+15,pos1+1000)
         
         return string[pos1+15:pos2]
 	
     def forecast_next(self,string):
-        posfn1=string.find("forecast_next",self.regionPos(string))
+        posfn1=string.find("forecast_next".encode(),self.regionPos(string))
         if posfn1>0:
-            posfn2=string.find('"',posfn1+16,posfn1+1000)
+            posfn2=string.find('"'.encode(),posfn1+16,posfn1+1000)
         else:
             posfn2=0   
         forcnext12=string[posfn1+16:posfn2]
@@ -133,7 +133,7 @@ class BaltykSq2dk(SR0WXModule):
             .lower()
 
     def checkFrazy(self,string):
-        plik_frazy_adr="/home/sr0wx/sr0wx/baltyk_frazy.txt"
+        plik_frazy_adr="./baltyk_frazy.txt"
         self.__logger.info(":-sprawdzam frazy "+plik_frazy_adr)
         plik_frazy=open(plik_frazy_adr,"r")
         frazy=plik_frazy.read()
@@ -151,8 +151,8 @@ class BaltykSq2dk(SR0WXModule):
     def getMissingSample(self,string):
         engine = ResponsiveVoice(lang="pl-PL", gender=ResponsiveVoice.FEMALE)
 	#set paths to folders
-        oggpath="/home/sr0wx/sr0wx/pl_google/"
-        mp3path="/home/sr0wx/sr0wx/pl_google/mp3/"
+        oggpath="./pl_google/"
+        mp3path="./pl_google/mp3/"
         samplename=self.polSign(string.strip())
 
 	#get mp3 sample file
@@ -175,13 +175,13 @@ class BaltykSq2dk(SR0WXModule):
         prog_spl=string.split(" ")
         for wyrazy in prog_spl:
             plik_naz=self.polSign(wyrazy)
-            if not os.path.isfile("/home/sr0wx/sr0wx/pl_google/"+plik_naz+".ogg"):
+            if not os.path.isfile("./pl_google/"+plik_naz+".ogg"):
                 if wyrazy.strip()>"":
                     self.getMissingSample(wyrazy.strip())
 
     def covert_all_mp3(self):
         b = 0
-        a = (glob.glob("/home/sr0wx/sr0wx/pl_google/mp3/*.mp3"))
+        a = (glob.glob("./pl_google/mp3/*.mp3"))
         c = len(a)
         while b < len(a):
             print((str(b/len(a)*100) + "%"))
@@ -219,12 +219,12 @@ class BaltykSq2dk(SR0WXModule):
            regionText="baltyku_psb "
         data=data+regionText
         validText=self.validityText(html)
-        data=data+validText+" "+self.alertDescr(html)+".   "
-        data=data+self.forecast_now(html)
+        data=data+validText.decode()+" "+self.alertDescr(html).decode()+".   "
+        data=data+self.forecast_now(html).decode()
         data12=self.forecast_next(html)
-        if data12>"":
+        if data12>"".encode():
              data=data+" prognoza_orientacyjna_12 "
-        data=data+self.forecast_next(html)
+        data=data+self.forecast_next(html).decode()
         
         data=data.lower()
         #data=data.replace("."," _ ")

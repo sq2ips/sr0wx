@@ -46,7 +46,7 @@ log_handlers = [{
         'log_level': logging.DEBUG,
         'class': logging.handlers.TimedRotatingFileHandler,
         'config': {
-            'filename': '../baltyk/baltyk-' + str(datetime.now().strftime("%Y-%m-%d_%H:%M")) + '.log',
+            'filename': '../logs/baltyk/' + str(datetime.now().strftime("%Y-%m-%d_%H:%M")) + '.log',
             'when': 'D',
             'interval': 1,
             'backupCount': 30,
@@ -56,7 +56,7 @@ log_handlers = [{
     }]
 
 ctcss_tone = 0
-serial_port = '/dev/ttyS0'
+serial_port = None
 serial_baud_rate = 9600
 serial_signal = 'DTR' # lub 'RTS'
 

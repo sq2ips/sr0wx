@@ -11,6 +11,6 @@ pytz==2023.3
 beautifulsoup4==4.12.2
 pillow==10.0.0
 pyserial==3.5
-numpy==1.25.1
+numpy==1.25.2
 pygame==2.4.0
 importlib-metadata==5.0.0
