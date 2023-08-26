@@ -233,14 +233,17 @@ for el in message:
                 sound_samples[el] = pygame.mixer.Sound(config.lang + "/" + el + ".ogg")
 
 
-
-
-import RPi.GPIO as GPIO
-
-
-GPIO.setmode(GPIO.BOARD)
-GPIO.setup(40, GPIO.OUT)
-GPIO.output(40, GPIO.HIGH)
+nopi=False
+try:
+    import RPi.GPIO as GPIO
+except ImportError:
+    logger.error("No raspi module found, skipping...")
+    nopi = True
+    
+if(nopi == False):
+    GPIO.setmode(GPIO.BOARD)
+    GPIO.setup(40, GPIO.OUT)
+    GPIO.output(40, GPIO.HIGH)
 
 # Program should be able to "press PTT" via RSS232. See ``config`` for
 # details.
@@ -317,8 +320,10 @@ pygame.time.delay(1000)
 
 
 logger.info(COLOR_WARNING + "goodbye" + COLOR_ENDC)
-GPIO.output(40, GPIO.LOW)
-logger.info(COLOR_WARNING + "PIN 40 OFF: PTT OFF" + COLOR_ENDC)
-GPIO.cleanup()
+if(nopi == False):
+    GPIO.output(40, GPIO.LOW)
+    logger.info(COLOR_WARNING + "PIN 40 OFF: PTT OFF" + COLOR_ENDC)
+    GPIO.cleanup()
+logger.info(COLOR_WARNING + "goodbye" + COLOR_ENDC)
 # Documentation is a good thing when you need to double or triple your
 # Lines-Of-Code index ;)
