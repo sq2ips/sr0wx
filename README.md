@@ -7,8 +7,6 @@ Modyfikacje:
 - Dodanie modułu wyliczającaego wschody i zachody słońca bez połączenia z internetem
 - Dodanie modułu pobierającego poziom promieniowania ze strony ()
 - Dodanie modułu prognozy dla bałtyku autorstwa sq2dk oraz osobngo pliku konfiguracyjnego w celu uruchamiania tej prognozy osobno od głównej. Dodatkowo dodany - jest katalog z samplami w formacie mp3 które stacja pobiera gdy nie zostały odnalezione
+- Przepisanie całej aplikacji na python3 z powodu, że python2 jest nie wspierany od ponad 3 lat (Branch 2to3)
 
-Planowane modyfikacje:
-- Przepisanie całej aplikacji na python3 ponieważ python 2 jest nie wspierany od ponad 3 lat (Branch 2to3)
-
-W programie jest wiele dodatkowych plików z których większość może okazać się nie potrzebna.
+W programie jest wiele dodatkowych plików z których część może okazać się nie potrzebna.
