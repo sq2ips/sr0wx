@@ -156,7 +156,10 @@ class BaltykSq2dk(SR0WXModule):
         samplename=self.polSign(string.strip())
 
 	#get mp3 sample file
-        engine.get_mp3(string, mp3path+samplename+".mp3")  #, lang=None, pitch=None, rate=None, vol=None, gender=None)
+        pat=mp3path+samplename+".mp3"
+        self.__logger.info(string)
+        self.__logger.info(pat)
+        engine.get_mp3(string, pat)  #, lang=None, pitch=None, rate=None, vol=None, gender=None)
 
 	#convert mp3 sample to oog -   done by separate rutine - all files at once
         mp3name=((mp3path+samplename+".mp3"))
@@ -186,8 +189,8 @@ class BaltykSq2dk(SR0WXModule):
         while b < len(a):
             print((str(b/len(a)*100) + "%"))
             wyj = a[b].replace('.mp3', '') + ".ogg"
-            print(("--- konwertowanie " + a[b] + " na " + wyj))
-            os.system("ffmpeg -y -i " + a[b] + " -ar 32000  -ab 48000 -acodec libvorbis " + wyj)
+            self.__logger.info(("--- konwertowanie " + a[b] + " na " + wyj))
+            os.system("ffmpeg -hide_banner -y -i " + a[b] + " -ar 32000  -ab 48000 -acodec libvorbis " + wyj)
             b = b + 1
         #os.system("cp *.ogg ..")
         #os.system("mv *.ogg old")
