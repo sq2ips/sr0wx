@@ -9,7 +9,7 @@ $slownik = array(
     #array('Stanisław Roman dwa wanda ksawery grażyna', 'sr2wxg'),
     #array('Morski klub łączności szkuner, stefan paweł dwa zofia irena ewa przy uniwersytecie morskim w gdyni', 'sp2zie'),
     #array('kolejny komunikat morski za 60 minut', 'kolejny_komunikat_m'),
-    array('tu Stanisław Roman dwa wanda ksawery grażyna', 'tu_sr2wxg'),
+    #array('tu Stanisław Roman dwa wanda ksawery grażyna', 'tu_sr2wxg'),
     #array('kolejny komunikat meteorologiczny za 30 minut', 'kolejny_komunikat'),
 
     #array('silnym wiatrem', "silnym_wiatrem"),
@@ -33,7 +33,8 @@ $slownik = array(
     #array('wezbraniem z przekroczeniem stanów ostrzegawczych', "wezbraniem_z_przekroczeniem_stanow_ostrzegawczych"),
     #array('suszą hydrologiczną', "susza_hydrologiczna"),
     #array('ostrzeżenia meteorologiczne I eM Gie Wu', "ostrzezenia_meteorologiczne_imgw"),
-    #array('ostrzezenie przed', "ostrzezenie_przed"),
+    array('ostrzeżenie przed', "ostrzezenie_przed"),
+    array('ostrzeżeń nie ma', "ostrzezen_nie_ma"),
     #array("stopnia","stopnia"),
     #array("prawdopodobieństwo","prawdopodobienstwo"),
 );

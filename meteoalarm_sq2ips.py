@@ -29,7 +29,7 @@ class MeteoAlarmSq2ips(SR0WXModule):
             if self.__city in names["features"][i]["properties"]['jpt_nazwa_']:
                 id = names["features"][i]["properties"]['jpt_kod_je']
         #Ostrzeżenia
-        message = self.__start_message + " _ "
+        message = self.__start_message + " "
         try:
             id_w = alerts["teryt"][id][0]
         except KeyError:
@@ -42,7 +42,8 @@ class MeteoAlarmSq2ips(SR0WXModule):
             print(kod)
             print(stopien)
             print(prawd)
-            message += " ostrzezenie_przed "+str(self.codes[kod])+" "+ str(self.stopnie[stopien]) + " stopnia" + " " + "prawdopodobienstwo " + str(self.procent[int(prawd)]) + " procent _ _ "
+            message += " ostrzezenie_przed "+str(self.codes[kod])+" "+ str(self.stopnie[stopien]) + " stopnia" + " " + "prawdopodobienstwo " + str(self.procent[int(prawd)]) + " procent "
+        message += " _ "
         return(message)
     def get_data(self):
         message = self.process()
