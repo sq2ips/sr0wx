@@ -103,7 +103,7 @@ def setup_logging(config):
     # Creating logger with the lowest log level in config handlers
     min_log_level = min([h['log_level'] for h in config.log_handlers])
     logger = logging.getLogger()
-    logger.setLevel(min_log_level)
+    logger.setLevel('DEBUG')
 
     # create logging handlers according to its definitions
     for handler_definition in config.log_handlers:
