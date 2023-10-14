@@ -190,7 +190,6 @@ class OpenWeatherSq9atk(SR0WXModule):
                      ])
 
         self.__logger.info("::: Przetwarzam dane...\n")
-                
         return {
             "message": message,
             "source": "open_weather_map",

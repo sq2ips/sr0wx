@@ -5,8 +5,37 @@
 
 # TYLKO Z TEJ TABLICY GENEROWANE SĄ SAMPLE
 $slownik = array(
-    array('tekst do przeczytana ', 'nazwa_pliku_bez_rozszerzenia'),
-    array('Stanisław roman 2 wanda ksawery grażyna', 'sr2wxg'),
+    #array('słabnący', 'słabnacy'),
+    #array('Stanisław Roman dwa wanda ksawery grażyna', 'sr2wxg'),
+    #array('Morski klub łączności szkuner, stefan paweł dwa zofia irena ewa przy uniwersytecie morskim w gdyni', 'sp2zie'),
+    #array('kolejny komunikat morski za 60 minut', 'kolejny_komunikat_m'),
+    array('tu Stanisław Roman dwa wanda ksawery grażyna', 'tu_sr2wxg'),
+    #array('kolejny komunikat meteorologiczny za 30 minut', 'kolejny_komunikat'),
+
+    #array('silnym wiatrem', "silnym_wiatrem"),
+    #array('intensywnymi opadami deszczu', "intensywnymi_opadami_deszczu"),
+    #array('opadami śniegu', "opadami_sniegu"),
+    #array('intensywnymi opadami śniegu', "intensywnymi_opadami_sniegu"),
+    #array('opadami marznącymi', "opadami_marznacymi"),
+    #array('zawiejami lub zamieciami śnieżnymi', "zawiejami_lub_zamieciam_snieznymi"),
+    #array('oblodzeniem', "oblodzeniem"),
+    #array('przymrozkami', "przymrozkami"),
+    #array('roztopami', "roztopami"),
+    #array('upałem', "upalem"),
+    #array('silnym mrozem', "silnym_mrozem"),
+    #array('gęstą mgłą', "gesta_mgla"),
+    #array('mgłą intensywnie osadzającą szadź', "mgla_intensywnie_osadzajaca_szadz"),
+    #array('burzami', "burzami"),
+    #array('burzami z gradem', "burzami_z_gradem"),
+    #array('silnym deszczem z burzami', "silnym_deszczem_z_burzami"),
+    #array('gwałtownym wzrostem stanu wody', "gwaltownymi_wzrostami_stanow_wody"),
+    #array('wezbraniem z przekroczeniem stanów alarmowych', "wezbraniem_z_przekroczeniem_stanow_alarmowych"),
+    #array('wezbraniem z przekroczeniem stanów ostrzegawczych', "wezbraniem_z_przekroczeniem_stanow_ostrzegawczych"),
+    #array('suszą hydrologiczną', "susza_hydrologiczna"),
+    #array('ostrzeżenia meteorologiczne I eM Gie Wu', "ostrzezenia_meteorologiczne_imgw"),
+    #array('ostrzezenie przed', "ostrzezenie_przed"),
+    #array("stopnia","stopnia"),
+    #array("prawdopodobieństwo","prawdopodobienstwo"),
 );
 
 
