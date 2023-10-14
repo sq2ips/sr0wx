@@ -28,7 +28,6 @@ class MeteoAlarmSq2ips(SR0WXModule):
         for i in range(len(names["features"])):
             if self.__city in names["features"][i]["properties"]['jpt_nazwa_']:
                 id = names["features"][i]["properties"]['jpt_kod_je']
-            id='2263'
         #Ostrzeżenia
         message = self.__start_message + " _ "
         try:
@@ -43,7 +42,7 @@ class MeteoAlarmSq2ips(SR0WXModule):
             print(kod)
             print(stopien)
             print(prawd)
-            message += " ostrzezenie_przed "+str(self.codes[kod])+" "+ str(self.stopnie[stopien]) + " stopnia" + " " + "prawdopodobienstwo " + str(self.procent[int(prawd)]) + " procent _ "
+            message += " ostrzezenie_przed "+str(self.codes[kod])+" "+ str(self.stopnie[stopien]) + " stopnia" + " " + "prawdopodobienstwo " + str(self.procent[int(prawd)]) + " procent _ _ "
         return(message)
     def get_data(self):
         message = self.process()
