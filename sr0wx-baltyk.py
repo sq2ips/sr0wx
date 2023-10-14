@@ -164,10 +164,6 @@ else:
 try:
     dane = urllib.request.urlopen('http://google.pl', None, 30);
 except urllib.request.URLError as e:
-    modules = []
-    message += " ".join(config.data_sources_error_msg)
-    logger.info(COLOR_FAIL + "Brak połączenia z internetem" + COLOR_ENDC + "\n")
-except socket.timeout:
     modules = config.ofline_modules
     message += " ".join(config.data_sources_error_msg)
     logger.info(COLOR_FAIL + "Brak połączenia z internetem" + COLOR_ENDC + "\n")
