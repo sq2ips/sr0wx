@@ -204,6 +204,7 @@ class BaltykSq2dk(SR0WXModule):
 
     def get_data(self):
         self.__logger.info("::: Pobieram dane...")
+        self.__logger.warning("!!! Uwaga sampel stycznia został zamieniony na listopada z powodu błędu w skrypcie!")
         html = self.downloadFile(self.__service_url)
 
         self.__logger.info("::: Przetwarzam dane...\n")
