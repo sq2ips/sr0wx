@@ -3,7 +3,7 @@ import logging
 
 from sr0wx_module import SR0WXModule
 
-class MeteoAlarmSq2ips(SR0WXModule):
+class MeteoAlertSq2ips(SR0WXModule):
     def __init__(self, city, start_message):
         self.__start_message=start_message
         self.__city = city
