@@ -33,8 +33,9 @@ $slownik = array(
     #array('wezbraniem z przekroczeniem stanów ostrzegawczych', "wezbraniem_z_przekroczeniem_stanow_ostrzegawczych"),
     #array('suszą hydrologiczną', "susza_hydrologiczna"),
     #array('ostrzeżenia meteorologiczne I eM Gie Wu', "ostrzezenia_meteorologiczne_imgw"),
-    array('ostrzeżenie przed', "ostrzezenie_przed"),
-    array('ostrzeżeń nie ma', "ostrzezen_nie_ma"),
+    #array('ostrzeżenie przed', "ostrzezenie_przed"),
+    #array('ostrzeżeń nie ma', "ostrzezen_nie_ma"),
+    #array("ostrzeżenia meteorologiczne i hydrologiczne i em gie wu", "ostrzezenia_meteorologiczne_i_hydrologiczne_imgw")
     #array("stopnia","stopnia"),
     #array("prawdopodobieństwo","prawdopodobienstwo"),
 );
