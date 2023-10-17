@@ -27,7 +27,7 @@ from responsive_voice import ResponsiveVoice
 # - wynajdź początek prognozy na region
 # -  
 class BaltykSq2dk(SR0WXModule):
-    """Klasa pobierająca dane stanie morza"""
+    """Klasa pobierająca dane o stanie morza"""
 
     def __init__(self,language,service_url,region_id):
         self.__service_url = service_url

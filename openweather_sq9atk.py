@@ -11,7 +11,7 @@ from sr0wx_module import SR0WXModule
 
 
 class OpenWeatherSq9atk(SR0WXModule):
-    """Klasa pobierająca dane o promieniowaniu"""
+    """Klasa pobierająca dane o pogodzie"""
 
     def __init__(self, language, api_key, lat, lon, service_url):
 
@@ -142,7 +142,7 @@ class OpenWeatherSq9atk(SR0WXModule):
             if 247 <= json['deg'] <= 292:  msg += ' zachodni '
             if 292 <= json['deg'] <= 337:  msg += ' polnocno zachodni '
             if 337 <= json['deg'] <= 360:  msg += ' polnocny '
-            msg += self.__language.read_degrees( int(json['deg']) )
+            #msg += self.__language.read_degrees( int(json['deg']) )
         return msg
 
     def get_data(self):

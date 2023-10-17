@@ -328,7 +328,6 @@ except NameError:
 
 
 
-logger.info(COLOR_WARNING + "goodbye" + COLOR_ENDC)
 if(nopi == False):
     GPIO.output(40, GPIO.LOW)
     logger.info(COLOR_WARNING + "PIN 40 OFF: PTT OFF" + COLOR_ENDC)
