@@ -15,9 +15,10 @@ from sr0wx_module import SR0WXModule
 class RadioactiveSq2ips(SR0WXModule):
     """Klasa pobierająca dane o promieniowaniu"""
 
-    def __init__(self, language, service_url, sensor_id):
+    def __init__(self, language, service_url, sensor_id, service_url_sr):
         self.__service_url = service_url
         self.__sensor_id = sensor_id
+        self.__service_url_sr = service_url_sr
         self.__language = language
         self.__logger = logging.getLogger(__name__)
 
@@ -39,7 +40,21 @@ class RadioactiveSq2ips(SR0WXModule):
         if dataw == "":
             raise KeyError("No sensor with id " + id)
         return dataw
-
+    def request_sr(self, url):
+        start = datetime.now().strftime("%Y-%m-%dT00:00:01.000Z")
+        end = datetime.now().strftime("%Y-%m-%dT%H:%M:%S.000Z")
+        url += f"?dateFrom={str(start)}&dateTo={str(end)}"
+        self.__logger.info("::: Pobieranie średnich danych...")
+        data = requests.get(url).json()
+        prs = 0
+        try:
+            for i in range(len(data)):
+                prs += float(data[i]["moc_dawki"])
+        except KeyError:
+            raise ValueError("Nieprawidłowa odpowiedź serwera")
+        if(prs==0):
+           raise ValueError("Nieprawidłowe dane") 
+        return prs/len(data)
     def processData(self, data):
         #self.__logger.info(int(datetime.now().strftime("%d")) - int(datetime.strptime(data["tip_date"], "%Y-%m-%d %H:%M").strftime("%d")))
         if datetime.strptime(data["tip_date"], "%Y-%m-%d %H:%M").strftime("%Y-%m-%d") != datetime.now().strftime("%Y-%m-%d"):
@@ -64,8 +79,12 @@ class RadioactiveSq2ips(SR0WXModule):
         self.__logger.info("Wartość przetwożona: " + str(value))
         va=int(value*100)
         #self.__logger.info(va)
+        value_sr = self.request_sr(self.__service_url_sr)
+        self.__logger.info("Średnia wartość przetwożona: " + str(value_sr))
+        va_sr= int(round(value_sr*100, 2))
         curentValue = " ".join(["wartos_c__aktualna",self.__language.read_decimal( va )+" ","mikrosjiwerta","na_godzine_"])
-        message = " ".join([" _ poziom_promieniowania _ ", curentValue, " _ "])
+        averageValue = " ".join(["s_rednia_wartos_c__dobowa",self.__language.read_decimal(va_sr)+" ", "mikrosjiwerta","na_godzine_"])
+        message = " ".join([" _ poziom_promieniowania _ ", curentValue, " _ ", averageValue, " _ "])
         return {
             "message": message,
             "source": "PAA",
