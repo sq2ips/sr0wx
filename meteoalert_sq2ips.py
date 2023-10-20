@@ -35,7 +35,7 @@ class MeteoAlertSq2ips(SR0WXModule):
         #id = '2263'
         self.__logger.info("id: "+id)
         #Ostrzeżenia
-        message = self.__start_message + " "
+        message = self.__start_message + " _ "
         os = True
         id_w = []
         try:

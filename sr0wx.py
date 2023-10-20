@@ -153,7 +153,7 @@ if config is None:
 logger = setup_logging(config)
 
 logger.info(COLOR_WARNING + "sr0wx.py started" + COLOR_ENDC)
-logger.info(LICENSE)
+#logger.info(LICENSE)
 
 
 if len(args) > 0:
