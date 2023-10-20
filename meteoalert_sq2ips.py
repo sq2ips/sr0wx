@@ -37,29 +37,42 @@ class MeteoAlertSq2ips(SR0WXModule):
         #Ostrzeżenia
         message = self.__start_message + " "
         os = True
+        id_w = []
         try:
-            id_w = alerts["teryt"][id][0]
+            for i in range(len(alerts["teryt"][id])):
+                id_w.append(alerts["teryt"][id][i])
         except KeyError:
             os = False
         else:
             os = True
             #print(id_w)
-            kod = alerts["warnings"][id_w]["PhenomenonCode"]
-            stopien = alerts["warnings"][id_w]["Level"]
-            prawd = alerts["warnings"][id_w]["Probability"]
-            self.__logger.info("kod: "+kod+" stopień:" + stopien + " prawdopodobieństwo:"+prawd)
-            message += " ostrzezenie_przed "+str(self.codes[kod])+" "+ str(self.stopnie[stopien]) + " stopnia" + " " + "prawdopodobienstwo " + str(self.procent[int(prawd)]) + " procent _ "
-
+            warnings_used = []
+            for i in range(len(id_w)):
+                kod = alerts["warnings"][id_w[i]]["PhenomenonCode"]
+                if kod in warnings_used:
+                        self.__logger.warning("Powtórzenie ostrzeżenia: "+kod)
+                else:
+                    stopien = alerts["warnings"][id_w[i]]["Level"]
+                    prawd = alerts["warnings"][id_w[i]]["Probability"]
+                    self.__logger.info("kod: "+kod+" stopień:" + stopien + " prawdopodobieństwo:"+prawd)
+                    #message += " ostrzezenie_przed "+str(self.codes[kod])+" "+ str(self.stopnie[stopien]) + " stopnia " + "prawdopodobienstwo " + str(self.procent[int(prawd)]) + " procent" + " _ "
+                    message += " ostrzezenie_przed "+str(self.codes[kod])+" "+ str(self.stopnie[stopien]) + " stopnia " + " _ "
+        hydro_used = []
         for i in range(len(alerts_hydro["warnings"])):
             for j in range(len(alerts_hydro["warnings"][i]["Zlewnie"])):
                 if(alerts_hydro["warnings"][i]["Zlewnie"][j]["Code"] == self.__hydroname):
                     os = True
                     #print(alerts_hydro["warnings"][i]["WarnHydro"])
                     kod = alerts_hydro["warnings"][i]["WarnHydro"]["Phenomena"]
-                    prawd = alerts_hydro["warnings"][i]["WarnHydro"]["Probability"]
-                    stopien = alerts_hydro["warnings"][i]["WarnHydro"]["Level"]
-                    self.__logger.info("kod: "+kod+" stopień:" + stopien + " prawdopodobieństwo:"+prawd)
-                    message += " ostrzezenie_przed "+str(self.codes[kod])+" "+ str(self.stopnie[stopien]) + " stopnia" + " " + "prawdopodobienstwo " + str(self.procent[int(prawd)]) + " procent _ "
+                    if kod in hydro_used:
+                        self.__logger.warning("Powtórzenie ostrzeżenia: "+kod)
+                    else:
+                        hydro_used.append(kod)
+                        prawd = alerts_hydro["warnings"][i]["WarnHydro"]["Probability"]
+                        stopien = alerts_hydro["warnings"][i]["WarnHydro"]["Level"]
+                        self.__logger.info("kod: "+kod+" stopień:" + stopien + " prawdopodobieństwo:"+prawd)
+                        #message += " ostrzezenie_przed "+str(self.codes[kod])+" "+ str(self.stopnie[stopien]) + " stopnia " + "prawdopodobienstwo " + str(self.procent[int(prawd)]) + " procent" + " _ "
+                        message += " ostrzezenie_przed "+str(self.codes[kod])+" "+ str(self.stopnie[stopien]) + " stopnia " + " _ "
 
   
         
