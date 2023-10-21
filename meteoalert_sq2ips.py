@@ -80,8 +80,12 @@ class MeteoAlertSq2ips(SR0WXModule):
             message += " ostrzezen_nie_ma "
         message += " _ "
         return(message)
-    def get_data(self):
+    def get_data(self, connection):
         message = self.process()
+        connection.send({
+            "message": message,
+            "source": "meteo imgw",
+        })
         return {
             "message": message,
             "source": "meteo imgw",

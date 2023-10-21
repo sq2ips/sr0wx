@@ -55,7 +55,7 @@ Parameters:
 
         self.__logger = logging.getLogger(__name__)
 
-    def get_data(self):
+    def get_data(self, connection):
         """This module does NOT return any data! It is here just to say "hello" to
         map utility!"""
 
@@ -90,6 +90,7 @@ Parameters:
             else:
                 log = "Non-OK response from %s, (%s)"
                 self.__logger.error(log, url, response)
+            connection.send(dict())
             return dict()
 
         except urllib.error.URLError as e:

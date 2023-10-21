@@ -48,7 +48,7 @@ class CalendarSq9atk(SR0WXModule):
         time_words = self.__language.read_datetime(datetime_object, '%H %M')
         return time_words
 
-    def get_data(self):
+    def get_data(self, connection):
         times = self.getSunsetSunrise()
         self.__logger.info("::: Przetwarzam dane...\n")
 
@@ -56,6 +56,11 @@ class CalendarSq9atk(SR0WXModule):
         sunset = " ".join(["zacho_d_sl_on_ca","godzina",self.hourToNumbers(times['sunset'])," "])
 
         message = " ".join([" _ kalendarium _ " ,sunrise ," _ " ,sunset ," _ "])
+        
+        connection.send({
+            "message": message,
+            "source": "calendar_zoznam_sk",
+        })
         return {
             "message": message,
             "source": "calendar_zoznam_sk",

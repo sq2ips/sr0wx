@@ -97,7 +97,7 @@ class ImgwPodestSq9atk(SR0WXModule):
         
         
         
-    def get_data(s):
+    def get_data(s, connection):
 
         stanyOstrzegawcze = {}
         stanyAlarmowe = {}
@@ -163,6 +163,10 @@ class ImgwPodestSq9atk(SR0WXModule):
 
         message += ' _ '
 
+        connection.send({
+            "message": message,
+            "source": "imgw",
+        })
         return {
             "message": message,
             "source": "imgw",

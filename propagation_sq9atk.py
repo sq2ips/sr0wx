@@ -81,7 +81,7 @@ class PropagationSq9atk(SR0WXModule):
             return list()
 
 
-    def get_data(self):
+    def get_data(self, connection):
 
         image = self.downloadImage(self.__service_url)
 
@@ -98,6 +98,10 @@ class PropagationSq9atk(SR0WXModule):
             " _ "
         ])
 
+        connection.send({
+            "message": message,
+            "source": "noaa",
+        })
         return {
             "message": message,
             "source": "noaa",

@@ -243,7 +243,7 @@ class VhfTropoSq9atk(SR0WXModule):
         return message
 
 
-    def get_data(self):
+    def get_data(self, connection):
         html = self.getHtmlFromUrl(self.__service_url).decode("ISO-8859-1")
         mapUrl = self.findMapUrlInHtml(html, "imgClickAndChange")
 
@@ -264,6 +264,10 @@ class VhfTropoSq9atk(SR0WXModule):
             " _ "
         ])
 
+        connection.send({
+            "message": message,
+            "source": "vhf_dx_info_center",
+        })
         return {
             "message": message,
             "source": "vhf_dx_info_center",

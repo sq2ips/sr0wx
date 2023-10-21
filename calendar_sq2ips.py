@@ -20,7 +20,7 @@ class CalendarSq2ips(SR0WXModule):
         datetime_object = datetime.datetime.strptime(time, '%H:%M')
         time_words = self.__language.read_datetime(datetime_object, '%H %M')
         return time_words
-    def get_data(self):
+    def get_data(self, connection):
         self.__logger.info("::: Przeliczam dane...\n")
         Gdynia=ephem.Observer()
         Gdynia.lat= self.__lat
@@ -36,6 +36,10 @@ class CalendarSq2ips(SR0WXModule):
         message = " ".join([" _ kalendarium _ ",sunrise ," _ ", sunset ," _ "])
         self.__logger.info(str(ephem.localtime(Gdynia.next_rising(sun)).hour) + ":" + str(ephem.localtime(Gdynia.next_rising(sun)).minute))
         self.__logger.info(str(ephem.localtime(Gdynia.next_setting(sun)).hour) + ":" + str(ephem.localtime(Gdynia.next_setting(sun)).minute))
+        connection.send({
+            "message":message,
+            "source":"ephem",
+        })
         return {
             "message":message,
             "source":"ephem",

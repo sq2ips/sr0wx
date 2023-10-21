@@ -70,7 +70,7 @@ class RadioactiveSq9atk(SR0WXModule):
                     ret = self.extractSensorData(row)
         return ret
         
-    def get_data(self):
+    def get_data(self, connection):
         self.__logger.info("::: Pobieram dane...")
         html = self.downloadFile(self.__service_url)
 
@@ -84,7 +84,11 @@ class RadioactiveSq9atk(SR0WXModule):
         currentValue = " ".join(["s_rednia_wartos_c__dobowa",self.__language.read_decimal( msvAverage )+" ","mikrosjiwerta","na_godzine_"])
         
         message = " ".join([" _ poziom_promieniowania _ " ,averageValue ," _ " ,currentValue ," _ "])
-                
+        
+        connection.send({
+            "message": message,
+            "source": "radioactiveathome_org",
+        })
         return {
             "message": message,
             "source": "radioactiveathome_org",

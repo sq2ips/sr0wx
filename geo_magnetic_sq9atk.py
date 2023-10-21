@@ -91,7 +91,7 @@ class GeoMagneticSq9atk(SR0WXModule):
         values = list(data.values())
         return int(max(values)) - int(min(values))
 
-    def get_data(self):
+    def get_data(self, connection):
         values = self.getDataParsedHtmlData()
         daysValues = self.groupValuesByDays(values)
 
@@ -109,6 +109,10 @@ class GeoMagneticSq9atk(SR0WXModule):
                 message += self.__conditions[int(condition['value'])] + " "
                 message += self.__fluctuations[self.getDailyFluctuation(day)] + " wahania_dobowe "
 
+        connection.send({
+            "message": message + "_",
+            "source": "gis_meteo",
+        })
         return {
             "message": message + "_",
             "source": "gis_meteo",

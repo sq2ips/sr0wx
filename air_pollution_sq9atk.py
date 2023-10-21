@@ -108,7 +108,7 @@ class AirPollutionSq9atk(SR0WXModule):
         return message
 
 
-    def get_data(self):
+    def get_data(self, connection):
         self.__logger.info("::: Pobieram informacje o skażeniu powietrza...")
         self.__logger.info("::: Przetwarzam dane...\n")
 
@@ -120,6 +120,10 @@ class AirPollutionSq9atk(SR0WXModule):
         message += " stacja_pomiarowa " + self.mbstr2asci(self.getStationName()) + " _ "
         message += valuesMessage
         print("\n")
+        connection.send({
+            "message": message,
+            "source": "powietrze_malopolska_pl",
+        })
         return {
             "message": message,
             "source": "powietrze_malopolska_pl",

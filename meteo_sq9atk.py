@@ -71,7 +71,7 @@ class MeteoSq9atk(SR0WXModule):
     
     
     
-    def get_data(self):
+    def get_data(self, connection):
         self.__logger.info("::: Przetwarzam dane...\n")
         
         rawHtml = self.downloadFile(self.__service_url)
@@ -109,6 +109,10 @@ class MeteoSq9atk(SR0WXModule):
                         "wilgotnosc", self.parseHumidity(forecast), \
                      ])
 
+        connection.send({
+            "message": message,
+            "source": "",
+        })
         return {
             "message": message,
             "source": "",

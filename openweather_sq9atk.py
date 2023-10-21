@@ -145,7 +145,7 @@ class OpenWeatherSq9atk(SR0WXModule):
             #msg += self.__language.read_degrees( int(json['deg']) )
         return msg
 
-    def get_data(self):
+    def get_data(self, connection):
         
         self.__logger.info("::: Pobieram aktualne dane pogodowe...")
         
@@ -190,6 +190,10 @@ class OpenWeatherSq9atk(SR0WXModule):
                      ])
 
         self.__logger.info("::: Przetwarzam dane...\n")
+        connection.send({
+            "message": message,
+            "source": "open_weather_map",
+        })
         return {
             "message": message,
             "source": "open_weather_map",

@@ -31,7 +31,7 @@ class AirlySq9atk(SR0WXModule):
         }
 
 
-    def get_data(self):
+    def get_data(self, connection):
         self.__logger.info("::: Pobieram dane o zanieczyszczeniach...")
         
         api_service_url = self.prepareApiServiceUrl()
@@ -52,6 +52,10 @@ class AirlySq9atk(SR0WXModule):
                         self.getPollutionLevel(jsonData['current']['values']),
                         " _ ",
                      ])
+        connection.send({
+            "message": message,
+            "source": "airly",
+        })
         return {
             "message": message,
             "source": "airly",
