@@ -206,10 +206,7 @@ for i in range(len(processes)):
     processes[i].join()
 
 for i in range(len(processes)):
-    try:
-        module_data = connections[i].recv()
-    except Exception as e:
-        print("!!!: " + e)
+    module_data = connections[i].recv()
     module_message = module_data.get("message", "")
     module_source = module_data.get("source", "")
     message = " ".join((message, module_message))
