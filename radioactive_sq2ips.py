@@ -1,16 +1,14 @@
 # -*- coding: UTF-8 -*-
 import sys
 import importlib
-
-
 import logging
-
 import requests
 import json
 from datetime import datetime
 
-from sr0wx_module import SR0WXModule
+from colorcodes import *
 
+from sr0wx_module import SR0WXModule
 
 class RadioactiveSq2ips(SR0WXModule):
     """Klasa pobierająca dane o promieniowaniu"""
@@ -74,22 +72,26 @@ class RadioactiveSq2ips(SR0WXModule):
         v = round(float(data['tip_value'][0:5]), 2)
         return v
     def get_data(self, connection):
-        data = self.request(self.__service_url, self.__sensor_id)
-        value = self.processData(data)
-        self.__logger.info("Wartość przetwożona: " + str(value))
-        va=int(value*100)
-        #self.__logger.info(va)
-        value_sr = self.request_sr(self.__service_url_sr)
-        self.__logger.info("Średnia wartość przetwożona: " + str(value_sr))
-        va_sr= int(round(value_sr*100, 2))
-        curentValue = " ".join(["wartos_c__aktualna",self.__language.read_decimal( va )+" ","mikrosjiwerta","na_godzine_"])
-        averageValue = " ".join(["s_rednia_wartos_c__dobowa",self.__language.read_decimal(va_sr)+" ", "mikrosjiwerta","na_godzine_"])
-        message = " ".join([" _ poziom_promieniowania _ ", curentValue, " _ ", averageValue, " _ "])
-        connection.send({
-            "message": message,
-            "source": "PAA",
-        })
-        return {
-            "message": message,
-            "source": "PAA",
-        }
+        try:
+            data = self.request(self.__service_url, self.__sensor_id)
+            value = self.processData(data)
+            self.__logger.info("Wartość przetwożona: " + str(value))
+            va=int(value*100)
+            #self.__logger.info(va)
+            value_sr = self.request_sr(self.__service_url_sr)
+            self.__logger.info("Średnia wartość przetwożona: " + str(value_sr))
+            va_sr= int(round(value_sr*100, 2))
+            curentValue = " ".join(["wartos_c__aktualna",self.__language.read_decimal( va )+" ","mikrosjiwerta","na_godzine_"])
+            averageValue = " ".join(["s_rednia_wartos_c__dobowa",self.__language.read_decimal(va_sr)+" ", "mikrosjiwerta","na_godzine_"])
+            message = " ".join([" _ poziom_promieniowania _ ", curentValue, " _ ", averageValue, " _ "])
+            connection.send({
+                "message": message,
+                "source": "PAA",
+            })
+            return {
+                "message": message,
+                "source": "PAA",
+            }
+        except Exception as e:
+            self.__logger.exception(COLOR_FAIL + "Exception when running %s: %s"+ COLOR_ENDC, str(self), e)
+            connection.send(dict())

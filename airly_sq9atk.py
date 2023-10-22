@@ -7,6 +7,8 @@ from datetime import datetime
 import json as JSON
 import socket
 
+from colorcodes import *
+
 from sr0wx_module import SR0WXModule
 
 class AirlySq9atk(SR0WXModule):
@@ -32,34 +34,39 @@ class AirlySq9atk(SR0WXModule):
 
 
     def get_data(self, connection):
-        self.__logger.info("::: Pobieram dane o zanieczyszczeniach...")
-        
-        api_service_url = self.prepareApiServiceUrl()
-        self.__logger.info( api_service_url )
-        
-        jsonData = JSON.loads(self.getAirlyData(api_service_url))
+        try:
+            self.__logger.info("::: Pobieram dane o zanieczyszczeniach...")
 
-        self.__logger.info("::: Przetwarzam dane...\n")
-        
-        message = "".join([
-                        " _ ",
-                        " informacja_o_skaz_eniu_powietrza ",
-                        " _ ",
-                        " godzina ",
-                        self.getHour(),
-                        " _ stan_ogolny ",
-                        self.__levels[jsonData['current']['indexes'][0]['level']],
-                        self.getPollutionLevel(jsonData['current']['values']),
-                        " _ ",
-                     ])
-        connection.send({
-            "message": message,
-            "source": "airly",
-        })
-        return {
-            "message": message,
-            "source": "airly",
-        }
+            api_service_url = self.prepareApiServiceUrl()
+            self.__logger.info( api_service_url )
+
+            jsonData = JSON.loads(self.getAirlyData(api_service_url))
+
+            self.__logger.info("::: Przetwarzam dane...\n")
+
+            message = "".join([
+                            " _ ",
+                            " informacja_o_skaz_eniu_powietrza ",
+                            " _ ",
+                            " godzina ",
+                            self.getHour(),
+                            " _ stan_ogolny ",
+                            self.__levels[jsonData['current']['indexes'][0]['level']],
+                            self.getPollutionLevel(jsonData['current']['values']),
+                            " _ ",
+                         ])
+            connection.send({
+                "message": message,
+                "source": "airly",
+            })
+            return {
+                "message": message,
+                "source": "airly",
+            }
+        except Exception as e:
+            self.__logger.exception(COLOR_FAIL + "Exception when running %s: %s"+ COLOR_ENDC, str(self), e)
+            connection.send(dict())
+
 
 
     def getPollutionLevel(self, json):

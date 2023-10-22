@@ -20,6 +20,8 @@ import base64
 import logging
 import json
 
+from colorcodes import *
+
 import urllib.request, urllib.error, urllib.parse
 
 from sr0wx_module import SR0WXModule
@@ -56,47 +58,51 @@ Parameters:
         self.__logger = logging.getLogger(__name__)
 
     def get_data(self, connection):
-        """This module does NOT return any data! It is here just to say "hello" to
-        map utility!"""
-
-        self.__logger.info("::: Przetwarzam dane...")
-
-        station_info = {
-            "callsign": self.__callsign,
-            "lat": self.__latitude,
-            "lon": self.__longitude,
-            "q": self.__hour_quarter,
-            "asl": self.__above_sea_level,
-            "agl": self.__above_ground_level,
-            "range": self.__station_range,
-            "info": self.__additional_info,
-        }
-
-        dump = json.dumps(station_info, separators=(',', ':'))
-        b64data = base64.urlsafe_b64encode(dump.encode())
-
-        url = self.__service_url.encode() + b64data
-
-        self.__logger.info("::: Odpytuję adres: " + url.decode())
-
-        url=url.decode()
         try:
-            request = urllib.request.Request(url)
-            webFile = urllib.request.urlopen(request, None, 5)
-            response = webFile.read()
+            """This module does NOT return any data! It is here just to say "hello" to
+            map utility!"""
 
-            if response == 'OK'.encode():
-                self.__logger.info("::: Dane wysłano, status OK\n")
-            else:
-                log = "Non-OK response from %s, (%s)"
-                self.__logger.error(log, url, response)
+            self.__logger.info("::: Przetwarzam dane...")
+
+            station_info = {
+                "callsign": self.__callsign,
+                "lat": self.__latitude,
+                "lon": self.__longitude,
+                "q": self.__hour_quarter,
+                "asl": self.__above_sea_level,
+                "agl": self.__above_ground_level,
+                "range": self.__station_range,
+                "info": self.__additional_info,
+            }
+
+            dump = json.dumps(station_info, separators=(',', ':'))
+            b64data = base64.urlsafe_b64encode(dump.encode())
+
+            url = self.__service_url.encode() + b64data
+
+            self.__logger.info("::: Odpytuję adres: " + url.decode())
+
+            url=url.decode()
+            try:
+                request = urllib.request.Request(url)
+                webFile = urllib.request.urlopen(request, None, 5)
+                response = webFile.read()
+
+                if response == 'OK'.encode():
+                    self.__logger.info("::: Dane wysłano, status OK\n")
+                else:
+                    log = "Non-OK response from %s, (%s)"
+                    self.__logger.error(log, url, response)
+                connection.send(dict())
+                return dict()
+
+            except urllib.error.URLError as e:
+                self.__logger.error(e)
+            except urllib.error.timeout:
+                self.__logger.error("Timed out!")
+        except Exception as e:
+            self.__logger.exception(COLOR_FAIL + "Exception when running %s: %s"+ COLOR_ENDC, str(self), e)
             connection.send(dict())
-            return dict()
-
-        except urllib.error.URLError as e:
-            print(e)
-        except socket.timeout:
-            print("Timed out!")
 
 
 

@@ -6,8 +6,10 @@ import re
 import logging
 import pytz
 import socket
-
 from datetime import datetime
+
+from colorcodes import *
+
 from sr0wx_module import SR0WXModule
 
 class CalendarSq9atk(SR0WXModule):
@@ -49,26 +51,23 @@ class CalendarSq9atk(SR0WXModule):
         return time_words
 
     def get_data(self, connection):
-        times = self.getSunsetSunrise()
-        self.__logger.info("::: Przetwarzam dane...\n")
+        try:
+            times = self.getSunsetSunrise()
+            self.__logger.info("::: Przetwarzam dane...\n")
 
-        sunrise = " ".join(["wscho_d_sl_on_ca","godzina",self.hourToNumbers(times['sunrise'])," "])
-        sunset = " ".join(["zacho_d_sl_on_ca","godzina",self.hourToNumbers(times['sunset'])," "])
+            sunrise = " ".join(["wscho_d_sl_on_ca","godzina",self.hourToNumbers(times['sunrise'])," "])
+            sunset = " ".join(["zacho_d_sl_on_ca","godzina",self.hourToNumbers(times['sunset'])," "])
 
-        message = " ".join([" _ kalendarium _ " ,sunrise ," _ " ,sunset ," _ "])
-        
-        connection.send({
-            "message": message,
-            "source": "calendar_zoznam_sk",
-        })
-        return {
-            "message": message,
-            "source": "calendar_zoznam_sk",
-        }
+            message = " ".join([" _ kalendarium _ " ,sunrise ," _ " ,sunset ," _ "])
 
-
-
-
-
-
-
+            connection.send({
+                "message": message,
+                "source": "calendar_zoznam_sk",
+            })
+            return {
+                "message": message,
+                "source": "calendar_zoznam_sk",
+            }
+        except Exception as e:
+            self.__logger.exception(COLOR_FAIL + "Exception when running %s: %s"+ COLOR_ENDC, str(self), e)
+            connection.send(dict())

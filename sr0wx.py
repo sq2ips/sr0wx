@@ -1,14 +1,16 @@
 #!/usr/bin/python -tt
 # -*- coding: utf-8 -*-
 
-COLOR_HEADER = '\033[95m'
-COLOR_OKBLUE = '\033[94m'
-COLOR_OKGREEN = '\033[92m'
-COLOR_WARNING = '\033[93m'
-COLOR_FAIL = '\033[91m'
-COLOR_BOLD = '\033[1m'
-COLOR_UNDERLINE = '\033[4m'
-COLOR_ENDC = '\033[0m'
+#COLOR_HEADER = '\033[95m'
+#COLOR_OKBLUE = '\033[94m'
+#COLOR_OKGREEN = '\033[92m'
+#COLOR_WARNING = '\033[93m'
+#COLOR_FAIL = '\033[91m'
+#COLOR_BOLD = '\033[1m'
+#COLOR_UNDERLINE = '\033[4m'
+#COLOR_ENDC = '\033[0m'
+
+from colorcodes import *
 
 LICENSE = COLOR_OKBLUE + """
 
@@ -197,11 +199,17 @@ for module in modules:
 
 for i in range(len(processes)):
     logger.info(COLOR_OKGREEN + "starting %s..." + COLOR_ENDC, module_s[i])
+
     processes[i].start()
+
 for i in range(len(processes)):
     processes[i].join()
+
 for i in range(len(processes)):
-    module_data = connections[i].recv()
+    try:
+        module_data = connections[i].recv()
+    except Exception as e:
+        print("!!!: " + e)
     module_message = module_data.get("message", "")
     module_source = module_data.get("source", "")
     message = " ".join((message, module_message))

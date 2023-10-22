@@ -8,6 +8,8 @@ import socket
 from PIL import Image
 from pprint import pprint
 
+from colorcodes import *
+
 from sr0wx_module import SR0WXModule
 
 class PropagationSq9atk(SR0WXModule):
@@ -82,34 +84,30 @@ class PropagationSq9atk(SR0WXModule):
 
 
     def get_data(self, connection):
+        try:
+            image = self.downloadImage(self.__service_url)
 
-        image = self.downloadImage(self.__service_url)
+            self.__logger.info("::: Przetwarzam dane...\n")
 
-        self.__logger.info("::: Przetwarzam dane...\n")
+            message = " ".join([
+                " _ informacje_o_propagacji ",
+                " _ dzien _ ",
+                " _ pasma _ ",
+                " _ " .join( self.collectBandConditionsFromImage(image, 'day') ),
+                " _ noc _ ",
+                " _ pasma _ ",
+                " _ " .join( self.collectBandConditionsFromImage(image, 'night') ),
+                " _ "
+            ])
 
-        message = " ".join([
-            " _ informacje_o_propagacji ",
-            " _ dzien _ ",
-            " _ pasma _ ",
-            " _ " .join( self.collectBandConditionsFromImage(image, 'day') ),
-            " _ noc _ ",
-            " _ pasma _ ",
-            " _ " .join( self.collectBandConditionsFromImage(image, 'night') ),
-            " _ "
-        ])
-
-        connection.send({
-            "message": message,
-            "source": "noaa",
-        })
-        return {
-            "message": message,
-            "source": "noaa",
-        }
-
-
-
-
-
-
-
+            connection.send({
+                "message": message,
+                "source": "noaa",
+            })
+            return {
+                "message": message,
+                "source": "noaa",
+            }
+        except Exception as e:
+            self.__logger.exception(COLOR_FAIL + "Exception when running %s: %s"+ COLOR_ENDC, str(self), e)
+            connection.send(dict())

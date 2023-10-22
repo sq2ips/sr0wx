@@ -23,6 +23,8 @@ import logging
 import base64
 import subprocess
 
+from colorcodes import *
+
 from sr0wx_module import SR0WXModule
 
 class ImgwPodestSq9atk(SR0WXModule):
@@ -98,76 +100,80 @@ class ImgwPodestSq9atk(SR0WXModule):
         
         
     def get_data(s, connection):
+        try:
+            stanyOstrzegawcze = {}
+            stanyAlarmowe = {}
 
-        stanyOstrzegawcze = {}
-        stanyAlarmowe = {}
+            zaladowaneRegiony = []
+            s.zaladujWybraneWodowskazy()
 
-        zaladowaneRegiony = []
-        s.zaladujWybraneWodowskazy()
-        
-        for wodowskaz in s.__wodowskazy:
-            region = wodowskaz.split('.')[0]
-            
-            if region not in zaladowaneRegiony:
-                zaladowaneRegiony.append(region)
-                #w = s.pobierzDaneWodowskazu(wodowskaz)
-            try:
-                w = s.pobierzDaneWodowskazu(wodowskaz)
-                rzeka = w['rzeka']
-                w['rzeka'] = s.bezpiecznaNazwa(w['rzeka'])
-                w['nazwa'] = s.bezpiecznaNazwa(w['nazwa'])
+            for wodowskaz in s.__wodowskazy:
+                region = wodowskaz.split('.')[0]
 
-                if w['przekroczenieStanu'] == 'ostrzegawczy':
-                    s.__logger.info("::: Stan ostrzegawczy: " + wodowskaz + " - " + rzeka + ' - ' + w['nazwa_org'])
-                    if w['rzeka'] not in stanyOstrzegawcze:
-                        stanyOstrzegawcze[w['rzeka']] = [w['nazwa']+ ' ' + w['tendencja'] + ' _ ']
-                        
+                if region not in zaladowaneRegiony:
+                    zaladowaneRegiony.append(region)
+                    #w = s.pobierzDaneWodowskazu(wodowskaz)
+                try:
+                    w = s.pobierzDaneWodowskazu(wodowskaz)
+                    rzeka = w['rzeka']
+                    w['rzeka'] = s.bezpiecznaNazwa(w['rzeka'])
+                    w['nazwa'] = s.bezpiecznaNazwa(w['nazwa'])
+
+                    if w['przekroczenieStanu'] == 'ostrzegawczy':
+                        s.__logger.info("::: Stan ostrzegawczy: " + wodowskaz + " - " + rzeka + ' - ' + w['nazwa_org'])
+                        if w['rzeka'] not in stanyOstrzegawcze:
+                            stanyOstrzegawcze[w['rzeka']] = [w['nazwa']+ ' ' + w['tendencja'] + ' _ ']
+
+                        else:
+                            stanyOstrzegawcze[w['rzeka']].append(w['nazwa']+ ' ' + w['tendencja'] + ' _ ')
+
+                    elif w['przekroczenieStanu'] == 'alarmowy':
+                        s.__logger.info("::: Stan alarmowy: "+ wodowskaz+" - " + rzeka + ' - ' + w['nazwa_org'])
+                        if w['rzeka'] not in stanyAlarmowe:
+                            stanyAlarmowe[w['rzeka']] = [w['nazwa']+ ' ' + w['tendencja'] + ' _ ']
+
+                        else:
+                            stanyAlarmowe[w['rzeka']].append(w['nazwa']+ ' ' + w['tendencja'] + ' _ ')
+
                     else:
-                        stanyOstrzegawcze[w['rzeka']].append(w['nazwa']+ ' ' + w['tendencja'] + ' _ ')
-                        
-                elif w['przekroczenieStanu'] == 'alarmowy':
-                    s.__logger.info("::: Stan alarmowy: "+ wodowskaz+" - " + rzeka + ' - ' + w['nazwa_org'])
-                    if w['rzeka'] not in stanyAlarmowe:
-                        stanyAlarmowe[w['rzeka']] = [w['nazwa']+ ' ' + w['tendencja'] + ' _ ']
-                        
-                    else:
-                        stanyAlarmowe[w['rzeka']].append(w['nazwa']+ ' ' + w['tendencja'] + ' _ ')
-                        
-                else:
-                    a=1
-                    #s.__logger.info("Przetwarzam wodowskaz:    " + wodowskaz + " - " + rzeka + ' - ' + w['nazwa_org'])
-            except:
-                s.__logger.info("::: Brak danych!!! "+ wodowskaz )
-                pass
+                        a=1
+                        #s.__logger.info("Przetwarzam wodowskaz:    " + wodowskaz + " - " + rzeka + ' - ' + w['nazwa_org'])
+                except:
+                    s.__logger.info("::: Brak danych!!! "+ wodowskaz )
+                    pass
 
-        message = "";
-        if stanyOstrzegawcze!={} or stanyAlarmowe!={}:
-            message += 'komunikat_hydrologiczny_imgw _ '
+            message = "";
+            if stanyOstrzegawcze!={} or stanyAlarmowe!={}:
+                message += 'komunikat_hydrologiczny_imgw _ '
 
-            if stanyAlarmowe!={}:
-                # Sprawdzenie dla których wodowskazów mamy przekroczone
-                # stany alarmowe -- włącz ctcss
-             
-                message +=' przekroczenia_stanow_alarmowych '
-                for rzeka in sorted(stanyAlarmowe.keys()):
-                    message +=' rzeka %s wodowskaz %s '%(rzeka, \
-                        " wodowskaz ".join(sorted(stanyAlarmowe[rzeka])),)
+                if stanyAlarmowe!={}:
+                    # Sprawdzenie dla których wodowskazów mamy przekroczone
+                    # stany alarmowe -- włącz ctcss
 
-            if stanyOstrzegawcze!={}:
-                message += '_ przekroczenia_stanow_ostrzegawczych '
-                for rzeka in sorted(stanyOstrzegawcze.keys()):
-                    message += 'rzeka %s wodowskaz %s '%(format(rzeka), \
-                        " wodowskaz ".join([format(w) for w in sorted(stanyOstrzegawcze[rzeka])]),)
+                    message +=' przekroczenia_stanow_alarmowych '
+                    for rzeka in sorted(stanyAlarmowe.keys()):
+                        message +=' rzeka %s wodowskaz %s '%(rzeka, \
+                            " wodowskaz ".join(sorted(stanyAlarmowe[rzeka])),)
 
-        s.__logger.info("::: Przekazuję przetworzone dane...\n")
+                if stanyOstrzegawcze!={}:
+                    message += '_ przekroczenia_stanow_ostrzegawczych '
+                    for rzeka in sorted(stanyOstrzegawcze.keys()):
+                        message += 'rzeka %s wodowskaz %s '%(format(rzeka), \
+                            " wodowskaz ".join([format(w) for w in sorted(stanyOstrzegawcze[rzeka])]),)
 
-        message += ' _ '
+            s.__logger.info("::: Przekazuję przetworzone dane...\n")
 
-        connection.send({
-            "message": message,
-            "source": "imgw",
-        })
-        return {
-            "message": message,
-            "source": "imgw",
-        }
+            message += ' _ '
+
+            connection.send({
+                "message": message,
+                "source": "imgw",
+            })
+            return {
+                "message": message,
+                "source": "imgw",
+            }
+        except Exception as e:
+            s.__logger.exception(COLOR_FAIL + "Exception when running %s: %s"+ COLOR_ENDC, str(s), e)
+            connection.send(dict())
+

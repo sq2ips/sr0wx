@@ -10,7 +10,7 @@ from datetime import datetime
 from bs4 import BeautifulSoup
 import unicodedata
 
-
+from colorcodes import *
 
 from sr0wx_module import SR0WXModule
 
@@ -72,49 +72,52 @@ class MeteoSq9atk(SR0WXModule):
     
     
     def get_data(self, connection):
-        self.__logger.info("::: Przetwarzam dane...\n")
-        
-        rawHtml = self.downloadFile(self.__service_url)
-        soup = BeautifulSoup(rawHtml ,"lxml")
-        
-        now = soup.find_all("li", { "id" : "wts_p0" })[0]
-        after = soup.find_all("li", { "id" : "wts_p3" })[0]
-        forecast = soup.find_all("li", { "id" : "wts_p13" })[0]
-            
+        try:
+            self.__logger.info("::: Przetwarzam dane...\n")
 
-        message = " ".join([ \
-                        "stan_pogody_z_godziny", self.getHour(), \
-                        
-                        " _ ", self.parseForecastDesc(now), \
-                        "temperatura", self.parseTemperature(now), \
-                        "pokrywa_chmur", self.parseClouds(now), \
-                        "predkosc_wiatru", self.parseWind(now), \
-                        "cisnienie", self.parsePressure(now), \
-                        "wilgotnosc", self.parseHumidity(now), \
-                        
-                        " _ ", "prognoza_na_nastepne","cztery", "godziny", \
-                        " _ ", self.parseForecastDesc(after), \
-                        "temperatura", self.parseTemperature(after), \
-                        "pokrywa_chmur", self.parseClouds(after), \
-                        "predkosc_wiatru", self.parseWind(after), \
-                        "cisnienie", self.parsePressure(after), \
-                        "wilgotnosc", self.parseHumidity(after), \
-                        
-                        " _ ", "prognoza_na_nastepne","dwanascie", "godzin", \
-                        " _ ", self.parseForecastDesc(forecast), \
-                        "temperatura", self.parseTemperature(forecast), \
-                        "pokrywa_chmur", self.parseClouds(forecast), \
-                        "predkosc_wiatru", self.parseWind(forecast), \
-                        "cisnienie", self.parsePressure(forecast), \
-                        "wilgotnosc", self.parseHumidity(forecast), \
-                     ])
+            rawHtml = self.downloadFile(self.__service_url)
+            soup = BeautifulSoup(rawHtml ,"lxml")
 
-        connection.send({
-            "message": message,
-            "source": "",
-        })
-        return {
-            "message": message,
-            "source": "",
-        }
+            now = soup.find_all("li", { "id" : "wts_p0" })[0]
+            after = soup.find_all("li", { "id" : "wts_p3" })[0]
+            forecast = soup.find_all("li", { "id" : "wts_p13" })[0]
 
+
+            message = " ".join([ \
+                            "stan_pogody_z_godziny", self.getHour(), \
+                            
+                            " _ ", self.parseForecastDesc(now), \
+                            "temperatura", self.parseTemperature(now), \
+                            "pokrywa_chmur", self.parseClouds(now), \
+                            "predkosc_wiatru", self.parseWind(now), \
+                            "cisnienie", self.parsePressure(now), \
+                            "wilgotnosc", self.parseHumidity(now), \
+                            
+                            " _ ", "prognoza_na_nastepne","cztery", "godziny", \
+                            " _ ", self.parseForecastDesc(after), \
+                            "temperatura", self.parseTemperature(after), \
+                            "pokrywa_chmur", self.parseClouds(after), \
+                            "predkosc_wiatru", self.parseWind(after), \
+                            "cisnienie", self.parsePressure(after), \
+                            "wilgotnosc", self.parseHumidity(after), \
+                            
+                            " _ ", "prognoza_na_nastepne","dwanascie", "godzin", \
+                            " _ ", self.parseForecastDesc(forecast), \
+                            "temperatura", self.parseTemperature(forecast), \
+                            "pokrywa_chmur", self.parseClouds(forecast), \
+                            "predkosc_wiatru", self.parseWind(forecast), \
+                            "cisnienie", self.parsePressure(forecast), \
+                            "wilgotnosc", self.parseHumidity(forecast), \
+                         ])
+
+            connection.send({
+                "message": message,
+                "source": "",
+            })
+            return {
+                "message": message,
+                "source": "",
+            }
+        except Exception as e:
+            self.__logger.exception(COLOR_FAIL + "Exception when running %s: %s"+ COLOR_ENDC, str(self), e)
+            connection.send(dict())

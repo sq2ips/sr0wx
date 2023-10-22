@@ -6,6 +6,8 @@ import logging
 import json
 import socket
 
+from colorcodes import *
+
 from pprint import pprint
 
 # LISTA STACJI Z NUMERAMI
@@ -109,25 +111,29 @@ class AirPollutionSq9atk(SR0WXModule):
 
 
     def get_data(self, connection):
-        self.__logger.info("::: Pobieram informacje o skażeniu powietrza...")
-        self.__logger.info("::: Przetwarzam dane...\n")
+        try:
+            self.__logger.info("::: Pobieram informacje o skażeniu powietrza...")
+            self.__logger.info("::: Przetwarzam dane...\n")
 
-        sensorsData = self.getSensorsData()
-        valuesMessage = self.prepareMessage(sensorsData)
+            sensorsData = self.getSensorsData()
+            valuesMessage = self.prepareMessage(sensorsData)
 
-        message = " "
-        message = " _ informacja_o_skaz_eniu_powietrza _ "
-        message += " stacja_pomiarowa " + self.mbstr2asci(self.getStationName()) + " _ "
-        message += valuesMessage
-        print("\n")
-        connection.send({
-            "message": message,
-            "source": "powietrze_malopolska_pl",
-        })
-        return {
-            "message": message,
-            "source": "powietrze_malopolska_pl",
-        }
+            message = " "
+            message = " _ informacja_o_skaz_eniu_powietrza _ "
+            message += " stacja_pomiarowa " + self.mbstr2asci(self.getStationName()) + " _ "
+            message += valuesMessage
+            print("\n")
+            connection.send({
+                "message": message,
+                "source": "powietrze_malopolska_pl",
+            })
+            return {
+                "message": message,
+                "source": "powietrze_malopolska_pl",
+            }
+        except Exception as e:
+            self.__logger.exception(COLOR_FAIL + "Exception when running %s: %s"+ COLOR_ENDC, str(self), e)
+            connection.send(dict())
 
     def mbstr2asci(self, string):
         """Zwraca "bezpieczną" nazwę dla wyrazu z polskimi znakami diakrytycznymi"""
