@@ -7,8 +7,9 @@ from datetime import datetime
 import json as JSON
 import socket
 
-from sr0wx_module import SR0WXModule
+from colorcodes import *
 
+from sr0wx_module import SR0WXModule
 
 class OpenWeatherSq9atk(SR0WXModule):
     """Klasa pobierająca dane o pogodzie"""
@@ -145,52 +146,59 @@ class OpenWeatherSq9atk(SR0WXModule):
             #msg += self.__language.read_degrees( int(json['deg']) )
         return msg
 
-    def get_data(self):
-        
-        self.__logger.info("::: Pobieram aktualne dane pogodowe...")
-        
-        weather_service_url = self.__service_url + 'weather?lat=' + str(self.__lat) + '&lon='+str(self.__lon) + '&units=metric&appid=' + self.__api_key
-        self.__logger.info( weather_service_url )
-        weatherJson = JSON.loads( self.downloadFile(weather_service_url) )
+    def get_data(self, connection):
+        try:
+            self.__logger.info("::: Pobieram aktualne dane pogodowe...")
 
-        self.__logger.info("::: Pobieram dane prognozy pogody...")
-        
-        forecast_service_url = self.__service_url + 'forecast?lat=' + str(self.__lat) + '&lon='+str(self.__lon) + '&units=metric&appid=' + self.__api_key
-        self.__logger.info( forecast_service_url )
-        forecastJsonAll = JSON.loads( self.downloadFile(forecast_service_url) )
+            weather_service_url = self.__service_url + 'weather?lat=' + str(self.__lat) + '&lon='+str(self.__lon) + '&units=metric&appid=' + self.__api_key
+            self.__logger.info( weather_service_url )
+            weatherJson = JSON.loads( self.downloadFile(weather_service_url) )
 
-        self.__logger.info("::: Przetwarzam dane...\n")
+            self.__logger.info("::: Pobieram dane prognozy pogody...")
 
-        message = "".join([ \
-                        " stan_pogody_z_godziny ", 
-                        self.getHour(), \
-                        self.getWeather( weatherJson['weather'] ), \
-                        self.getClouds( weatherJson['clouds'] ), \
-                        self.getMainConditions( weatherJson['main'] ), \
-                        #self.getVisibility( weatherJson['visibility'] ), \
-                        self.getWind( weatherJson['wind'] ), \
-                     ])
+            forecast_service_url = self.__service_url + 'forecast?lat=' + str(self.__lat) + '&lon='+str(self.__lon) + '&units=metric&appid=' + self.__api_key
+            self.__logger.info( forecast_service_url )
+            forecastJsonAll = JSON.loads( self.downloadFile(forecast_service_url) )
 
-        forecastJson = forecastJsonAll['list'][1]
-        message += "".join([ \
-                        " _ prognoza_na_nastepne cztery godziny ", 
-                        self.getWeather( forecastJson['weather'] ), \
-                        self.getClouds( forecastJson['clouds'] ), \
-                        self.getMainConditions( forecastJson['main'] ), \
-                        self.getWind( forecastJson['wind'] ), \
-                     ])
+            self.__logger.info("::: Przetwarzam dane...\n")
 
-        forecastJson = forecastJsonAll['list'][4]
-        message += "".join([ \
-                        " _ prognoza_na_nastepne dwanascie godzin ", 
-                        self.getWeather( forecastJson['weather'] ), \
-                        self.getClouds( forecastJson['clouds'] ), \
-                        self.getMainConditions( forecastJson['main'] ), \
-                        self.getWind( forecastJson['wind'] ), \
-                     ])
+            message = "".join([ \
+                            " stan_pogody_z_godziny ", 
+                            self.getHour(), \
+                            self.getWeather( weatherJson['weather'] ), \
+                            self.getClouds( weatherJson['clouds'] ), \
+                            self.getMainConditions( weatherJson['main'] ), \
+                            #self.getVisibility( weatherJson['visibility'] ), \
+                            self.getWind( weatherJson['wind'] ), \
+                         ])
 
-        self.__logger.info("::: Przetwarzam dane...\n")
-        return {
-            "message": message,
-            "source": "open_weather_map",
-        }
+            forecastJson = forecastJsonAll['list'][1]
+            message += "".join([ \
+                            " _ prognoza_na_nastepne cztery godziny ", 
+                            self.getWeather( forecastJson['weather'] ), \
+                            self.getClouds( forecastJson['clouds'] ), \
+                            self.getMainConditions( forecastJson['main'] ), \
+                            self.getWind( forecastJson['wind'] ), \
+                         ])
+
+            forecastJson = forecastJsonAll['list'][4]
+            message += "".join([ \
+                            " _ prognoza_na_nastepne dwanascie godzin ", 
+                            self.getWeather( forecastJson['weather'] ), \
+                            self.getClouds( forecastJson['clouds'] ), \
+                            self.getMainConditions( forecastJson['main'] ), \
+                            self.getWind( forecastJson['wind'] ), \
+                         ])
+
+            self.__logger.info("::: Przetwarzam dane...\n")
+            connection.send({
+                "message": message,
+                "source": "open_weather_map",
+            })
+            return {
+                "message": message,
+                "source": "open_weather_map",
+            }
+        except Exception as e:
+            self.__logger.exception(COLOR_FAIL + "Exception when running %s: %s"+ COLOR_ENDC, str(self), e)
+            connection.send(dict())

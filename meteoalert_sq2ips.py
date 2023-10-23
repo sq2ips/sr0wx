@@ -1,5 +1,6 @@
 import requests
 import logging
+from colorcodes import *
 
 from sr0wx_module import SR0WXModule
 
@@ -80,9 +81,17 @@ class MeteoAlertSq2ips(SR0WXModule):
             message += " ostrzezen_nie_ma "
         message += " _ "
         return(message)
-    def get_data(self):
-        message = self.process()
-        return {
-            "message": message,
-            "source": "meteo imgw",
-        }
+    def get_data(self, connection):
+        try:
+            message = self.process()
+            connection.send({
+                "message": message,
+                "source": "meteo imgw",
+            })
+            return {
+                "message": message,
+                "source": "meteo imgw",
+            }
+        except Exception as e:
+            self.__logger.exception(COLOR_FAIL + "Exception when running %s: %s"+ COLOR_ENDC, str(self), e)
+            connection.send(dict())

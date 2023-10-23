@@ -9,6 +9,8 @@ import requests
 from PIL import Image
 from pprint import pprint
 
+from colorcodes import *
+
 from sr0wx_module import SR0WXModule
 
 class VhfTropoSq9atk(SR0WXModule):
@@ -243,28 +245,36 @@ class VhfTropoSq9atk(SR0WXModule):
         return message
 
 
-    def get_data(self):
-        html = self.getHtmlFromUrl(self.__service_url).decode("ISO-8859-1")
-        mapUrl = self.findMapUrlInHtml(html, "imgClickAndChange")
+    def get_data(self, connection):
+        try:
+            html = self.getHtmlFromUrl(self.__service_url).decode("ISO-8859-1")
+            mapUrl = self.findMapUrlInHtml(html, "imgClickAndChange")
 
-        self.downloadMapFile(mapUrl, 'vhf_map.png')
+            self.downloadMapFile(mapUrl, 'vhf_map.png')
 
-        mapImg = self.readMapImageFile('vhf_map.png')
+            mapImg = self.readMapImageFile('vhf_map.png')
 
-        mapWidth, mapHeight = mapImg.size
+            mapWidth, mapHeight = mapImg.size
 
-        x, y = self.lonLatToMapXY(self.__qthLon, self.__qthLat, mapWidth, mapHeight)
+            x, y = self.lonLatToMapXY(self.__qthLon, self.__qthLat, mapWidth, mapHeight)
 
-        mainConditionValue = self.getLocationCondition(mapImg, x, y)
-        directionalConditionsValues = self.getDirectionalConditions(mapImg, x, y)
+            mainConditionValue = self.getLocationCondition(mapImg, x, y)
+            directionalConditionsValues = self.getDirectionalConditions(mapImg, x, y)
 
-        message = " ".join([
-            " _ vhf_propagacja_w_pasmie_vhf _ ",
-            "   " . join([ self.prepareMessage(mainConditionValue, directionalConditionsValues) ]),
-            " _ "
-        ])
+            message = " ".join([
+                " _ vhf_propagacja_w_pasmie_vhf _ ",
+                "   " . join([ self.prepareMessage(mainConditionValue, directionalConditionsValues) ]),
+                " _ "
+            ])
 
-        return {
-            "message": message,
-            "source": "vhf_dx_info_center",
-        }
+            connection.send({
+                "message": message,
+                "source": "vhf_dx_info_center",
+            })
+            return {
+                "message": message,
+                "source": "vhf_dx_info_center",
+            }
+        except Exception as e:
+            self.__logger.exception(COLOR_FAIL + "Exception when running %s: %s"+ COLOR_ENDC, str(self), e)
+            connection.send(dict())

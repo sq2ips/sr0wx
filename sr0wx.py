@@ -1,14 +1,16 @@
 #!/usr/bin/python -tt
 # -*- coding: utf-8 -*-
 
-COLOR_HEADER = '\033[95m'
-COLOR_OKBLUE = '\033[94m'
-COLOR_OKGREEN = '\033[92m'
-COLOR_WARNING = '\033[93m'
-COLOR_FAIL = '\033[91m'
-COLOR_BOLD = '\033[1m'
-COLOR_UNDERLINE = '\033[4m'
-COLOR_ENDC = '\033[0m'
+#COLOR_HEADER = '\033[95m'
+#COLOR_OKBLUE = '\033[94m'
+#COLOR_OKGREEN = '\033[92m'
+#COLOR_WARNING = '\033[93m'
+#COLOR_FAIL = '\033[91m'
+#COLOR_BOLD = '\033[1m'
+#COLOR_UNDERLINE = '\033[4m'
+#COLOR_ENDC = '\033[0m'
+
+from colorcodes import *
 
 LICENSE = COLOR_OKBLUE + """
 
@@ -78,7 +80,7 @@ import sys
 import logging, logging.handlers
 import numpy
 import urllib.request, urllib.error, urllib.parse
-
+from multiprocessing import Process, Pipe
 # ``os``, ``sys`` and ``time`` doesn't need further explanation, these are
 # syandard Python packages.
 #
@@ -108,6 +110,8 @@ def setup_logging(config):
     # create logging handlers according to its definitions
     for handler_definition in config.log_handlers:
         handler = handler_definition['class'](**handler_definition['config'])
+
+
         handler.setLevel(handler_definition['log_level'])
         handler.setFormatter(formatter)
         logger.addHandler(handler)
@@ -172,18 +176,43 @@ except urllib.request.URLError as e:
 lang = my_import('.'.join((config.lang, config.lang)))
 sources = [lang.source, ]
 
+#for module in modules:
+#    try:
+#        logger.info(COLOR_OKGREEN + "starting %s..." + COLOR_ENDC, module)
+#        module_data = module.get_data()
+#        module_message = module_data.get("message", "")
+#        module_source = module_data.get("source", "")
+#
+#        message = " ".join((message, module_message))
+#        if module_message != "" and module_source != "":
+#            sources.append(module_data['source'])
+#    except:
+#        logger.exception(COLOR_FAIL + "Exception when running %s"+ COLOR_ENDC, module)
+processes = []
+connections = []
+module_s = []
 for module in modules:
-    try:
-        logger.info(COLOR_OKGREEN + "starting %s..." + COLOR_ENDC, module)
-        module_data = module.get_data()
-        module_message = module_data.get("message", "")
-        module_source = module_data.get("source", "")
+    conn1, conn2 = Pipe()
+    connections.append(conn1)
+    processes.append(Process(target=module.get_data, args=(conn2,)))
+    module_s.append(str(module))
 
-        message = " ".join((message, module_message))
-        if module_message != "" and module_source != "":
-            sources.append(module_data['source'])
-    except:
-        logger.exception(COLOR_FAIL + "Exception when running %s"+ COLOR_ENDC, module)
+for i in range(len(processes)):
+    logger.info(COLOR_OKGREEN + "starting %s..." + COLOR_ENDC, module_s[i])
+
+    processes[i].start()
+
+for i in range(len(processes)):
+    processes[i].join()
+
+for i in range(len(processes)):
+    module_data = connections[i].recv()
+    module_message = module_data.get("message", "")
+    module_source = module_data.get("source", "")
+    message = " ".join((message, module_message))
+    if module_message != "" and module_source != "":
+        sources.append(module_data['source'])
+
 
 # When all the modules finished its' work it's time to ``.split()`` returned
 # data. Every element of returned list is actually a filename of a sample.

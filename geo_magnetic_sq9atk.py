@@ -6,6 +6,8 @@ import urllib.request, urllib.error, urllib.parse
 import time
 from pprint import pprint
 
+from colorcodes import *
+
 from sr0wx_module import SR0WXModule
 
 class GeoMagneticSq9atk(SR0WXModule):
@@ -91,25 +93,33 @@ class GeoMagneticSq9atk(SR0WXModule):
         values = list(data.values())
         return int(max(values)) - int(min(values))
 
-    def get_data(self):
-        values = self.getDataParsedHtmlData()
-        daysValues = self.groupValuesByDays(values)
+    def get_data(self, connection):
+        try:
+            values = self.getDataParsedHtmlData()
+            daysValues = self.groupValuesByDays(values)
 
-        message = ' _ sytuacja_geomagnetyczna_w_regionie ';
+            message = ' _ sytuacja_geomagnetyczna_w_regionie ';
 
-        self.__logger.info("::: Przetwarzam dane...\n")
-        for d, day in daysValues.items():
-            
-            if len(day) > 0:
-                a=1
-                message += " _ "+self.__days[d-1] + " "
-                condition = self.getStrongestConditionOfDay(day)
-                
-                message += self.__seasons[condition['at']] + " "
-                message += self.__conditions[int(condition['value'])] + " "
-                message += self.__fluctuations[self.getDailyFluctuation(day)] + " wahania_dobowe "
+            self.__logger.info("::: Przetwarzam dane...\n")
+            for d, day in daysValues.items():
 
-        return {
-            "message": message + "_",
-            "source": "gis_meteo",
-        }
+                if len(day) > 0:
+                    a=1
+                    message += " _ "+self.__days[d-1] + " "
+                    condition = self.getStrongestConditionOfDay(day)
+
+                    message += self.__seasons[condition['at']] + " "
+                    message += self.__conditions[int(condition['value'])] + " "
+                    message += self.__fluctuations[self.getDailyFluctuation(day)] + " wahania_dobowe "
+
+                connection.send({
+                "message": message + "_",
+                "source": "gis_meteo",
+            })
+            return {
+                "message": message + "_",
+                "source": "gis_meteo",
+            }
+        except Exception as e:
+            self.__logger.exception(COLOR_FAIL + "Exception when running %s: %s"+ COLOR_ENDC, str(self), e)
+            connection.send(dict())

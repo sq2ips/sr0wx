@@ -6,8 +6,10 @@ import re
 import logging
 import pytz
 import socket
-
 from datetime import datetime
+
+from colorcodes import *
+
 from sr0wx_module import SR0WXModule
 
 class RadioactiveSq9atk(SR0WXModule):
@@ -70,22 +72,30 @@ class RadioactiveSq9atk(SR0WXModule):
                     ret = self.extractSensorData(row)
         return ret
         
-    def get_data(self):
-        self.__logger.info("::: Pobieram dane...")
-        html = self.downloadFile(self.__service_url)
+    def get_data(self, connection):
+        try:
+            self.__logger.info("::: Pobieram dane...")
+            html = self.downloadFile(self.__service_url)
 
-        self.__logger.info("::: Przetwarzam dane...\n")
-        data = self.getSensorData(html)
-        
-        msvCurrent = int(float(data['current'])*100)
-        msvAverage = int(float(data['average'])*100)
-        
-        averageValue = " ".join(["wartos_c__aktualna",self.__language.read_decimal( msvCurrent )+" ","mikrosjiwerta","na_godzine_"])
-        currentValue = " ".join(["s_rednia_wartos_c__dobowa",self.__language.read_decimal( msvAverage )+" ","mikrosjiwerta","na_godzine_"])
-        
-        message = " ".join([" _ poziom_promieniowania _ " ,averageValue ," _ " ,currentValue ," _ "])
-                
-        return {
-            "message": message,
-            "source": "radioactiveathome_org",
-        }
+            self.__logger.info("::: Przetwarzam dane...\n")
+            data = self.getSensorData(html)
+
+            msvCurrent = int(float(data['current'])*100)
+            msvAverage = int(float(data['average'])*100)
+
+            averageValue = " ".join(["wartos_c__aktualna",self.__language.read_decimal( msvCurrent )+" ","mikrosjiwerta","na_godzine_"])
+            currentValue = " ".join(["s_rednia_wartos_c__dobowa",self.__language.read_decimal( msvAverage )+" ","mikrosjiwerta","na_godzine_"])
+
+            message = " ".join([" _ poziom_promieniowania _ " ,averageValue ," _ " ,currentValue ," _ "])
+
+            connection.send({
+                "message": message,
+                "source": "radioactiveathome_org",
+            })
+            return {
+                "message": message,
+                "source": "radioactiveathome_org",
+            }
+        except Exception as e:
+            self.__logger.exception(COLOR_FAIL + "Exception when running %s: %s"+ COLOR_ENDC, str(self), e)
+            connection.send(dict())
