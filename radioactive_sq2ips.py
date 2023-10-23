@@ -83,7 +83,8 @@ class RadioactiveSq2ips(SR0WXModule):
         self.__logger.info("Średnia wartość przetwożona: " + str(value_sr))
         va_sr= int(round(value_sr*100, 2))
         curentValue = " ".join(["wartos_c__aktualna",self.__language.read_decimal( va )+" ","mikrosjiwerta","na_godzine_"])
-        averageValue = " ".join(["s_rednia_wartos_c__dobowa",self.__language.read_decimal(va_sr)+" ", "mikrosjiwerta","na_godzine_"])
+        if(value_sr !=0):
+            averageValue = " ".join(["s_rednia_wartos_c__dobowa",self.__language.read_decimal(va_sr)+" ", "mikrosjiwerta","na_godzine_"])
         message = " ".join([" _ poziom_promieniowania _ ", curentValue, " _ ", averageValue, " _ "])
         return {
             "message": message,
