@@ -53,7 +53,7 @@ class RadioactiveSq2ips(SR0WXModule):
         except KeyError:
             raise ValueError("Nieprawidłowa odpowiedź serwera")
         if(prs==0):
-           raise ValueError("Nieprawidłowe dane") 
+           self.__logger.warning("Nieprawidłowe dane!")
         return prs/len(data)
     def processData(self, data):
         #self.__logger.info(int(datetime.now().strftime("%d")) - int(datetime.strptime(data["tip_date"], "%Y-%m-%d %H:%M").strftime("%d")))
