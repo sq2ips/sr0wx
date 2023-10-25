@@ -126,6 +126,8 @@ def my_import(name):
         mod = getattr(mod, comp)
     return mod
 
+def connection_null(a):
+    pass
 #
 # All datas returned by SR0WX modules will be stored in ``data`` variable.
 
@@ -176,43 +178,44 @@ except urllib.request.URLError as e:
 lang = my_import('.'.join((config.lang, config.lang)))
 sources = [lang.source, ]
 
-#for module in modules:
-#    try:
-#        logger.info(COLOR_OKGREEN + "starting %s..." + COLOR_ENDC, module)
-#        module_data = module.get_data()
-#        module_message = module_data.get("message", "")
-#        module_source = module_data.get("source", "")
-#
-#        message = " ".join((message, module_message))
-#        if module_message != "" and module_source != "":
-#            sources.append(module_data['source'])
-#    except:
-#        logger.exception(COLOR_FAIL + "Exception when running %s"+ COLOR_ENDC, module)
-processes = []
-connections = []
-module_s = []
-for module in modules:
-    conn1, conn2 = Pipe()
-    connections.append(conn1)
-    processes.append(Process(target=module.get_data, args=(conn2,)))
-    module_s.append(str(module))
+if config.multi_processing:
+    processes = []
+    connections = []
+    module_s = []
+    for module in modules:
+        conn1, conn2 = Pipe()
+        connections.append(conn1)
+        processes.append(Process(target=module.get_data, args=(conn2,)))
+        module_s.append(str(module))
 
-for i in range(len(processes)):
-    logger.info(COLOR_OKGREEN + "starting %s..." + COLOR_ENDC, module_s[i])
+    for i in range(len(processes)):
+        logger.info(COLOR_OKGREEN + "starting %s..." + COLOR_ENDC, module_s[i])
 
-    processes[i].start()
+        processes[i].start()
 
-for i in range(len(processes)):
-    processes[i].join()
+    for i in range(len(processes)):
+        processes[i].join()
 
-for i in range(len(processes)):
-    module_data = connections[i].recv()
-    module_message = module_data.get("message", "")
-    module_source = module_data.get("source", "")
-    message = " ".join((message, module_message))
-    if module_message != "" and module_source != "":
-        sources.append(module_data['source'])
+    for i in range(len(processes)):
+        module_data = connections[i].recv()
+        module_message = module_data.get("message", "")
+        module_source = module_data.get("source", "")
+        message = " ".join((message, module_message))
+        if module_message != "" and module_source != "":
+            sources.append(module_data['source'])
+else:
+    for module in modules:
+        try:
+            logger.info(COLOR_OKGREEN + "starting %s..." + COLOR_ENDC, module)
+            module_data = module.get_data()
+            module_message = module_data.get("message", "")
+            module_source = module_data.get("source", "")
 
+            message = " ".join((message, module_message))
+            if module_message != "" and module_source != "":
+                sources.append(module_data['source'])
+        except:
+            logger.exception(COLOR_FAIL + "Exception when running %s"+ COLOR_ENDC, module)
 
 # When all the modules finished its' work it's time to ``.split()`` returned
 # data. Every element of returned list is actually a filename of a sample.
