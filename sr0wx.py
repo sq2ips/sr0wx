@@ -126,8 +126,6 @@ def my_import(name):
         mod = getattr(mod, comp)
     return mod
 
-def connection_null(a):
-    pass
 #
 # All datas returned by SR0WX modules will be stored in ``data`` variable.
 
@@ -255,6 +253,8 @@ if hasattr(config, 'ctcss_tone'):
     ctcss = pygame.sndarray.make_sound(arr2)
     logger.info(COLOR_WARNING + "CTCSS tone %sHz" + COLOR_ENDC + "\n", "%.1f" % config.ctcss_tone)
     ctcss.play(-1)
+else:
+    logger.info(COLOR_WARNING + "CTCSS tone disabled" + COLOR_ENDC) 
 
 logger.info("playlist elements: %s", " ".join(playlist)+"\n")
 logger.info("loading sound samples...")
