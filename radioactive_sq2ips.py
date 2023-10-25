@@ -52,7 +52,9 @@ class RadioactiveSq2ips(SR0WXModule):
             raise ValueError("Nieprawidłowa odpowiedź serwera")
         if(prs==0):
            self.__logger.warning("Nieprawidłowe dane!")
-        return prs/len(data)
+           return None
+        else:
+            return prs/len(data)
     def processData(self, data):
         #self.__logger.info(int(datetime.now().strftime("%d")) - int(datetime.strptime(data["tip_date"], "%Y-%m-%d %H:%M").strftime("%d")))
         if datetime.strptime(data["tip_date"], "%Y-%m-%d %H:%M").strftime("%Y-%m-%d") != datetime.now().strftime("%Y-%m-%d"):
@@ -75,15 +77,18 @@ class RadioactiveSq2ips(SR0WXModule):
         try:
             data = self.request(self.__service_url, self.__sensor_id)
             value = self.processData(data)
+            value_sr = self.request_sr(self.__service_url_sr)
             self.__logger.info("Wartość przetwożona: " + str(value))
             va=int(value*100)
             #self.__logger.info(va)
-            value_sr = self.request_sr(self.__service_url_sr)
-            self.__logger.info("Średnia wartość przetwożona: " + str(value_sr))
-            va_sr= int(round(value_sr*100, 2))
             curentValue = " ".join(["wartos_c__aktualna",self.__language.read_decimal( va )+" ","mikrosjiwerta","na_godzine_"])
-            if(value_sr != 0):
+            if(value_sr != None):
+                va_sr= int(round(value_sr, 2)*100)
+                self.__logger.info("Średnia wartość przetwożona: " + str(va_sr/100))
                 averageValue = " ".join(["s_rednia_wartos_c__dobowa",self.__language.read_decimal(va_sr)+" ", "mikrosjiwerta","na_godzine_"])
+            else:
+                averageValue = ""
+                self.__logger.warning("Nieprawidłowe średnie dane, pomijanie...")
             message = " ".join([" _ poziom_promieniowania _ ", curentValue, " _ ", averageValue, " _ "])
             connection.send({
                 "message": message,
