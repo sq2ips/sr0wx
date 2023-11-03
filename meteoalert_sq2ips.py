@@ -5,8 +5,8 @@ from colorcodes import *
 from sr0wx_module import SR0WXModule
 
 class MeteoAlertSq2ips(SR0WXModule):
-    def __init__(self, city, start_message, hydroname):
-        self.__hydroname = hydroname
+    def __init__(self, city, start_message, hydronames):
+        self.__hydronames = hydronames
         self.__start_message=start_message
         self.__city = city
         self.__logger = logging.getLogger(__name__)
@@ -61,7 +61,7 @@ class MeteoAlertSq2ips(SR0WXModule):
         hydro_used = []
         for i in range(len(alerts_hydro["warnings"])):
             for j in range(len(alerts_hydro["warnings"][i]["Zlewnie"])):
-                if(alerts_hydro["warnings"][i]["Zlewnie"][j]["Code"] == self.__hydroname):
+                if alerts_hydro["warnings"][i]["Zlewnie"][j]["Code"] in self.__hydronames:
                     os = True
                     #print(alerts_hydro["warnings"][i]["WarnHydro"])
                     kod = alerts_hydro["warnings"][i]["WarnHydro"]["Phenomena"]
@@ -72,8 +72,11 @@ class MeteoAlertSq2ips(SR0WXModule):
                         prawd = alerts_hydro["warnings"][i]["WarnHydro"]["Probability"]
                         stopien = alerts_hydro["warnings"][i]["WarnHydro"]["Level"]
                         self.__logger.info("kod: "+kod+" stopień:" + stopien + " prawdopodobieństwo:"+prawd)
-                        #message += " ostrzezenie_przed "+str(self.codes[kod])+" "+ str(self.stopnie[stopien]) + " stopnia " + "prawdopodobienstwo " + str(self.procent[int(prawd)]) + " procent" + " _ "
-                        message += " ostrzezenie_przed "+str(self.codes[kod])+" "+ str(self.stopnie[stopien]) + " stopnia " + " _ "
+                        if stopien not in list(self.stopnie):
+                            #message += " ostrzezenie_przed "+str(self.codes[kod])+" "+ str(self.stopnie[stopien]) + " stopnia " + "prawdopodobienstwo " + str(self.procent[int(prawd)]) + " procent" + " _ "
+                            message += " ostrzezenie_przed "+str(self.codes[kod])+ " _ "
+                        else:
+                            message += " ostrzezenie_przed "+str(self.codes[kod])+" "+ str(self.stopnie[stopien]) + " stopnia " + " _ "
 
   
         
