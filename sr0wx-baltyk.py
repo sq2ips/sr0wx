@@ -1,14 +1,7 @@
 #!/usr/bin/python -tt
 # -*- coding: utf-8 -*-
 
-COLOR_HEADER = '\033[95m'
-COLOR_OKBLUE = '\033[94m'
-COLOR_OKGREEN = '\033[92m'
-COLOR_WARNING = '\033[93m'
-COLOR_FAIL = '\033[91m'
-COLOR_BOLD = '\033[1m'
-COLOR_UNDERLINE = '\033[4m'
-COLOR_ENDC = '\033[0m'
+from colorcodes import *
 
 LICENSE = COLOR_OKBLUE + """
 
@@ -103,7 +96,7 @@ def setup_logging(config):
     # Creating logger with the lowest log level in config handlers
     min_log_level = min([h['log_level'] for h in config.log_handlers])
     logger = logging.getLogger()
-    logger.setLevel(min_log_level)
+    logger.setLevel('DEBUG')
 
     # create logging handlers according to its definitions
     for handler_definition in config.log_handlers:
@@ -153,7 +146,7 @@ if config is None:
 logger = setup_logging(config)
 
 logger.info(COLOR_WARNING + "sr0wx.py started" + COLOR_ENDC)
-logger.info(LICENSE)
+#logger.info(LICENSE)
 
 
 if len(args) > 0:
@@ -223,6 +216,8 @@ if hasattr(config, 'ctcss_tone'):
     ctcss = pygame.sndarray.make_sound(arr2)
     logger.info(COLOR_WARNING + "CTCSS tone %sHz" + COLOR_ENDC + "\n", "%.1f" % config.ctcss_tone)
     ctcss.play(-1)
+else:
+    logger.info(COLOR_WARNING + "CTCSS tone disabled" + COLOR_ENDC) 
 
 logger.info("playlist elements: %s", " ".join(playlist)+"\n")
 logger.info("loading sound samples...")
@@ -325,10 +320,6 @@ except NameError:
     # sudo gpasswd --add ${USER} dialout 
     logger.exception(COLOR_FAIL + "Couldn't close serial port" + COLOR_ENDC)
 
-
-
-
-logger.info(COLOR_WARNING + "goodbye" + COLOR_ENDC)
 if(nopi == False):
     GPIO.output(40, GPIO.LOW)
     logger.info(COLOR_WARNING + "PIN 40 OFF: PTT OFF" + COLOR_ENDC)

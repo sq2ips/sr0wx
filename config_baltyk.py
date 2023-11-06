@@ -66,7 +66,7 @@ lang = "pl_google"
 pygame_bug = 0
 
 hello_msg = ['_','sr2wxg_cw','_','tu_eksperymentalna_automatyczna_stacja_pogodowa','sr2wxg']
-goodbye_msg = ['_','tu_sr2wxg',"_", "kolejny_komunikat_m", "nic"]
+goodbye_msg = ['_','tu_sr2wxg',"_", "kolejny_komunikat_m", "beep2"]
 read_sources_msg = False
 
 # ---------------
@@ -89,6 +89,11 @@ baltyksq2dk = BaltykSq2dk(
     ##"CENTRAL BALTIC"
     ##"NORTHERN BALTIC"
     ##"POLISH COASTAL WATERS"
+)
+from baltyk_sq2ips import BaltykSq2ips
+baltyksq2ips = BaltykSq2ips(
+    service_url="https://baltyk.imgw.pl//getdata/forecast.php?type=sea&lang=pl",
+    region_id="SOUTHEASTERN BALTIC"
 )
 
 # WŁĄCZONE MODUŁY

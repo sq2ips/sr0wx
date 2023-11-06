@@ -1,15 +1,6 @@
 #!/usr/bin/python -tt
 # -*- coding: utf-8 -*-
 
-#COLOR_HEADER = '\033[95m'
-#COLOR_OKBLUE = '\033[94m'
-#COLOR_OKGREEN = '\033[92m'
-#COLOR_WARNING = '\033[93m'
-#COLOR_FAIL = '\033[91m'
-#COLOR_BOLD = '\033[1m'
-#COLOR_UNDERLINE = '\033[4m'
-#COLOR_ENDC = '\033[0m'
-
 from colorcodes import *
 
 LICENSE = COLOR_OKBLUE + """
@@ -110,8 +101,6 @@ def setup_logging(config):
     # create logging handlers according to its definitions
     for handler_definition in config.log_handlers:
         handler = handler_definition['class'](**handler_definition['config'])
-
-
         handler.setLevel(handler_definition['log_level'])
         handler.setFormatter(formatter)
         logger.addHandler(handler)
@@ -356,9 +345,6 @@ try:
 except NameError:
     # sudo gpasswd --add ${USER} dialout 
     logger.exception(COLOR_FAIL + "Couldn't close serial port" + COLOR_ENDC)
-
-
-
 
 if(nopi == False):
     GPIO.output(40, GPIO.LOW)
