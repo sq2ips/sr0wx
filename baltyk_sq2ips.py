@@ -27,6 +27,7 @@ class BaltykSq2ips(SR0WXModule):
         return(regionText)
 
     def request(self, url):
+        self.__logger.info("::: Pobieranie progozy dla bałtyku")
         r = requests.get(url=url)
         r.encoding = r.apparent_encoding #kodowanie polskich znaków
         data = r.json()
@@ -38,24 +39,16 @@ class BaltykSq2ips(SR0WXModule):
         forecast_next = data['regions'][self.__region_id]['forecast_next']
         return [alert_level, forecast_now, forecast_next]
     def process_time(self, data):
+        data_time = data['validity']
         months = {
             "1": " stycznia ", "2": " lutego ","3": " marca ",\
         "4":" kwietnia ","5":" maja ","6":" czerwca ","7":" lipca ",\
         "8":" sierpnia ","9":" września ","10":" października ",\
         "11":" listopada ","12":" grudnia "}
-        val = list(data['validity'])
-        if(str(data['validity'][11:13])=='24'):
-            val[11]='0'
-            val[13]='0'
-        od = datetime.strptime(data['validity'][11:31], '%H:%M UTC %d.%m.%Y')
-
-        val = list(data['validity'])
-        if(str(data['validity'][35:37])=='24'):
-            val[35]='0'
-            val[36]='0'
-        do = datetime.strptime(data['validity'][35:], '%H:%M UTC %d.%m.%Y')
-        od_text = od.strftime("%H_00 utc ")+ str(od.day) + "-go" + months[str(od.month)] + str(od.year)
-        do_text = do.strftime("%H_00 utc ")+ str(do.day) + "-go" + months[str(do.month)] + str(do.year)
+        od_text = data_time[11:13] + "_00 utc " + str(int(data_time[21:23])) + "-go" + months[str(int(data_time[24:26]))] + data_time[27:31]
+        do_text = data_time[35:37] + "_00 utc " + str(int(data_time[45:47])) + "-go" + months[str(int(data_time[48:50]))] + data_time[51:55]
+        print(od_text)
+        print(do_text)
         return [od_text, do_text]
         
     def say_data(self, text):
@@ -64,9 +57,9 @@ class BaltykSq2ips(SR0WXModule):
             "w skali b": "w_skali_b",
         }
         frazy_regularne = ["w skali B","w porywach","w części","stan morza","temperatura około",
-                           "przelotny deszcz","wiatr z kierunków","deszcz ze śniegiem","krupa śnieżna",
-                           "zatoki gdańskiej","zatoki pomorskiej","możliwe burze","brak danych",
-                           "dobra do umiarkowanej","umiarkowana do słabej","ryzyko oblodzenia statków","przelotne opady",
+            "przelotny deszcz","wiatr z kierunków","deszcz ze śniegiem","krupa śnieżna",
+            "zatoki gdańskiej","zatoki pomorskiej","możliwe burze","brak danych",
+            "dobra do umiarkowanej","umiarkowana do słabej","ryzyko oblodzenia statków","przelotne opady",
         ]
 
         for i in frazy:
