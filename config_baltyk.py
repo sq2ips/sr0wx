@@ -97,4 +97,4 @@ baltyksq2ips = BaltykSq2ips(
 )
 
 # WŁĄCZONE MODUŁY
-modules = [baltyksq2dk]
+modules = [baltyksq2ips]

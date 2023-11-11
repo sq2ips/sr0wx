@@ -54,12 +54,12 @@ class BaltykSq2ips(SR0WXModule):
     def say_data(self, text):
         frazy = {
             "°C":" stopni_celsjusza",
-            "w skali b": "w_skali_b",
         }
         frazy_regularne = ["w skali B","w porywach","w części","stan morza","temperatura około",
             "przelotny deszcz","wiatr z kierunków","deszcz ze śniegiem","krupa śnieżna",
             "zatoki gdańskiej","zatoki pomorskiej","możliwe burze","brak danych",
             "dobra do umiarkowanej","umiarkowana do słabej","ryzyko oblodzenia statków","przelotne opady",
+            "temperatura powietrza",
         ]
 
         for i in frazy:

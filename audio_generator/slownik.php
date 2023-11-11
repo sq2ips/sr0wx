@@ -38,7 +38,8 @@ $slownik = array(
     #array("ostrzeżenia meteorologiczne i hydrologiczne i em gie wu", "ostrzezenia_meteorologiczne_i_hydrologiczne_imgw")
     #array("stopnia","stopnia"),
     #array("prawdopodobieństwo","prawdopodobienstwo"),
-    array("miejscami","miejscami"),
+    #array("miejscami","miejscami"),
+    array("temperatura powietrza","temperatura_powietrza"),
 );
 
 
