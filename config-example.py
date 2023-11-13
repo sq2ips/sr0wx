@@ -79,8 +79,8 @@ activitymap = ActivityMap(
     latitude=0.0000000,
     longitude=0.0000000,
     hour_quarter=10,
-    above_sea_level=20,
-    above_ground_level=35,
+    above_sea_level=35,
+    above_ground_level=20,
     station_range=23,
     additional_info= "TEST",
 )
@@ -399,7 +399,7 @@ meteoalertsq2ips = MeteoAlertSq2ips(
 
 # WŁĄCZONE MODUŁY
 modules = [
-    #activitymap,   # marker na mapie wx.ostol.pl
+    #activitymap,       # marker na mapie wx.ostol.pl
     meteoalertsq2ips,   # ostrzeżenia imgw
     openweathersq9atk,  # prognoza pogody
     #meteosq9atk,       # pogoda alternatywa
