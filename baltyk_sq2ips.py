@@ -59,7 +59,7 @@ class BaltykSq2ips(SR0WXModule):
             "przelotny deszcz","wiatr z kierunków","deszcz ze śniegiem","krupa śnieżna",
             "zatoki gdańskiej","zatoki pomorskiej","możliwe burze","brak danych",
             "dobra do umiarkowanej","umiarkowana do słabej","ryzyko oblodzenia statków","przelotne opady",
-            "temperatura powietrza",
+            "temperatura powietrza", "w cyrkulacji"
         ]
 
         for i in frazy:
