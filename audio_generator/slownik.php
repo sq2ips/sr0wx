@@ -41,7 +41,8 @@ $slownik = array(
     #array("miejscami","miejscami"),
     #array("temperatura powietrza","temperatura_powietrza"),
     #array("słabej","sl_abej"),
-    array("w cyrkulacji", "w_cyrkulacji")
+    #array("w cyrkulacji", "w_cyrkulacji")
+    array("i","i")
 );
 
 

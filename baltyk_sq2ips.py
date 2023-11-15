@@ -1,7 +1,6 @@
 # -*- coding: UTF-8 -*-
 
 import requests
-from datetime import datetime
 
 import logging
 from sr0wx_module import SR0WXModule
