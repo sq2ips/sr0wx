@@ -1,7 +1,7 @@
 # sr0wx
 Automatyczna stacja pogodowa sr0wx autorstwa @sq6jnx, z modułami i poprawkami autorstwa @sq9atk oraz moimi zmianami i dodatkami.
 
-Program ten jest wykożystywany przez Koło Naukowe UMG o nazwie Morski Klub Łączności "SZKUNER" SP2ZIE do obsługi stacji sr2wxg.
+Program ten jest wykorzystywany przez Koło Naukowe UMG o nazwie Morski Klub Łączności "SZKUNER" SP2ZIE do obsługi stacji sr2wxg.
 
 ## Lista zmain
 - Dodanie modułu wyliczającaego wschody i zachody słońca bez połączenia z internetem (calendar_sq2ips.py)
