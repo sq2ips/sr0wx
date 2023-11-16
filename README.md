@@ -20,28 +20,28 @@ LICENCE.md
 ## instalacja
 Zakładamy, że mamy menedżer pakietów apt.
 
-Przechodzimy do pustego katalogu w którym chcemy umieścić program, np.:
-`cd ~/sr0wx`
-Jest to ważne ponieważ w tym katalogu domyślnie będzie się znajdować katalog z programem jaki i logiem.
-Tworzymy katalog logu:__
-`mkdir ./logs`__
-Aktualizujemy listy pakietów:__
-`sudo apt-get update`__
-Instalujemy potrzebne pakiety:__
-`sudo apt-get install git curl php7.0 php-curl php-xml ffmpeg python3 python3-pip`__
-Teraz pobieramy repozytorium:__
-`git clone https://github.com/sq2ips/sr0wx.git`__
-Wchodzimy do niego:__
-`cd sr0wx`__
-Instalujemy potrzebne biblioteki:__
-`pip3 install -r requirements.txt`__
-Lub jeżeli jesteśmy na Raspberry pi i chcemy korzystać z ptt przez gpio:__
-`pip3 install -r requirements-rpi.txt`__
+Przechodzimy do pustego katalogu w którym chcemy umieścić program, np.:\
+`cd ~/sr0wx`\
+Jest to ważne ponieważ w tym katalogu domyślnie będzie się znajdować katalog z programem jaki i logiem.\
+Tworzymy katalog logu:\
+`mkdir ./logs`\
+Aktualizujemy listy pakietów:\
+`sudo apt-get update`\
+Instalujemy potrzebne pakiety:\
+`sudo apt-get install git curl php7.0 php-curl php-xml ffmpeg python3 python3-pip`\
+Teraz pobieramy repozytorium:\
+`git clone https://github.com/sq2ips/sr0wx.git`\
+Wchodzimy do niego:\
+`cd sr0wx`\
+Instalujemy potrzebne biblioteki:\
+`pip3 install -r requirements.txt`\
+Lub jeżeli jesteśmy na Raspberry pi i chcemy korzystać z ptt przez gpio:\
+`pip3 install -r requirements-rpi.txt`
 
-Teraz kopiujemy przykładowy plik konfiguracyjny:__
-`cp config-example.py comfig.py`__
+Teraz kopiujemy przykładowy plik konfiguracyjny:
+`cp config-example.py comfig.py`
 
-Uruchamiamy:__
+Uruchamiamy:
 `python3 sr0wx.py`
 
 ## Konfiguracja
