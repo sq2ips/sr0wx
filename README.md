@@ -29,7 +29,7 @@ Aktualizujemy listy pakietów:\
 `sudo apt-get update`\
 Instalujemy potrzebne pakiety:\
 `sudo apt-get install git curl php7.0 php-curl php-xml ffmpeg python3 python3-pip`\
-Teraz pobieramy repozytorium:\
+Teraz klonujemy repozytorium:\
 `git clone https://github.com/sq2ips/sr0wx.git`\
 Wchodzimy do niego:\
 `cd sr0wx`\
@@ -39,7 +39,7 @@ Lub jeżeli jesteśmy na Raspberry pi i chcemy korzystać z ptt przez gpio:\
 `pip3 install -r requirements-rpi.txt`
 
 Teraz kopiujemy przykładowy plik konfiguracyjny:
-`cp config-example.py comfig.py`
+`cp config-example.py config.py`
 
 Uruchamiamy:
 `python3 sr0wx.py`
