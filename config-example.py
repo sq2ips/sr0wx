@@ -45,7 +45,7 @@ log_handlers = [{
         'log_level': logging.DEBUG,
         'class': logging.handlers.TimedRotatingFileHandler,
         'config': {
-            'filename': '../logs/pogoda/'+ str(datetime.now().strftime("%Y-%m-%d_%H:%M")) +'.log',
+            'filename': '../logs/'+ str(datetime.now().strftime("%Y-%m-%d_%H:%M")) +'.log',
             'when': 'D',
             'interval': 1,
             'backupCount': 30,
