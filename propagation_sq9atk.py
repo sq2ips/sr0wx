@@ -40,16 +40,10 @@ class PropagationSq9atk(SR0WXModule):
         return '#%02x%02x%02x' % rgb
 
     def downloadImage(self, url):
-        try:
-            self.__logger.info("::: Odpytuję adres: " + url)
-            webFile = urllib.request.URLopener()
-            webFile.retrieve(url, "propagacja.png")
-            return Image.open("propagacja.png",'r')
-        except socket.timeout:
-            self.__logger.info("Timed out!")
-        except:
-            self.__logger.info("Data download error!")
-        return
+        self.__logger.info("::: Odpytuję adres: " + url)
+        webFile = urllib.request.URLopener()
+        webFile.retrieve(url, "propagacja.png")
+        return Image.open("propagacja.png",'r')
 
     def collectBandConditionsFromImage(self, image, dayTime):
         try:
