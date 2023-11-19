@@ -42,7 +42,33 @@ $slownik = array(
     #array("temperatura powietrza","temperatura_powietrza"),
     #array("słabej","sl_abej"),
     #array("w cyrkulacji", "w_cyrkulacji")
-    array("i","i")
+    #array("i","i")
+    #array("ważne do godziny", "waz_ne_do_godziny")
+    #array("pierwszej","01_00"),
+    #array("drugiej","02_00"),
+    #array("trzeciej","03_00"),
+    #array("czwartej","04_00"),
+    #array("piątej","05_00"),
+    #array("szóstej","06_00"),
+    #array("siódmej","07_00"),
+    #array("ósmej","08_00"),
+    #array("dziewiątej","09_00"),
+    #array("dziesiątej","10_00"),
+    #array("jedenastej","11_00"),
+    #array("dwunastej","12_00"),
+    #array("trzynastej","13_00"),
+    #array("czternastej","14_00"),
+    #array("piętnastej","15_00"),
+    #array("szesnastej","16_00"),
+    #array("siedemnastej","17_00"),
+    #array("osiemnastej","18_00"),
+    #array("dziewiętnastej","19_00"),
+    #array("dwudziestej","20_00"),
+    #array("dwudziestej pierwszej","21_00"),
+    #array("dwudziestej drógiej","22_00"),
+    #array("dwudziestej trzeciej","23_00"),
+    #array("pierwszego","1-go")
+    #array("ważne do odwołania","waz_ne_do_odwol_ania")
 );
 
 

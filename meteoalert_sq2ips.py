@@ -1,6 +1,7 @@
 import requests
 import logging
 from colorcodes import *
+from datetime import datetime
 
 from sr0wx_module import SR0WXModule
 
@@ -13,6 +14,17 @@ class MeteoAlertSq2ips(SR0WXModule):
         self.codes = {"SW": "silnym_wiatrem","ID": "intensywnymi_opadami_deszczu","OS": "opadami_sniegu","IS": "intensywnymi_opadami_sniegu","OM": "opadami_marznacymi","ZZ": "zawiejami_lub_zamieciam_snieznymi","OB": "oblodzeniem","PR": "przymrozkami","RO": "roztopami","UP": "upalem","MR": "silnym_mrozem","MG": "gesta_mgla","MS": "mgla_intensywnie_osadzajaca_szadz","BU": "burzami","BG": "burzami_z_gradem","DB": "silnym_deszczem_z_burzami","GWSW": "gwaltownymi_wzrostami_stanow_wody","W_PSA": "wezbraniem_z_przekroczeniem_stanow_alarmowych","W_PSO": "wezbraniem_z_przekroczeniem_stanow_ostrzegawczych","SH": "susza_hydrologiczna"}
         self.stopnie = {"1":"pierwszego","2":"drugiego","3":"trzeciego"}
         self.procent = {10:"dziesiec",20:"dwadziescia",30:"trzydziesci",40:"czterdziesci",50:"piecdziesiat",60:"szescdziesiat",70:"siedemdziesiat",80:"osiemdziesiat",90:"dziewiecdziesiat",100:"sto"}
+    def processDate(self, text):
+        if text[0:4] == "9999":
+            return("waz_ne_do_odwol_ania ")
+        months = {
+            "1": " stycznia ", "2": " lutego ","3": " marca ",\
+        "4":" kwietnia ","5":" maja ","6":" czerwca ","7":" lipca ",\
+        "8":" sierpnia ","9":" września ","10":" października ",\
+        "11":" listopada ","12":" grudnia "}
+        date = datetime.strptime(text[0:13], "%Y-%m-%dT%H")
+        text = "waz_ne_do_godziny " + date.strftime("%H")+"_00 zero-zero " + str(date.day) + "-go " + months[str(date.month)] + str(date.year)
+        return text
     def downloadData(self):
         #urlap = "https://meteo.imgw.pl/api/meteo/messages/v1/prog/latest/pronieb/ALL"
         urln = "https://meteo.imgw.pl/dyn/data/out1proc.json?v=1.2"
@@ -55,9 +67,11 @@ class MeteoAlertSq2ips(SR0WXModule):
                 else:
                     stopien = alerts["warnings"][id_w[i]]["Level"]
                     prawd = alerts["warnings"][id_w[i]]["Probability"]
-                    self.__logger.info("kod: "+kod+" stopień:" + stopien + " prawdopodobieństwo:"+prawd)
+                    wazne_do = alerts["warnings"][id_w[i]]["LxValidTo"]
+                    wazne_do_text = self.processDate(wazne_do)
+                    self.__logger.info("kod: "+kod+" stopień:" + stopien + " ważne do:"+wazne_do)
                     #message += " ostrzezenie_przed "+str(self.codes[kod])+" "+ str(self.stopnie[stopien]) + " stopnia " + "prawdopodobienstwo " + str(self.procent[int(prawd)]) + " procent" + " _ "
-                    message += " ostrzezenie_przed "+str(self.codes[kod])+" "+ str(self.stopnie[stopien]) + " stopnia " + " _ "
+                    message += " ostrzezenie_przed "+str(self.codes[kod])+" "+ str(self.stopnie[stopien]) + " stopnia " + wazne_do_text + " _ "
         hydro_used = []
         for i in range(len(alerts_hydro["warnings"])):
             for j in range(len(alerts_hydro["warnings"][i]["Zlewnie"])):
@@ -71,12 +85,16 @@ class MeteoAlertSq2ips(SR0WXModule):
                         hydro_used.append(kod)
                         prawd = alerts_hydro["warnings"][i]["WarnHydro"]["Probability"]
                         stopien = alerts_hydro["warnings"][i]["WarnHydro"]["Level"]
+                        wazne_do = alerts_hydro["warnings"][i]["WarnHydro"]["LxValidTo"]
+                        wazne_do_text = self.processDate(wazne_do)
                         self.__logger.info("kod: "+kod+" stopień:" + stopien + " prawdopodobieństwo:"+prawd)
-                        if stopien not in list(self.stopnie):
+                        
+                        message += " ostrzezenie_przed "+str(self.codes[kod])+" "
+                        if stopien in list(self.stopnie):
                             #message += " ostrzezenie_przed "+str(self.codes[kod])+" "+ str(self.stopnie[stopien]) + " stopnia " + "prawdopodobienstwo " + str(self.procent[int(prawd)]) + " procent" + " _ "
-                            message += " ostrzezenie_przed "+str(self.codes[kod])+ " _ "
-                        else:
-                            message += " ostrzezenie_przed "+str(self.codes[kod])+" "+ str(self.stopnie[stopien]) + " stopnia " + " _ "
+                            message += " "+ str(self.stopnie[stopien]) + " stopnia "
+                        message+=wazne_do_text
+                        message += " _ "
 
   
         
