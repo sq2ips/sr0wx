@@ -26,7 +26,7 @@ class BaltykSq2ips(SR0WXModule):
         return(regionText)
 
     def request(self, url):
-        self.__logger.info("::: Pobieranie progozy dla bałtyku")
+        self.__logger.info("::: Pobieranie progozy dla bałtyku...")
         r = requests.get(url=url)
         r.encoding = r.apparent_encoding #kodowanie polskich znaków
         data = r.json()
@@ -46,19 +46,17 @@ class BaltykSq2ips(SR0WXModule):
         "11":" listopada ","12":" grudnia "}
         od_text = data_time[11:13] + "_00 utc " + str(int(data_time[21:23])) + "-go" + months[str(int(data_time[24:26]))] + data_time[27:31]
         do_text = data_time[35:37] + "_00 utc " + str(int(data_time[45:47])) + "-go" + months[str(int(data_time[48:50]))] + data_time[51:55]
-        print(od_text)
-        print(do_text)
         return [od_text, do_text]
         
     def say_data(self, text):
         frazy = {
-            "°C":" stopni_celsjusza",
+            "°C":" stopni_celsjusza"
         }
         frazy_regularne = ["w skali B","w porywach","w części","stan morza","temperatura około",
             "przelotny deszcz","wiatr z kierunków","deszcz ze śniegiem","krupa śnieżna",
             "zatoki gdańskiej","zatoki pomorskiej","możliwe burze","brak danych",
             "dobra do umiarkowanej","umiarkowana do słabej","ryzyko oblodzenia statków","przelotne opady",
-            "temperatura powietrza", "w cyrkulacji","z kierunków"
+            "temperatura powietrza", "w cyrkulacji","z kierunków","w deszcz"
         ]
 
         for i in frazy:

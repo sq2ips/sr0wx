@@ -69,20 +69,21 @@ $slownik = array(
     #array("dwudziestej trzeciej","23_00"),
     #array("pierwszego","1-go")
     #array("ważne do odwołania","waz_ne_do_odwol_ania")
-    array("z kierunków", "z_kierunko_w"),
-    array("dwudziestego", "20-go"),
-    array("dwudziestego pierwszego", "21-go"),
-    array("dwudziestego drugiego", "22-go"),
-    array("dwudziestego trzeciego", "23-go"),
-    array("dwudziestego czwartego", "24-go"),
-    array("dwudziestego piątego", "25-go"),
-    array("dwudziestego szóstego", "26-go"),
-    array("dwudziestego siódmego", "27-go"),
-    array("dwudziestego ósmego", "28-go"),
-    array("dwudziestego dziewiątego", "29-go"),
-    array("trzydziestego", "30-go"),
-    array("trzydziestego pierwszego", "31-go"),
-
+    #array("z kierunków", "z_kierunko_w"),
+    #array("dwudziestego", "20-go"),
+    #array("dwudziestego pierwszego", "21-go"),
+    #array("dwudziestego drugiego", "22-go"),
+    #array("dwudziestego trzeciego", "23-go"),
+    #array("dwudziestego czwartego", "24-go"),
+    #array("dwudziestego piątego", "25-go"),
+    #array("dwudziestego szóstego", "26-go"),
+    #array("dwudziestego siódmego", "27-go"),
+    #array("dwudziestego ósmego", "28-go"),
+    #array("dwudziestego dziewiątego", "29-go"),
+    #array("trzydziestego", "30-go"),
+    #array("trzydziestego pierwszego", "31-go"),
+    array("w deszcz","w_deszcz"),
+    array("deszczu ze śniegiem","deszczu_ze_s_niegiem"),
 
 );
 
