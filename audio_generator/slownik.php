@@ -82,9 +82,9 @@ $slownik = array(
     #array("dwudziestego dziewiątego", "29-go"),
     #array("trzydziestego", "30-go"),
     #array("trzydziestego pierwszego", "31-go"),
-    array("w deszcz","w_deszcz"),
-    array("deszczu ze śniegiem","deszczu_ze_s_niegiem"),
-
+    #array("w deszcz","w_deszcz"),
+    #array("deszczu ze śniegiem","deszczu_ze_s_niegiem"),
+    array("testowe uruchomienie stacji", "test"),
 );
 
 

@@ -23,7 +23,7 @@ class MeteoAlertSq2ips(SR0WXModule):
         "8":" sierpnia ","9":" września ","10":" października ",\
         "11":" listopada ","12":" grudnia "}
         date = datetime.strptime(text[0:13], "%Y-%m-%dT%H")
-        text = "waz_ne_do_godziny " + date.strftime("%H")+"_00 zero-zero " + str(date.day) + "-go " + months[str(date.month)] + str(date.year)
+        text = "waz_ne_do_godziny " + date.strftime("%H")+"_00 " + str(date.day) + "-go " + months[str(date.month)] + str(date.year)
         return text
     def downloadData(self):
         #urlap = "https://meteo.imgw.pl/api/meteo/messages/v1/prog/latest/pronieb/ALL"
@@ -87,7 +87,7 @@ class MeteoAlertSq2ips(SR0WXModule):
                         stopien = alerts_hydro["warnings"][i]["WarnHydro"]["Level"]
                         wazne_do = alerts_hydro["warnings"][i]["WarnHydro"]["LxValidTo"]
                         wazne_do_text = self.processDate(wazne_do)
-                        self.__logger.info("kod: "+kod+" stopień:" + stopien + " prawdopodobieństwo:"+prawd)
+                        self.__logger.info("kod: "+kod+" stopień:" + stopien + " ważne do:"+wazne_do)
                         
                         message += " ostrzezenie_przed "+str(self.codes[kod])+" "
                         if stopien in list(self.stopnie):
