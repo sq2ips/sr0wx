@@ -176,18 +176,23 @@ if config.multi_processing:
         module_s.append(str(module))
 
     for i in range(len(processes)):
-        logger.info(COLOR_OKGREEN + "starting %s..." + COLOR_ENDC, module_s[i])
+        logger.info(COLOR_OKBLUE + "starting %s..." + COLOR_ENDC, module_s[i])
 
         processes[i].start()
 
     for i in range(len(processes)):
         processes[i].join()
 
+    func_modules = ""
     for i in range(len(processes)):
         module_data = connections[i].recv()
         module_message = module_data.get("message", "")
         module_source = module_data.get("source", "")
         message = " ".join((message, module_message))
+        if module_message == "":
+            func_modules += COLOR_FAIL + str(module_s[i])+ COLOR_ENDC + "\n"
+        else:
+            func_modules += COLOR_OKGREEN + str(module_s[i])+ COLOR_ENDC + "\n"
         if module_message != "" and module_source != "":
             sources.append(module_data['source'])
 else:
@@ -203,6 +208,9 @@ else:
                 sources.append(module_data['source'])
         except:
             logger.exception(COLOR_FAIL + "Exception when running %s"+ COLOR_ENDC, module)
+
+
+logger.info(COLOR_BOLD + "modules (" + COLOR_ENDC + COLOR_OKGREEN + "functioning" + COLOR_ENDC + COLOR_BOLD + " / " + COLOR_ENDC + COLOR_FAIL + "not functioning" + COLOR_ENDC + COLOR_BOLD + "):\n" + COLOR_ENDC + func_modules)
 
 # When all the modules finished its' work it's time to ``.split()`` returned
 # data. Every element of returned list is actually a filename of a sample.
