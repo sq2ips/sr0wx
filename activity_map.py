@@ -93,8 +93,10 @@ Parameters:
                 else:
                     log = "Non-OK response from %s, (%s)"
                     self.__logger.error(log, url, response)
-                connection.send(dict())
-                return dict()
+                connection.send({
+                "message":None,
+                "source":"nd",})
+                return {"":""}
 
             except urllib.error.URLError as e:
                 self.__logger.error(e)

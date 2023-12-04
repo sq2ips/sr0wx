@@ -188,11 +188,14 @@ if config.multi_processing:
         module_data = connections[i].recv()
         module_message = module_data.get("message", "")
         module_source = module_data.get("source", "")
-        message = " ".join((message, module_message))
         if module_message == "":
             func_modules += COLOR_FAIL + str(module_s[i])+ COLOR_ENDC + "\n"
+        elif module_message == None:
+            module_message = ""
+            func_modules += COLOR_OKGREEN + str(module_s[i])+ COLOR_ENDC + "\n"
         else:
             func_modules += COLOR_OKGREEN + str(module_s[i])+ COLOR_ENDC + "\n"
+        message = " ".join((message, module_message))
         if module_message != "" and module_source != "":
             sources.append(module_data['source'])
 else:
