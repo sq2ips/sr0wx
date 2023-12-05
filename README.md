@@ -3,7 +3,7 @@ Automatyczna stacja pogodowa sr0wx autorstwa [@sq6jnx](https://github.com/sq6jnx
 
 Program ten jest wykorzystywany przez Koło Naukowe UMG o nazwie Morski Klub Łączności "SZKUNER" SP2ZIE do obsługi automatycznej stacji pogodowej sr2wxg.
 
-## Dzianie
+## Działanie
 Program pobiera różne dane z internetu, np. stan pogody, prognozę pogody, ostrzeżenia imgw, poziom promieniowania i inne, konwertuje je na poszczególne słowa które są samplami audio a następnie odtwarza je.
 
 ## Lista zmian
@@ -36,7 +36,7 @@ Wchodzimy do niego:\
 Instalujemy potrzebne biblioteki:\
 `pip3 install -r requirements.txt`\
 Lub jeżeli jesteśmy na Raspberry pi i chcemy korzystać z ptt przez gpio:\
-`pip3 install -r requirements-rpi.txt`
+`pip3 install -r requirements-rpi.txt`\
 Wchodzimy do podkatalogu pyliczba i instalujemy moduł\
 `cd pyliczba; sudo python3 setup.py install; cd ..`
 
