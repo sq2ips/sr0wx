@@ -37,6 +37,8 @@ Instalujemy potrzebne biblioteki:\
 `pip3 install -r requirements.txt`\
 Lub jeżeli jesteśmy na Raspberry pi i chcemy korzystać z ptt przez gpio:\
 `pip3 install -r requirements-rpi.txt`
+Wchodzimy do podkatalogu pyliczba i instalujemy moduł\
+`cd pyliczba; sudo python3 setup.py install; cd ..`
 
 Teraz kopiujemy przykładowy plik konfiguracyjny:
 `cp config-example.py config.py`
