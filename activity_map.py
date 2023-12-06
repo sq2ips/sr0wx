@@ -83,25 +83,25 @@ Parameters:
             self.__logger.info("::: Odpytuję adres: " + url.decode())
 
             url=url.decode()
-            try:
-                request = urllib.request.Request(url)
-                webFile = urllib.request.urlopen(request, None, 5)
-                response = webFile.read()
+            #try:
+            request = urllib.request.Request(url)
+            webFile = urllib.request.urlopen(request, None, 5)
+            response = webFile.read()
 
-                if response == 'OK'.encode():
-                    self.__logger.info("::: Dane wysłano, status OK\n")
-                else:
-                    log = "Non-OK response from %s, (%s)"
-                    self.__logger.error(log, url, response)
-                connection.send({
-                "message":None,
-                "source":"nd",})
-                return {"":""}
+            if response == 'OK'.encode():
+                self.__logger.info("::: Dane wysłano, status OK\n")
+            else:
+                log = "Non-OK response from %s, (%s)"
+                self.__logger.error(log, url, response)
+            connection.send({
+            "message":None,
+            "source":"nd",})
+            return {"":""}
 
-            except urllib.error.URLError as e:
-                self.__logger.error(e)
-            except urllib.error.timeout:
-                self.__logger.error("Timed out!")
+            #except urllib.error.URLError as e:
+            #    self.__logger.error(e)
+            #except urllib.error.timeout:
+            #    self.__logger.error("Timed out!")
         except Exception as e:
             self.__logger.exception(COLOR_FAIL + "Exception when running %s: %s"+ COLOR_ENDC, str(self), e)
             connection.send(dict())
