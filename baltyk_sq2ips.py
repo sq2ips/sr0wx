@@ -50,7 +50,8 @@ class BaltykSq2ips(SR0WXModule):
         
     def say_data(self, text):
         frazy = {
-            "°C":" stopni_celsjusza"
+            "°C":" stopni_celsjusza",
+            ", ":" oraz "
         }
         frazy_regularne = ["w skali B","w porywach","w części","stan morza","temperatura około",
             "przelotny deszcz","wiatr z kierunków","deszcz ze śniegiem","krupa śnieżna",

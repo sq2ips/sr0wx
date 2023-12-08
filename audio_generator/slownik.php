@@ -84,7 +84,8 @@ $slownik = array(
     #array("trzydziestego pierwszego", "31-go"),
     #array("w deszcz","w_deszcz"),
     #array("deszczu ze śniegiem","deszczu_ze_s_niegiem"),
-    array("testowe uruchomienie stacji", "test"),
+    #array("testowe uruchomienie stacji", "test"),
+    array("oraz","oraz"),
 );
 
 
