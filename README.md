@@ -11,7 +11,7 @@ Program pobiera różne dane z internetu, np. stan pogody, prognozę pogody, ost
 - Dodanie modułu pobierającego poziom promieniowania ze strony PAA (radioactive_sq2ips.py)
 - Dodanie modułu prognozy dla bałtyku autorstwa sq2dk oraz osobnego pliku konfiguracyjnego w celu uruchamiania tej prognozy osobno od głównej. Dodatkowo dodany jest katalog z samplami w formacie mp3 które stacja pobiera gdy nie zostały odnalezione (baltyk_sq2dk.py)
 - Dodanie modułu ostrzeżeń meteorologicznych
-- Przepisanie całej aplikacji na python 2 na 3
+- Przepisanie całej aplikacji z python 2 na 3
 - Obsługa wieloprocesowości, wszystkie moduły uruchamiają się jednocześnie
 
 ## Licencja
