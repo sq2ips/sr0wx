@@ -15,7 +15,7 @@ Program pobiera różne dane z internetu, np. stan pogody, prognozę pogody, ost
 - Obsługa wieloprocesowości, wszystkie moduły uruchamiają się jednocześnie
 
 ## Licencja
-LICENCE.md
+LICENCE
 
 ## instalacja
 Zakładamy, że mamy menedżer pakietów apt.
