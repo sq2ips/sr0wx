@@ -58,7 +58,7 @@ Aby wyszukać id regionu do meteoalert_sq2ips należy:
 np.\
 `python meteoalert_getid.py -f gdynia`\
 wynik:
-Gdynia: 2262
+Gdynia: 2262\n
 Id trzeba ustawić w sekcji modułu meteoalert_sq2ips.py w pliku config.py w zmiennej city_id.
 
 ## TODO
