@@ -184,6 +184,7 @@ if config.multi_processing:
         processes[i].join()
 
     func_modules = ""
+    func_modules_counter=0
     for i in range(len(processes)):
         module_data = connections[i].recv()
         module_message = module_data.get("message", "")
@@ -192,8 +193,10 @@ if config.multi_processing:
             func_modules += COLOR_FAIL + str(module_s[i])+ COLOR_ENDC + "\n"
         elif module_message == None:
             module_message = ""
+            func_modules_counter+=1
             func_modules += COLOR_OKGREEN + str(module_s[i])+ COLOR_ENDC + "\n"
         else:
+            func_modules_counter+=1
             func_modules += COLOR_OKGREEN + str(module_s[i])+ COLOR_ENDC + "\n"
         message = " ".join((message, module_message))
         if module_message != "" and module_source != "":
@@ -215,6 +218,9 @@ else:
 
 logger.info(COLOR_BOLD + "modules (" + COLOR_ENDC + COLOR_OKGREEN + "functioning" + COLOR_ENDC + COLOR_BOLD + " / " + COLOR_ENDC + COLOR_FAIL + "not functioning" + COLOR_ENDC + COLOR_BOLD + "):\n" + COLOR_ENDC + func_modules)
 
+if func_modules_counter == 0:
+    logger.critical(COLOR_FAIL + "ERROR: No functioning modules, exiting..." + COLOR_ENDC)
+    exit(1)
 # When all the modules finished its' work it's time to ``.split()`` returned
 # data. Every element of returned list is actually a filename of a sample.
 
