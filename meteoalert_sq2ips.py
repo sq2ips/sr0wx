@@ -6,10 +6,10 @@ from datetime import datetime
 from sr0wx_module import SR0WXModule
 
 class MeteoAlertSq2ips(SR0WXModule):
-    def __init__(self, city, start_message, hydronames):
+    def __init__(self, city_id, start_message, hydronames):
         self.__hydronames = hydronames
         self.__start_message=start_message
-        self.__city = city
+        self.__city_id = city_id
         self.__logger = logging.getLogger(__name__)
         self.codes = {"SW": "silnym_wiatrem","ID": "intensywnymi_opadami_deszczu","OS": "opadami_sniegu","IS": "intensywnymi_opadami_sniegu","OM": "opadami_marznacymi","ZZ": "zawiejami_lub_zamieciam_snieznymi","OB": "oblodzeniem","PR": "przymrozkami","RO": "roztopami","UP": "upalem","MR": "silnym_mrozem","MG": "gesta_mgla","MS": "mgla_intensywnie_osadzajaca_szadz","BU": "burzami","BG": "burzami_z_gradem","DB": "silnym_deszczem_z_burzami","GWSW": "gwaltownymi_wzrostami_stanow_wody","W_PSA": "wezbraniem_z_przekroczeniem_stanow_alarmowych","W_PSO": "wezbraniem_z_przekroczeniem_stanow_ostrzegawczych","SH": "susza_hydrologiczna"}
         self.stopnie = {"1":"pierwszego","2":"drugiego","3":"trzeciego"}
@@ -42,18 +42,17 @@ class MeteoAlertSq2ips(SR0WXModule):
         alerts_hydro = data[2]
         self.__logger.info("::: Przetważanie danych...")
         #nazwy
-        for i in range(len(names["features"])):
-            if self.__city in names["features"][i]["properties"]['jpt_nazwa_']:
-                id = names["features"][i]["properties"]['jpt_kod_je']
-        #id = '2263'
-        self.__logger.info("id: "+id)
+        #for i in range(len(names["features"])):
+        #    if self.__city in names["features"][i]["properties"]['jpt_nazwa_']:
+        #        id = names["features"][i]["properties"]['jpt_kod_je']
+        self.__logger.info(f"id: {self.__city_id}")
         #Ostrzeżenia
         message = self.__start_message + " _ "
         os = True
         id_w = []
         try:
-            for i in range(len(alerts["teryt"][id])):
-                id_w.append(alerts["teryt"][id][i])
+            for i in range(len(alerts["teryt"][self.__city_id])):
+                id_w.append(alerts["teryt"][self.__city_id][i])
         except KeyError:
             os = False
         else:
