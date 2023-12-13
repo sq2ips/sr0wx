@@ -9,7 +9,7 @@ if sys.argv[1] == "-h" or len(sys.argv) == 1:
     print(parameters)
     exit(0)
 elif sys.argv[1] == "-a":
-    print("Program szukający id stacji do modułu meteoalert_sq2ips.py\n")
+    print("Program szukający id obszaru do modułu meteoalert_sq2ips.py\n")
     print("miasto/powiat: id stacji")
     names = requests.get(url).json()
     for i in range(len(names["features"])):
