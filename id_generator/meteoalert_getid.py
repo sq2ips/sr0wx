@@ -1,7 +1,7 @@
 import requests
 import sys
 
-parameters = "Program szukający id stacji do modułu meteoalert_sq2ips.py:\n\nParametry:\n-h wyświetlenie listy parametrów\n-a pobranie i wypisanie wszystkich obszarów\n-f pobranie i flitrowanie na podstawie wporwadzonego tekstu"
+parameters = "Program szukający id regionu do modułu meteoalert_sq2ips.py:\n\nParametry:\n-h wyświetlenie listy parametrów\n-a pobranie i wypisanie wszystkich obszarów\n-f pobranie i flitrowanie na podstawie wporwadzonego tekstu"
 
 url = "https://meteo.imgw.pl/dyn/data/out1proc.json?v=1.2"
 
