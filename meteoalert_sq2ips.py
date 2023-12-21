@@ -9,7 +9,7 @@ class MeteoAlertSq2ips(SR0WXModule):
     def __init__(self, city_id, start_message, hydronames):
         self.__hydronames = hydronames
         self.__start_message=start_message
-        self.__city_id = city_id
+        self.__city_id = str(city_id)
         self.__logger = logging.getLogger(__name__)
         self.codes = {"SW": "silnym_wiatrem","ID": "intensywnymi_opadami_deszczu","OS": "opadami_sniegu","IS": "intensywnymi_opadami_sniegu","OM": "opadami_marznacymi","ZZ": "zawiejami_lub_zamieciam_snieznymi","OB": "oblodzeniem","PR": "przymrozkami","RO": "roztopami","UP": "upalem","MR": "silnym_mrozem","MG": "gesta_mgla","MS": "mgla_intensywnie_osadzajaca_szadz","BU": "burzami","BG": "burzami_z_gradem","DB": "silnym_deszczem_z_burzami","GWSW": "gwaltownymi_wzrostami_stanow_wody","W_PSA": "wezbraniem_z_przekroczeniem_stanow_alarmowych","W_PSO": "wezbraniem_z_przekroczeniem_stanow_ostrzegawczych","SH": "susza_hydrologiczna"}
         self.stopnie = {"1":"pierwszego","2":"drugiego","3":"trzeciego"}
@@ -33,7 +33,7 @@ class MeteoAlertSq2ips(SR0WXModule):
         self.__logger.info("::: Pobieranie ostrzeżeń meteorologicznych...")
         alerts = requests.get(url = urla).json()
         names = requests.get(url = urln).json()
-        alerts_hydro = requests.get(url = urlah).json()  
+        alerts_hydro = requests.get(url = urlah).json()
         return(alerts, names, alerts_hydro)
     def process(self):
         data = self.downloadData()

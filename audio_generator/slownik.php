@@ -85,7 +85,17 @@ $slownik = array(
     #array("w deszcz","w_deszcz"),
     #array("deszczu ze śniegiem","deszczu_ze_s_niegiem"),
     #array("testowe uruchomienie stacji", "test"),
-    array("oraz","oraz"),
+    #array("oraz","oraz"),
+    array("dwa tysiące dwadzieścia cztery","2024"),
+    array("dwa tysiące dwadzieścia pięć","2025"),
+    array("dwa tysiące dwadzieścia sześć","2026"),
+    array("dwa tysiące dwadzieścia siedem","2027"),
+    array("dwa tysiące dwadzieścia osiem","2028"),
+    array("dwa tysiące dwadzieścia dziewięć","2029"),
+    array("dwa tysiące trzydzieści","2030"),
+    array("dwa tysiące trzydzieści jeden","2031"),
+    array("dwa tysiące trzydzieści dwa","2032"),
+    array("dwa tysiące trzydzieści trzy","2033"),
 );
 
 
