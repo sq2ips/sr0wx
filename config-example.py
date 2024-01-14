@@ -393,7 +393,8 @@ from meteoalert_sq2ips import MeteoAlertSq2ips
 meteoalertsq2ips = MeteoAlertSq2ips(
     city_id=2262, # Gdynia
     start_message="ostrzezenia_meteorologiczne_i_hydrologiczne_imgw",
-    hydronames=["W_G_6_PM","Z_G_22_PM"] # Gdynia i bałtyk
+    hydronames=["W_G_6_PM","Z_G_22_PM"], # Gdynia i bałtyk
+    validity_type=2, # 1=long 2=short
 )
 
 

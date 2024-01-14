@@ -6,7 +6,8 @@ from datetime import datetime
 from sr0wx_module import SR0WXModule
 
 class MeteoAlertSq2ips(SR0WXModule):
-    def __init__(self, city_id, start_message, hydronames):
+    def __init__(self, city_id, start_message, hydronames, validity_type):
+        self.__validity_type=validity_type
         self.__hydronames = hydronames
         self.__start_message=start_message
         self.__city_id = str(city_id)
@@ -23,7 +24,10 @@ class MeteoAlertSq2ips(SR0WXModule):
         "8":" sierpnia ","9":" września ","10":" października ",\
         "11":" listopada ","12":" grudnia "}
         date = datetime.strptime(text[0:13], "%Y-%m-%dT%H")
-        text = "waz_ne_do_godziny " + date.strftime("%H")+"_00 " + str(date.day) + "-go " + months[str(date.month)] + str(date.year)
+        if self.__validity_type == 1:
+            text = "waz_ne_do_godziny " + date.strftime("%H")+"_00 " + str(date.day) + "-go " + months[str(date.month)] + str(date.year)
+        elif self.__validity_type == 2:
+            text = "waz_ne_do " + str(date.day) + "-go " + months[str(date.month)]
         return text
     def downloadData(self):
         #urlap = "https://meteo.imgw.pl/api/meteo/messages/v1/prog/latest/pronieb/ALL"

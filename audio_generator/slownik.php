@@ -96,6 +96,7 @@ $slownik = array(
     #array("dwa tysiące trzydzieści jeden","2031"),
     #array("dwa tysiące trzydzieści dwa","2032"),
     #array("dwa tysiące trzydzieści trzy","2033"),
+    #array("ważne do","waz_ne_do"),
 );
 
 
