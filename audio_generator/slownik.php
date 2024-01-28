@@ -3,6 +3,7 @@
 #
 # php index.php
 
+
 # TYLKO Z TEJ TABLICY GENEROWANE SĄ SAMPLE
 $slownik = array(
     #array('słabnący', 'słabnacy'),
@@ -97,6 +98,45 @@ $slownik = array(
     #array("dwa tysiące trzydzieści dwa","2032"),
     #array("dwa tysiące trzydzieści trzy","2033"),
     #array("ważne do","waz_ne_do"),
+    #array("brak wiatru", "brak_wiatru"),
+    #array("aktualny stan pogody","aktualny_stan_pogody"),
+    #array("jeden","jeden"),
+    #array("dwóch","dwoch"),
+    #array("trzech","trzech"),
+    #array("czterech","czterech"),
+    #array("pięciu","pieciu"),
+    #array("sześciu","szesciu"),
+    #array("siedmiu","siedmiu"),
+    #array("ośmiu","osmiu"),
+    #array("dziewięciu","dziewieciu"),
+    #array("dziesięciu","dziesieciu"),
+    #array("jedenastu","jedenastu"),
+    #array("dwunastu","dwunastu"),
+    #array("trzynastu","trzynastu"),
+    #array("czternastu","czternastu"),
+    #array("piętnastu","pietnastu"),
+    #array("szesnastu","szesnastu"),
+    #array("siedemnastu","siedemnastu"),
+    #array("osiemnastu","osiemnastu"),
+    #array("dziewiętnastu","dziewietnastu"),
+    #array("dwudziestu","dwudziestu"),
+    #array("trzydziestu","trzydziestu"),
+    #array("czterdziestu","czterdziestu"),
+    #array("pięćdziesięciu","piecdziesieciu"),
+    #array("szejśćdziesięciu","szejscdziesieciu"),
+    #array("siedemdziesięciu","siedemdziesieciu"),
+    #array("osiemdziesięciu","osiemdziesieciu"),
+    #array("dziewięćdziesięciu","dziewiecdziesieciu"),
+    #array("stu","stu"),
+    #array("dwustu","dwustu"),
+    #array("trzystu","trzystu"),
+    #array("czterystu","czterystu"),
+    #array("pięciuset","pieciuset"),
+    #array("sześciuset","szesciuset"),
+    #array("siedmiuset","siedmiuset"),
+    #array("ośmiuset","osmiuset"),
+    #array("dziewięciuset","dziewieciuset"),
+    #array("brak wiatru", "brak_wiatru")
 );
 
 

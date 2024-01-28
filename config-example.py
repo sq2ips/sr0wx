@@ -96,7 +96,8 @@ openweathersq9atk = OpenWeatherSq9atk(
     api_key = '', # klucz api
     lat = 54.5237904,
     lon = 18.5129878,
-    service_url = 'http://api.openweathermap.org/data/2.5/'
+    service_url = 'http://api.openweathermap.org/data/2.5/',
+    no_current = False
 )
 
 

@@ -14,12 +14,13 @@ from sr0wx_module import SR0WXModule
 class OpenWeatherSq9atk(SR0WXModule):
     """Klasa pobierająca dane o pogodzie"""
 
-    def __init__(self, language, api_key, lat, lon, service_url):
+    def __init__(self, language, api_key, lat, lon, service_url, no_current):
 
         self.__service_url = service_url
         self.__lat = lat
         self.__lon = lon
         self.__api_key = api_key   
+        self.__no_current = no_current
         self.__language = language
         self.__logger = logging.getLogger(__name__)
 
@@ -161,16 +162,17 @@ class OpenWeatherSq9atk(SR0WXModule):
             forecastJsonAll = JSON.loads( self.downloadFile(forecast_service_url) )
 
             self.__logger.info("::: Przetwarzam dane...\n")
-
-            message = "".join([ \
-                            " stan_pogody_z_godziny ", 
-                            self.getHour(), \
-                            self.getWeather( weatherJson['weather'] ), \
-                            self.getClouds( weatherJson['clouds'] ), \
-                            self.getMainConditions( weatherJson['main'] ), \
-                            #self.getVisibility( weatherJson['visibility'] ), \
-                            self.getWind( weatherJson['wind'] ), \
-                         ])
+            message = ""
+            if self.__no_current == False:
+                message += "".join([ \
+                                " stan_pogody_z_godziny ", 
+                                self.getHour(), \
+                                self.getWeather( weatherJson['weather'] ), \
+                                self.getClouds( weatherJson['clouds'] ), \
+                                self.getMainConditions( weatherJson['main'] ), \
+                                #self.getVisibility( weatherJson['visibility'] ), \
+                                self.getWind( weatherJson['wind'] ), \
+                             ])
 
             forecastJson = forecastJsonAll['list'][1]
             message += "".join([ \
