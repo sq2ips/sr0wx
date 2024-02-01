@@ -137,6 +137,7 @@ $slownik = array(
     #array("ośmiuset","osmiuset"),
     #array("dziewięciuset","dziewieciuset"),
     #array("brak wiatru", "brak_wiatru")
+    array("test", "test")
 );
 
 

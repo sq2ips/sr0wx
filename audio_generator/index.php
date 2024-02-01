@@ -59,7 +59,7 @@ function readKey() {
 	$url = $elem->getAttribute('src');
 	$parts = parse_url($url);
 	parse_str($parts['query'], $params);
-	
+	echo $params['key'];
 	return $params['key'];
 }
 

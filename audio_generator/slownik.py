@@ -1,0 +1,5 @@
+
+slownik = {
+#       format:
+#   "slowo","nazwa",
+}
