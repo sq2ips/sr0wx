@@ -22,7 +22,11 @@ class MeteoStationSq2ips(SR0WXModule):
         self.__logger.info("Parameters got:")
         self.__logger.info(self.__coms)
         self.__logger.info(data)
-        return(data)
+        data = [0.0, 0.0, 0.0, 0.0, 0.0, 550.4, 0.0, -71.0, 5.0, 184124.0]
+        if data[0] == 0 and data[1] == 0 and data[2] == 0 and data[3] == 0 and data[4] == 0:
+            raise Exception("received zeros from station")
+        else:
+            return(data)
     def angleProcess(self, ang):
         if ang>=337.5 or ang<22.5:
             return "polnocny"
