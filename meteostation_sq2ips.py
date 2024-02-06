@@ -14,14 +14,18 @@ class MeteoStationSq2ips(SR0WXModule):
         self.__port=port
         self.__coms = ["atemp\n", "ahum\n", "awin_dir\n", "awin_avr\n", "awin_gus\n", "rain\n", "win_qual\n", "rssi\n", "last\n", "atime\n"]
     def downloadData(self, con, ip, port):
-        data = []
-        sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM) # UDP
-        sock.settimeout(10)
-        for i in self.__coms:
-            sock.sendto(i.encode("UTF-8"), (ip, port))
-            data.append(float(sock.recvfrom(1024)[0].decode("UTF-8")))
-            #data.append(0.0)
-        con.send(data)
+        try:
+            data = []
+            sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM) # UDP
+            sock.settimeout(10)
+            for i in self.__coms:
+                sock.sendto(i.encode("UTF-8"), (ip, port))
+                data.append(float(sock.recvfrom(1024)[0].decode("UTF-8")))
+                #data.append(0.0)
+            con.send(data)
+        except Exception as e:
+            self.__logger.error(COLOR_FAIL + "Exception when getting data from %s: %s"+ COLOR_ENDC, ip, e)
+            con.send(None)
         con.close()
         #if data[0] == 0 and data[1] == 0 and data[2] == 0 and data[3] == 0 and data[4] == 0:
         #    raise Exception("received zeros from station")
@@ -39,7 +43,11 @@ class MeteoStationSq2ips(SR0WXModule):
         for pro in processes:
             pro.join()
         for con in conn:
-            data.append(con.recv())
+            rec = con.recv()
+            if rec != None:
+                data.append(rec)
+        if data == []:
+            raise Exception("No functioning stations")
         self.__logger.info("Parameters got:")
         self.__logger.info("IP: " + str(self.__coms))
         for i in range(len(data)):
@@ -49,7 +57,7 @@ class MeteoStationSq2ips(SR0WXModule):
         dataf=[]
         for i in range(len(data)):
             if data[i][0] == 0 and data[i][1] == 0 and data[i][2] == 0 and data[i][3] == 0 and data[i][4] == 0:
-                self.__logger.warning(COLOR_WARNING + f"WARNING: Satation {self.__ip[i]} reported only zeros, skipping..." + COLOR_ENDC)
+                self.__logger.warning(COLOR_WARNING + f"Satation {self.__ip[i]} reported only zeros, skipping..." + COLOR_ENDC)
             else:
                 dataf.append(data[i])
         
