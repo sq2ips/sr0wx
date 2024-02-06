@@ -171,7 +171,8 @@ class MeteoStationSq2ips(SR0WXModule):
             message = "aktualny_stan_pogody _ "
 
             message += f"temperatura " + self.__language.read_temperature(round(data[0])) + " "
-            message += f"cisnienie " + self.__language.read_pressure(round(data[7])) + " "
+            if data[7] != 0.0:
+                message += f"cisnienie " + self.__language.read_pressure(round(data[7])) + " "
             message += f"wilgotnosc "+self.__language.read_percent(round(data[1]))+" _ "
             if round(data[3]*3.6) < 1:
                 message+=" brak_wiatru "
