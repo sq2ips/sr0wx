@@ -12,25 +12,26 @@ class MeteoStationSq2ips(SR0WXModule):
         self.__language = language
         self.__ip = ip
         self.__port=port
-        self.__coms = ["atemp\n", "ahum\n", "awin_dir\n", "awin_avr\n", "awin_gus\n", "rain\n", "win_qual\n", "rssi\n", "last\n", "atime\n"]
+        self.__coms = ["atemp\n", "ahum\n", "awin_dir\n", "awin_avr\n", "awin_gus\n", "rain\n", "win_qual\n", "apress\n", "rssi\n", "last\n", "atime\n"]
     def downloadData(self, con, ip, port):
         try:
             data = []
             sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM) # UDP
+
             sock.settimeout(10)
             for i in self.__coms:
                 sock.sendto(i.encode("UTF-8"), (ip, port))
-                data.append(float(sock.recvfrom(1024)[0].decode("UTF-8")))
-                #data.append(0.0)
+                d = sock.recvfrom(1024)[0].decode("UTF-8")
+                if d == '\n':
+                    data.append(0.0)
+                else:
+                    data.append(float(d))
             con.send(data)
         except Exception as e:
             self.__logger.error(COLOR_FAIL + "Exception when getting data from %s: %s"+ COLOR_ENDC, ip, e)
             con.send(None)
         con.close()
-        #if data[0] == 0 and data[1] == 0 and data[2] == 0 and data[3] == 0 and data[4] == 0:
-        #    raise Exception("received zeros from station")
-        #else:
-        #    return(data)
+
     def compare(self):
         data=[]
         processes = []
@@ -56,7 +57,7 @@ class MeteoStationSq2ips(SR0WXModule):
         self.__logger.info("Starting comparison...")
         dataf=[]
         for i in range(len(data)):
-            if data[i][0] == 0 and data[i][1] == 0 and data[i][2] == 0 and data[i][3] == 0 and data[i][4] == 0:
+            if data[i][self.__coms.index("atemp\n")] == 0 and data[i][self.__coms.index("ahum\n")] == 0 and data[i][self.__coms.index("awin_dir\n")] == 0 and data[i][self.__coms.index("awin_gus\n")] == 0 and data[i][self.__coms.index("rain\n")] == 0:
                 self.__logger.warning(COLOR_WARNING + f"Satation {self.__ip[i]} reported only zeros, skipping..." + COLOR_ENDC)
             else:
                 dataf.append(data[i])
@@ -67,7 +68,17 @@ class MeteoStationSq2ips(SR0WXModule):
             if dataf[i][self.__coms.index("atime\n")]<prefered_atime:
                 prefered_index = i
                 prefered_atime = dataf[i][self.__coms.index("atime\n")]
-
+        apress = 0
+        c = 0
+        for d in dataf:
+            if d!=0.0:
+                apress+=d[self.__coms.index("apress\n")]
+                c+=1
+        apress = apress / c
+        for i in range(len(dataf)):
+            if d==0.0:
+                dataf[i][self.__coms.index("apress\n")] = apress
+        
         if dataf == []:
             raise Exception("No functioning stations")
         else:
@@ -158,8 +169,9 @@ class MeteoStationSq2ips(SR0WXModule):
         try:
             data = self.compare()
             message = "aktualny_stan_pogody _ "
-            #if data[5]>
+
             message += f"temperatura " + self.__language.read_temperature(round(data[0])) + " "
+            message += f"cisnienie " + self.__language.read_pressure(round(data[7])) + " "
             message += f"wilgotnosc "+self.__language.read_percent(round(data[1]))+" _ "
             if round(data[3]*3.6) < 1:
                 message+=" brak_wiatru "
