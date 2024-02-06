@@ -71,6 +71,7 @@ class MeteoStationSq2ips(SR0WXModule):
         if dataf == []:
             raise Exception("No functioning stations")
         else:
+            self.__logger.info(f"Using station {self.__ip[prefered_index]}")
             return(dataf[prefered_index])
 
     def angleProcess(self, ang):
