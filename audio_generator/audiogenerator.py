@@ -6,7 +6,7 @@ from multiprocessing import Pool
 from tqdm import tqdm
 import os
 
-from slownik import slownik
+from slownik import slownik,slownik_auto
 
 def GetKey():
     url = 'https://responsivevoice.org/'
@@ -61,8 +61,10 @@ if __name__ == "__main__":
 
     for slowo in list(slownik):
         slownik_list.append([TrimPl(slowo), slownik[slowo]])
+    for slowo in slownik_auto:
+        slownik_list.append([TrimPl(slowo), slowo])
 
-    with Pool(processes=len(slownik)) as p:
-        with tqdm(total=len(slownik)) as pbar:
+    with Pool(processes=len(slownik_list)) as p:
+        with tqdm(total=len(slownik_list)) as pbar:
             for _ in p.imap_unordered(GetOgg, slownik_list):
                 pbar.update()
