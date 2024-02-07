@@ -27,7 +27,15 @@ class MeteoAlertSq2ips(SR0WXModule):
         if self.__validity_type == 1:
             text = "waz_ne_do_godziny " + date.strftime("%H")+"_00 " + str(date.day) + "-go " + months[str(date.month)] + str(date.year)
         elif self.__validity_type == 2:
-            text = "waz_ne_do " + str(date.day) + "-go " + months[str(date.month)]
+            if date.month == datetime.now().month and date.year == datetime.now().year:
+                if date.day == datetime.now().day:
+                    text = "waz_ne_do_kon_ca_dnia"
+                elif date.day == datetime.now().day+1:
+                    text = "waz_ne_do_jutra"
+                else:
+                    text = "waz_ne_do " + str(date.day) + "-go " + months[str(date.month)]
+            else:
+                text = "waz_ne_do " + str(date.day) + "-go " + months[str(date.month)]
         return text
     def downloadData(self):
         #urlap = "https://meteo.imgw.pl/api/meteo/messages/v1/prog/latest/pronieb/ALL"

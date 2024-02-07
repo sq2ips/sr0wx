@@ -1,5 +1,7 @@
 
 slownik = {
 #       format:
-#   "slowo","nazwa",
+#   "slowo":"nazwa",
+#    "ważne do końca dnia":"ważne do końca dnia",
+#    "ważne do jutra":"ważne do jutra",
 }

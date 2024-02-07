@@ -34,7 +34,7 @@ def TrimPl(word):
                 .replace(("ż"), "z_")\
                 .replace(":","")\
                 .replace(",","")\
-                .replace("."," _ ")
+                .replace(" ","_")
     return(word)
 
 def GetMp3(word, filename):
