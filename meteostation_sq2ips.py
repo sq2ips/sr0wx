@@ -28,7 +28,7 @@ class MeteoStationSq2ips(SR0WXModule):
                     data.append(float(d))
             con.send(data)
         except Exception as e:
-            self.__logger.error(COLOR_FAIL + "Exception when getting data from %s: %s"+ COLOR_ENDC, ip, e)
+            self.__logger.warning(COLOR_WARNING + "Exception when getting data from %s: %s"+ COLOR_ENDC, ip, e)
             con.send(None)
         con.close()
 
