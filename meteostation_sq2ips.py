@@ -14,23 +14,32 @@ class MeteoStationSq2ips(SR0WXModule):
         self.__port=port
         self.__coms = ["atemp\n", "ahum\n", "awin_dir\n", "awin_avr\n", "awin_gus\n", "rain\n", "win_qual\n", "apress\n", "rssi\n", "last\n", "atime\n"]
     def downloadData(self, con, ip, port):
-        try:
-            data = []
-            sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM) # UDP
+        w=True
+        counter = 0
+        while w:
+            try:
+                data = []
+                sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM) # UDP
 
-            sock.settimeout(10)
-            for i in self.__coms:
-                sock.sendto(i.encode("UTF-8"), (ip, port))
-                d = sock.recvfrom(1024)[0].decode("UTF-8")
-                if d == '\n':
-                    data.append(0.0)
+                sock.settimeout(5)
+                for i in self.__coms:
+                    sock.sendto(i.encode("UTF-8"), (ip, port))
+                    d = sock.recvfrom(1024)[0].decode("UTF-8")
+                    if d == '\n':
+                        data.append(0.0)
+                    else:
+                        data.append(float(d))
+                con.send(data)
+                w=False
+                con.close()
+            except Exception as e:
+                if counter<3:
+                    self.__logger.warning(COLOR_WARNING + "Exception when getting data from %s: %s. Trying again..."+ COLOR_ENDC, ip, e)
+                    counter+=1
                 else:
-                    data.append(float(d))
-            con.send(data)
-        except Exception as e:
-            self.__logger.warning(COLOR_WARNING + "Exception when getting data from %s: %s"+ COLOR_ENDC, ip, e)
-            con.send(None)
-        con.close()
+                    self.__logger.error(COLOR_FAIL + "Exception when getting data from %s: %s"+ COLOR_ENDC, ip, e)
+                    con.send(None)
+                    con.close()
 
     def compare(self):
         data=[]
