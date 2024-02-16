@@ -4,7 +4,7 @@ import urllib.request
 import bs4 as bs
 from multiprocessing import Pool
 from tqdm import tqdm
-import os
+import os, shutil
 
 from slownik import slownik,slownik_auto
 
@@ -38,11 +38,9 @@ def TrimPl(word):
     return(word)
 
 def GetMp3(word, filename):
-    if os.path.exists("mp3/") == False:
-        os.mkdir("mp3")
+
     gender = "female"
     url = f'https://texttospeech.responsivevoice.org/v1/text:synthesize?lang=pl&engine=g1&name=&pitch=0.5&rate=0.5&volume=1&key={GetKey()}&gender={gender}&text={quote_plus(word)}'
-    #print(url)
     data = requests.get(url)
     open(f'mp3/{filename}.mp3', 'wb').write(data.content)
 def convert(filename):
@@ -51,20 +49,25 @@ def convert(filename):
     os.system(f"ffmpeg -hide_banner -loglevel error -y -i mp3/{filename}.mp3 -ar 32000  -ab 48000 -acodec libvorbis ogg/{filename}.ogg")
     os.remove(f"mp3/{filename}.mp3")
 def GetOgg(l):
-    filename = l[0]
-    word = l[1]
+    filename = l[1]
+    word = l[0]
+    #print(f"word: {word} | filename: {filename}")
     GetMp3(word, filename)
     convert(filename)
 
 if __name__ == "__main__":
+    if os.path.exists("mp3/") == True:
+        shutil.rmtree('mp3')
+    os.mkdir("mp3")
     slownik_list = []
 
     for slowo in list(slownik):
-        slownik_list.append([TrimPl(slowo), slownik[slowo]])
+        slownik_list.append([slowo, TrimPl(slownik[slowo])])
     for slowo in slownik_auto:
-        slownik_list.append([TrimPl(slowo), slowo])
+        slownik_list.append([slowo, TrimPl(slowo)])
 
     with Pool(processes=len(slownik_list)) as p:
         with tqdm(total=len(slownik_list)) as pbar:
             for _ in p.imap_unordered(GetOgg, slownik_list):
                 pbar.update()
+    os.removedirs(f"mp3/")
