@@ -387,6 +387,18 @@ calendarsq2ips = CalendarSq2ips(
     temp=20,
     hori=0,
 )
+
+# ---------------
+# spaceweather_sq2ips
+# ---------------
+
+from spaceweather_sq2ips import SpaceWeatherSq2ips
+spaceweathersq2ips = SpaceWeatherSq2ips(
+    urlG = "https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json", # burze geomagnetyczne
+    urlR = "https://services.swpc.noaa.gov/json/goes/secondary/xrays-6-hour.json", # zakłucenia radiowe
+    urlS = "https://services.swpc.noaa.gov/json/goes/primary/integral-protons-6-hour.json", # Burze radiacyjne
+)
+
 #----------------
 #meteoalert_sq2ips
 #----------------
