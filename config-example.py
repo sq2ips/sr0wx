@@ -410,11 +410,22 @@ meteoalertsq2ips = MeteoAlertSq2ips(
     validity_type=2, # 1=long 2=short
 )
 
+# ---------------
+# meteostation_sq2ips
+# ---------------
+
+from meteostation_sq2ips import MeteoStationSq2ips
+meteostationsq2ips = MeteoStationSq2ips(
+    language = pl_google,
+    ip=[],
+    port=4210,
+)
 
 # WŁĄCZONE MODUŁY
 modules = [
     #activitymap,       # marker na mapie wx.ostol.pl
     meteoalertsq2ips,   # ostrzeżenia imgw
+    meteostationsq2ips,  # 
     openweathersq9atk,  # prognoza pogody
     #meteosq9atk,       # pogoda alternatywa
     #imgwpodestsq9atk,  # wodowskazy
