@@ -13,7 +13,8 @@ elif sys.argv[1] == "-a":
     print("miasto: id stacji")
     data = requests.get(url).json()
     for i in range(len(data["features"])):
-        print(f'{data["features"][i]["properties"]["stacja"]}: {data["features"][i]["properties"]["id"]}')
+        print(
+            f'{data["features"][i]["properties"]["stacja"]}: {data["features"][i]["properties"]["id"]}')
 elif sys.argv[1] == "-f":
     print("Program szukający id stacji do modułu radioactive_sq2ips.py\n")
     print(f"wyszukiwanie id na podstawie filtra: {sys.argv[2]}")
@@ -22,7 +23,8 @@ elif sys.argv[1] == "-f":
     any = False
     for i in range(len(data["features"])):
         if data["features"][i]["properties"]["stacja"].lower().find(sys.argv[2].lower().replace(("ą"), "a").replace(("ć"), "c").replace(("ę"), "e").replace(("ł"), "l").replace(("ń"), "n").replace(("ó"), "o").replace(("ś"), "s").replace(("ź"), "z").replace(("ż"), "z")) != -1:
-            print(f'{data["features"][i]["properties"]["stacja"]}: {data["features"][i]["properties"]["id"]}')
+            print(
+                f'{data["features"][i]["properties"]["stacja"]}: {data["features"][i]["properties"]["id"]}')
             any = True
     if any == False:
         print("Nic nie znaleziono")

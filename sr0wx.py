@@ -1,6 +1,17 @@
 #!/usr/bin/python -tt
 # -*- coding: utf-8 -*-
 
+import urllib.parse
+import urllib.error
+import urllib.request
+import logging.handlers
+import logging
+from multiprocessing import Process, Pipe
+import numpy
+import sys
+import pygame
+import os
+import getopt
 from colorcodes import *
 
 LICENSE = COLOR_OKBLUE + """
@@ -24,8 +35,6 @@ limitations under the License.
 You can find full list of contributors on github.com/sq6jnx/sr0wx.py
 
 """ + COLOR_ENDC
-
-
 
 
 #
@@ -64,14 +73,6 @@ You can find full list of contributors on github.com/sq6jnx/sr0wx.py
 #
 # SR0WX (core) requires the following packages:
 
-import getopt
-import os
-import pygame
-import sys
-import logging, logging.handlers
-import numpy
-import urllib.request, urllib.error, urllib.parse
-from multiprocessing import Process, Pipe
 # ``os``, ``sys`` and ``time`` doesn't need further explanation, these are
 # syandard Python packages.
 #
@@ -89,6 +90,8 @@ from multiprocessing import Process, Pipe
 # so it will be possible to find out how long script was running.
 
 # Logging configuration
+
+
 def setup_logging(config):
     # create formatter and add it to the handlers
     formatter = logging.Formatter(config.log_line_format)
@@ -118,6 +121,7 @@ def my_import(name):
 #
 # All datas returned by SR0WX modules will be stored in ``data`` variable.
 
+
 message = " "
 
 # Information about which modules are to be executed is written in SR0WX
@@ -146,7 +150,7 @@ if config is None:
 logger = setup_logging(config)
 
 logger.info(COLOR_WARNING + "sr0wx.py started" + COLOR_ENDC)
-#logger.info(LICENSE)
+# logger.info(LICENSE)
 
 
 if len(args) > 0:
@@ -155,11 +159,12 @@ else:
     modules = config.modules
 
 try:
-    dane = urllib.request.urlopen('http://google.pl', None, 30);
+    dane = urllib.request.urlopen('http://google.pl', None, 30)
 except urllib.request.URLError as e:
     modules = config.offline_modules
     message += " ".join(config.data_sources_error_msg)
-    logger.info(COLOR_FAIL + "Brak połączenia z internetem" + COLOR_ENDC + "\n")
+    logger.info(COLOR_FAIL + "Brak połączenia z internetem" +
+                COLOR_ENDC + "\n")
 
 
 lang = my_import('.'.join((config.lang, config.lang)))
@@ -184,20 +189,22 @@ if config.multi_processing:
         processes[i].join()
 
     func_modules = ""
-    func_modules_counter=0
+    func_modules_counter = 0
     for i in range(len(processes)):
         module_data = connections[i].recv()
         module_message = module_data.get("message", "")
         module_source = module_data.get("source", "")
         if module_message == "":
-            func_modules += COLOR_FAIL + str(module_s[i])+ COLOR_ENDC + "\n"
+            func_modules += COLOR_FAIL + str(module_s[i]) + COLOR_ENDC + "\n"
         elif module_message == None:
             module_message = ""
-            func_modules_counter+=1
-            func_modules += COLOR_OKGREEN + str(module_s[i])+ COLOR_ENDC + "\n"
+            func_modules_counter += 1
+            func_modules += COLOR_OKGREEN + \
+                str(module_s[i]) + COLOR_ENDC + "\n"
         else:
-            func_modules_counter+=1
-            func_modules += COLOR_OKGREEN + str(module_s[i])+ COLOR_ENDC + "\n"
+            func_modules_counter += 1
+            func_modules += COLOR_OKGREEN + \
+                str(module_s[i]) + COLOR_ENDC + "\n"
         message = " ".join((message, module_message))
         if module_message != "" and module_source != "":
             sources.append(module_data['source'])
@@ -213,13 +220,16 @@ else:
             if module_message != "" and module_source != "":
                 sources.append(module_data['source'])
         except:
-            logger.exception(COLOR_FAIL + "Exception when running %s"+ COLOR_ENDC, module)
+            logger.exception(
+                COLOR_FAIL + "Exception when running %s" + COLOR_ENDC, module)
 
 
-logger.info(COLOR_BOLD + "modules (" + COLOR_ENDC + COLOR_OKGREEN + "functioning" + COLOR_ENDC + COLOR_BOLD + " / " + COLOR_ENDC + COLOR_FAIL + "not functioning" + COLOR_ENDC + COLOR_BOLD + "):\n" + COLOR_ENDC + func_modules)
+logger.info(COLOR_BOLD + "modules (" + COLOR_ENDC + COLOR_OKGREEN + "functioning" + COLOR_ENDC + COLOR_BOLD + " / " +
+            COLOR_ENDC + COLOR_FAIL + "not functioning" + COLOR_ENDC + COLOR_BOLD + "):\n" + COLOR_ENDC + func_modules)
 
 if func_modules_counter == 0:
-    logger.critical(COLOR_FAIL + "ERROR: No functioning modules, exiting..." + COLOR_ENDC)
+    logger.critical(
+        COLOR_FAIL + "ERROR: No functioning modules, exiting..." + COLOR_ENDC)
     exit(1)
 # When all the modules finished its' work it's time to ``.split()`` returned
 # data. Every element of returned list is actually a filename of a sample.
@@ -254,13 +264,15 @@ for el in message:
 
 if hasattr(config, 'ctcss_tone'):
     volume = 25000
-    arr = numpy.array([volume * numpy.sin(2.0 * numpy.pi * round(config.ctcss_tone) * x / 16000) for x in range(0, 16000)]).astype(numpy.int16)
-    arr2 = numpy.c_[arr,arr]
+    arr = numpy.array([volume * numpy.sin(2.0 * numpy.pi * round(config.ctcss_tone)
+                      * x / 16000) for x in range(0, 16000)]).astype(numpy.int16)
+    arr2 = numpy.c_[arr, arr]
     ctcss = pygame.sndarray.make_sound(arr2)
-    logger.info(COLOR_WARNING + "CTCSS tone %sHz" + COLOR_ENDC + "\n", "%.1f" % config.ctcss_tone)
+    logger.info(COLOR_WARNING + "CTCSS tone %sHz" +
+                COLOR_ENDC + "\n", "%.1f" % config.ctcss_tone)
     ctcss.play(-1)
 else:
-    logger.info(COLOR_WARNING + "CTCSS tone disabled" + COLOR_ENDC) 
+    logger.info(COLOR_WARNING + "CTCSS tone disabled" + COLOR_ENDC)
 
 logger.info("playlist elements: %s", " ".join(playlist)+"\n")
 logger.info("loading sound samples...")
@@ -274,20 +286,23 @@ for el in message:
 
         if el != "_" and el not in sound_samples:
             if not os.path.isfile(config.lang + "/" + el + ".ogg"):
-                logger.warning(COLOR_FAIL + "Couldn't find %s" % (config.lang + "/" + el + ".ogg" + COLOR_ENDC))
-                sound_samples[el] = pygame.mixer.Sound(config.lang + "/beep.ogg")
+                logger.warning(COLOR_FAIL + "Couldn't find %s" %
+                               (config.lang + "/" + el + ".ogg" + COLOR_ENDC))
+                sound_samples[el] = pygame.mixer.Sound(
+                    config.lang + "/beep.ogg")
             else:
-                sound_samples[el] = pygame.mixer.Sound(config.lang + "/" + el + ".ogg")
+                sound_samples[el] = pygame.mixer.Sound(
+                    config.lang + "/" + el + ".ogg")
 
 
-nopi=False
+nopi = False
 try:
     import RPi.GPIO as GPIO
 except ImportError:
     logger.error("No raspi module found, skipping...")
     nopi = True
-    
-if(nopi == False):
+
+if (nopi == False):
     GPIO.setmode(GPIO.BOARD)
     GPIO.setup(40, GPIO.OUT)
     GPIO.output(40, GPIO.HIGH)
@@ -325,7 +340,7 @@ pygame.time.delay(1000)
 # aloud" will be less natural.
 
 for el in message:
-    #print el # wyświetlanie nazw próbek 
+    # print el # wyświetlanie nazw próbek
     if el == "_":
         pygame.time.wait(500)
     else:
@@ -333,12 +348,13 @@ for el in message:
             try:
                 voice_channel = sound_samples[el].play()
             except:
-                a=1
+                a = 1
 
         elif "upper" not in dir(el):
             sound = pygame.sndarray.make_sound(el)
             if config.pygame_bug == 1:
-                sound = pygame.sndarray.make_sound(pygame.sndarray.array(sound)[:len(pygame.sndarray.array(sound))/2])
+                sound = pygame.sndarray.make_sound(pygame.sndarray.array(
+                    sound)[:len(pygame.sndarray.array(sound))/2])
             voice_channel = sound.play()
         while voice_channel.get_busy():
             pygame.time.Clock().tick(25)
@@ -360,10 +376,10 @@ try:
         ser.close()
         logger.info(COLOR_OKGREEN + "RTS/PTT set to OFF\n" + COLOR_ENDC)
 except NameError:
-    # sudo gpasswd --add ${USER} dialout 
+    # sudo gpasswd --add ${USER} dialout
     logger.exception(COLOR_FAIL + "Couldn't close serial port" + COLOR_ENDC)
 
-if(nopi == False):
+if (nopi == False):
     GPIO.output(40, GPIO.LOW)
     logger.info(COLOR_WARNING + "PIN 40 OFF: PTT OFF" + COLOR_ENDC)
     GPIO.cleanup()

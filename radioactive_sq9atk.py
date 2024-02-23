@@ -1,7 +1,9 @@
 #!/usr/bin/python -tt
 # -*- coding: utf-8 -*-
 
-import urllib.request, urllib.error, urllib.parse
+import urllib.request
+import urllib.error
+import urllib.parse
 import re
 import logging
 import pytz
@@ -12,10 +14,11 @@ from colorcodes import *
 
 from sr0wx_module import SR0WXModule
 
+
 class RadioactiveSq9atk(SR0WXModule):
     """Klasa pobierająca dane o promieniowaniu"""
 
-    def __init__(self,language,service_url,sensor_id):
+    def __init__(self, language, service_url, sensor_id):
         self.__service_url = service_url
         self.__sensor_id = sensor_id
         self.__language = language
@@ -37,32 +40,33 @@ class RadioactiveSq9atk(SR0WXModule):
         return pos >= 0
 
     def isSensorRow(self, string):
-        string = " "+string # na początku trzeba dodac spację bo inaczej find nie znajduje pierwszego znaku
+        # na początku trzeba dodac spację bo inaczej find nie znajduje pierwszego znaku
+        string = " "+string
         pos = string.find("Last sample")
         return pos >= 0
-        
+
     def cleanUpString(self, string):
-        string = string.replace("<br />","<br/>")
-        string = string.replace("<br>","<br/>")
-        string = string.replace("'","")
-        
+        string = string.replace("<br />", "<br/>")
+        string = string.replace("<br>", "<br/>")
+        string = string.replace("'", "")
+
         return string
-                
+
     def extractSensorData(self, string):
         string = self.cleanUpString(string)
         tmpArr = string.split("<br/>")
 
         arrPart = tmpArr[0].split(".bindPopup(")
         tmpArr[0] = arrPart[1]
-        
-        tmpCurrent = tmpArr[0].split("Last sample: ");
-        tmpAverage = tmpArr[2].split("24 hours average: ");
-        
+
+        tmpCurrent = tmpArr[0].split("Last sample: ")
+        tmpAverage = tmpArr[2].split("24 hours average: ")
+
         current = tmpCurrent[1].split(" ")[0]
         average = tmpAverage[1].split(" ")[0]
 
-        return {"current":current, "average": average}
-  
+        return {"current": current, "average": average}
+
     def getSensorData(self, html):
         dataArr = html.split("L.marker([")
         ret = {}
@@ -71,7 +75,7 @@ class RadioactiveSq9atk(SR0WXModule):
                 if self.isSensorMatchedById(self.__sensor_id, row):
                     ret = self.extractSensorData(row)
         return ret
-        
+
     def get_data(self, connection):
         try:
             self.__logger.info("::: Pobieram dane...")
@@ -83,10 +87,13 @@ class RadioactiveSq9atk(SR0WXModule):
             msvCurrent = int(float(data['current'])*100)
             msvAverage = int(float(data['average'])*100)
 
-            averageValue = " ".join(["wartos_c__aktualna",self.__language.read_decimal( msvCurrent )+" ","mikrosjiwerta","na_godzine_"])
-            currentValue = " ".join(["s_rednia_wartos_c__dobowa",self.__language.read_decimal( msvAverage )+" ","mikrosjiwerta","na_godzine_"])
+            averageValue = " ".join(["wartos_c__aktualna", self.__language.read_decimal(
+                msvCurrent)+" ", "mikrosjiwerta", "na_godzine_"])
+            currentValue = " ".join(["s_rednia_wartos_c__dobowa", self.__language.read_decimal(
+                msvAverage)+" ", "mikrosjiwerta", "na_godzine_"])
 
-            message = " ".join([" _ poziom_promieniowania _ " ,averageValue ," _ " ,currentValue ," _ "])
+            message = " ".join(
+                [" _ poziom_promieniowania _ ", averageValue, " _ ", currentValue, " _ "])
 
             connection.send({
                 "message": message,
@@ -97,5 +104,6 @@ class RadioactiveSq9atk(SR0WXModule):
                 "source": "radioactiveathome_org",
             }
         except Exception as e:
-            self.__logger.exception(COLOR_FAIL + "Exception when running %s: %s"+ COLOR_ENDC, str(self), e)
+            self.__logger.exception(
+                COLOR_FAIL + "Exception when running %s: %s" + COLOR_ENDC, str(self), e)
             connection.send(dict())

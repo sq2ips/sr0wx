@@ -22,17 +22,14 @@ import datetime
 
 
 class imgw_prognoza:
-    
+
     poczatek = """:00"""
-    koniec   = """Noc"""
-
-
+    koniec = """Noc"""
 
     def downloadFile(self, url):
         webFile = urllib.urlopen(url)
         return webFile.read()
 
-    
 
 # Sa dwa sposoby na okreslenie zachmurzenia i zjawisk. Pierwszy to sprawdzenie
 # po numerkach obrazka, drugi to przeparsowanie slownego komentarza.
@@ -42,21 +39,21 @@ class imgw_prognoza:
     zachmurzenie = {
         0: "bezchmurnie",
         1: "pogodnie",
-        2: "slabe zachmurzenie", #
+        2: "slabe zachmurzenie",
         3: "pogodnie, okresami wzrost zachmurzenia do umiarkowanego",
-        4: "zachmurzenie umiarkowane", #
-        5: "pochmurno", #
+        4: "zachmurzenie umiarkowane",
+        5: "pochmurno",
         6: "Pochmurno, okresami przejaśnienia",
-        7: "niemal całkowite zachmurzenie", #
-        8: "zachmurzenie calkowite" }
+        7: "niemal całkowite zachmurzenie",
+        8: "zachmurzenie calkowite"}
 
-    zjawiska ={
-        00: "brak zjawisk", #
+    zjawiska = {
+        00: "brak zjawisk",
         60: "slabe opady deszczu",
-        61: "deszcz", #
-        68: "deszcz ze śniegiem",#
+        61: "deszcz",
+        68: "deszcz ze śniegiem",
         70: "slabe opady sniegu",
-        90: "burze" } #
+        90: "burze"}
 
     prognozy = {}
     prognoza = {}
@@ -65,32 +62,43 @@ class imgw_prognoza:
         file = self.downloadFile(url).split("\r\n")
         _data = re.compile("\((\d{1,2})\.(\d{1,2})\.(\d\d\d\d)\)")
 
-        for i in range(0,len(file)):
-            if len(_data.findall(file[i]))>0:
+        for i in range(0, len(file)):
+            if len(_data.findall(file[i])) > 0:
                 data = _data.findall(file[i])
-                self.prognozy["-".join((data[0]))]={}
+                self.prognozy["-".join((data[0]))] = {}
 
-            elif ":00" in file[i]: 
-                godzina  = int("".join(file[i].split(">")).split("<")[2].split("\"")[2].split(":")[0])
+            elif ":00" in file[i]:
+                godzina = int("".join(file[i].split(">")).split(
+                    "<")[2].split("\"")[2].split(":")[0])
 
-                zachm    = "".join(file[i+1].split(">")).split("<")[2].split("\"")[1]
+                zachm = "".join(file[i+1].split(">")
+                                ).split("<")[2].split("\"")[1]
 
-                temp     = "".join(file[i+2].split(">")).split("<")[2].split("\"")[2]
-                tempOdcz = "".join(file[i+2].split(">")).split("<")[4].split("(")[1].split(")")[0]
-                cisn     = "".join(file[i+2].split(">")).split("<")[7].split("\"")[8].split(" hPa")[0]
+                temp = "".join(file[i+2].split(">")
+                               ).split("<")[2].split("\"")[2]
+                tempOdcz = "".join(
+                    file[i+2].split(">")).split("<")[4].split("(")[1].split(")")[0]
+                cisn = "".join(
+                    file[i+2].split(">")).split("<")[7].split("\"")[8].split(" hPa")[0]
 
-                silaWiatru    = "".join(file[i+3].split(">")).split("<")[1].split("\"")[8].split(" m/s")[0]
-                kierWiatru     = "".join(file[i+3].split(">")).split("<")[2].split("\"")[1]
-                kierWiatruSl   = "".join(file[i+3].split(">")).split("<")[2].split("\"")[3].replace("-"," ")
+                silaWiatru = "".join(
+                    file[i+3].split(">")).split("<")[1].split("\"")[8].split(" m/s")[0]
+                kierWiatru = "".join(
+                    file[i+3].split(">")).split("<")[2].split("\"")[1]
+                kierWiatruSl = "".join(
+                    file[i+3].split(">")).split("<")[2].split("\"")[3].replace("-", " ")
 
-                koment   = "".join(file[i+4].split(">")).split("<")[1].split("\"")[8]
+                koment = "".join(file[i+4].split(">")
+                                 ).split("<")[1].split("\"")[8]
 
-                self.prognozy["-".join((data[0]))][godzina]={'zachm':zachm, 'temp':float(temp), 'tempOdcz':float(tempOdcz), 'cisn':int(cisn), 'silaWiatru':float(silaWiatru), 'kierWiatru':kierWiatru, 'kierWiatruSl':kierWiatruSl, 'koment':koment}
+                self.prognozy["-".join((data[0]))][godzina] = {'zachm': zachm, 'temp': float(temp), 'tempOdcz': float(tempOdcz), 'cisn': int(
+                    cisn), 'silaWiatru': float(silaWiatru), 'kierWiatru': kierWiatru, 'kierWiatruSl': kierWiatruSl, 'koment': koment}
 
         self.przygotujPrognoze()
 
-    def przygotujPrognoze(self,datetime):
-        deltaT=31*24*60 # 1 month in minutes
+    def przygotujPrognoze(self, datetime):
+        deltaT = 31*24*60  # 1 month in minutes
+
 
 url = """http://www.pogodynka.pl/miasto.php?miasto=Wroc%B3aw&gmina=Wroc%B3aw&powiat=Wroc%B3aw&wojewodztwo=dolno%B6l%B1skie&czas=&model="""
 

@@ -22,7 +22,9 @@ import json
 
 from colorcodes import *
 
-import urllib.request, urllib.error, urllib.parse
+import urllib.request
+import urllib.error
+import urllib.parse
 
 from sr0wx_module import SR0WXModule
 
@@ -42,6 +44,7 @@ Parameters:
     - `additional_info`: additional information to show on website
     - `service_url`: mapping service url, defaults to SQ9ATK service
     """
+
     def __init__(self, callsign, latitude, longitude, hour_quarter,
                  above_sea_level, above_ground_level, station_range,
                  additional_info="", service_url=""):
@@ -82,8 +85,8 @@ Parameters:
 
             self.__logger.info("::: Odpytuję adres: " + url.decode())
 
-            url=url.decode()
-            #try:
+            url = url.decode()
+            # try:
             request = urllib.request.Request(url)
             webFile = urllib.request.urlopen(request, None, 5)
             response = webFile.read()
@@ -94,29 +97,15 @@ Parameters:
                 log = "Non-OK response from %s, (%s)"
                 self.__logger.error(log, url, response)
             connection.send({
-            "message":None,
-            "source":"nd",})
-            return {"":""}
+                "message": None,
+                "source": "nd", })
+            return {"": ""}
 
-            #except urllib.error.URLError as e:
+            # except urllib.error.URLError as e:
             #    self.__logger.error(e)
-            #except urllib.error.timeout:
+            # except urllib.error.timeout:
             #    self.__logger.error("Timed out!")
         except Exception as e:
-            self.__logger.exception(COLOR_FAIL + "Exception when running %s: %s"+ COLOR_ENDC, str(self), e)
+            self.__logger.exception(
+                COLOR_FAIL + "Exception when running %s: %s" + COLOR_ENDC, str(self), e)
             connection.send(dict())
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

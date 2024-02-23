@@ -21,6 +21,7 @@ import warnings
 
 class SR0WXModule(object):
     """Base class for SR0WX modules."""
+
     def __init__(self):
         pass
 

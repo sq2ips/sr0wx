@@ -26,53 +26,68 @@
 # Będąc w katalogu audio_generator:
 #   php index.php
 #
-# Generowane są sample z tablicy $słownik z pliku slownik.php. 
+# Generowane są sample z tablicy $słownik z pliku slownik.php.
 # Pozostałe tablice to tylko przechowalnia fraz go wygenerowania.
 
 
-
-
-
-
-import logging, logging.handlers, time
+from meteostation_sq2ips import MeteoStationSq2ips
+from meteoalert_sq2ips import MeteoAlertSq2ips
+from spaceweather_sq2ips import SpaceWeatherSq2ips
+from calendar_sq2ips import CalendarSq2ips
+from calendar_sq9atk import CalendarSq9atk
+from vhf_tropo_sq9atk import VhfTropoSq9atk
+from propagation_sq9atk import PropagationSq9atk
+from radioactive_sq2ips import RadioactiveSq2ips
+from radioactive_sq9atk import RadioactiveSq9atk
+from geo_magnetic_sq9atk import GeoMagneticSq9atk
+from airly_sq9atk import AirlySq9atk
+from air_pollution_sq9atk import AirPollutionSq9atk
+from imgw_podest_sq9atk import ImgwPodestSq9atk
+from meteo_sq9atk import MeteoSq9atk
+from openweather_sq9atk import OpenWeatherSq9atk
+from activity_map import ActivityMap
+import pl_google.pl_google as pl_google
+import logging
+import logging.handlers
+import time
 from datetime import datetime
 log_line_format = '%(asctime)s %(name)s %(levelname)s: %(message)s'
 log_handlers = [{
-        'log_level': logging.DEBUG,
-        'class': logging.StreamHandler,
-        'config': {'stream': None},
-	},{
-        'log_level': logging.DEBUG,
-        'class': logging.handlers.TimedRotatingFileHandler,
-        'config': {
-            'filename': '../logs/'+ str(datetime.now().strftime("%Y-%m-%d_%H:%M")) +'.log',
-            'when': 'D',
-            'interval': 1,
-            'backupCount': 30,
-            'delay': True,
-            'utc': True,
-        }
-    }]
+    'log_level': logging.DEBUG,
+    'class': logging.StreamHandler,
+    'config': {'stream': None},
+}, {
+    'log_level': logging.DEBUG,
+    'class': logging.handlers.TimedRotatingFileHandler,
+    'config': {
+        'filename': '../logs/' + str(datetime.now().strftime("%Y-%m-%d_%H:%M")) + '.log',
+        'when': 'D',
+        'interval': 1,
+        'backupCount': 30,
+        'delay': True,
+        'utc': True,
+    }
+}]
 
-#ctcss_tone = 67.0
+# ctcss_tone = 67.0
 serial_port = None
 serial_baud_rate = 9600
-serial_signal = 'DTR' # lub 'RTS'
-multi_processing = True # wielo procesowość dla modułów (wyłączone jeszcze nie działa)
+serial_signal = 'DTR'  # lub 'RTS'
+# wielo procesowość dla modułów (wyłączone jeszcze nie działa)
+multi_processing = True
 
-import pl_google.pl_google as pl_google
 lang = "pl_google"
 pygame_bug = 0
 
-hello_msg = ['_', 'sr2wxg_cw','_','tu_eksperymentalna_automatyczna_stacja_pogodowa','sr0wx']
-goodbye_msg = ['_','tu_sr2wxg',"_", "kolejny_komunikat","_", "beep2"]
-data_sources_error_msg = ['_','zrodlo_danych_niedostepne']
+hello_msg = ['_', 'sr2wxg_cw', '_',
+             'tu_eksperymentalna_automatyczna_stacja_pogodowa', 'sr0wx']
+goodbye_msg = ['_', 'tu_sr2wxg', "_", "kolejny_komunikat", "_", "beep2"]
+data_sources_error_msg = ['_', 'zrodlo_danych_niedostepne']
 read_sources_msg = False
 
 # -------------
 # activity_map
 # ------------
-from activity_map import ActivityMap
 activitymap = ActivityMap(
     service_url="http://wx.ostol.pl/map_requests?base=",
     callsign="TEST",
@@ -82,7 +97,7 @@ activitymap = ActivityMap(
     above_sea_level=35,
     above_ground_level=20,
     station_range=23,
-    additional_info= "TEST",
+    additional_info="TEST",
 )
 
 # ---------------
@@ -90,23 +105,19 @@ activitymap = ActivityMap(
 # ---------------
 # https://openweathermap.org/api pod tym adresem można uzyskac klucz API
 # wystarczy sie zarejestrować
-from openweather_sq9atk import OpenWeatherSq9atk
 openweathersq9atk = OpenWeatherSq9atk(
-    language = pl_google,
-    api_key = '', # klucz api
-    lat = 54.5237904,
-    lon = 18.5129878,
-    service_url = 'http://api.openweathermap.org/data/2.5/',
-    no_current = False
+    language=pl_google,
+    api_key='',  # klucz api
+    lat=54.5237904,
+    lon=18.5129878,
+    service_url='http://api.openweathermap.org/data/2.5/',
+    no_current=False
 )
-
-
 
 
 # ---------------
 # meteo_sq9atk
 # ---------------
-from meteo_sq9atk import MeteoSq9atk
 meteosq9atk = MeteoSq9atk(
     language=pl_google,
     service_url="https://pogoda.onet.pl/prognoza-pogody/gdynia-287798",
@@ -116,19 +127,24 @@ meteosq9atk = MeteoSq9atk(
 # -------------
 # imgw_podest_sq9atk
 # ------------
-from imgw_podest_sq9atk import ImgwPodestSq9atk
 imgwpodestsq9atk = ImgwPodestSq9atk(
-    wodowskazy = [
+    wodowskazy=[
 
-## MAPA WSZYSTKICH WODOWSKAZÓW W POLSCE Z NUMERAMI
-## http://wx.ostol.pl/wodowskazy/
+        # MAPA WSZYSTKICH WODOWSKAZÓW W POLSCE Z NUMERAMI
+        # http://wx.ostol.pl/wodowskazy/
 
-        '2.149180210',   # Nazwa: Zabrzeg, rzeka: Wisła             - zrypany wodowskaz / tylko do testów
-        '2.149200360',   # Nazwa: Lipnica Murowana, rzeka: Uszwica  - zrypany wodowskaz / tylko do testów
-        '2.149200370',   # Nazwa: Okocim, rzeka: Uszwica            - zrypany wodowskaz / tylko do testów
-        '2.149190350',   # Nazwa: Krzczonów, rzeka: Krzczonówka     - zrypany wodowskaz / tylko do testów
-        '2.150210200',   # Nazwa: Grebów, rzeka: Łęg                - zrypany wodowskaz / tylko do testów
-        '2.149180080',   # Nazwa: Drogomyśl, rzeka: Wisła           - zrypany wodowskaz / tylko do testów
+        # Nazwa: Zabrzeg, rzeka: Wisła             - zrypany wodowskaz / tylko do testów
+        '2.149180210',
+        # Nazwa: Lipnica Murowana, rzeka: Uszwica  - zrypany wodowskaz / tylko do testów
+        '2.149200360',
+        # Nazwa: Okocim, rzeka: Uszwica            - zrypany wodowskaz / tylko do testów
+        '2.149200370',
+        # Nazwa: Krzczonów, rzeka: Krzczonówka     - zrypany wodowskaz / tylko do testów
+        '2.149190350',
+        # Nazwa: Grebów, rzeka: Łęg                - zrypany wodowskaz / tylko do testów
+        '2.150210200',
+        # Nazwa: Drogomyśl, rzeka: Wisła           - zrypany wodowskaz / tylko do testów
+        '2.149180080',
 
         '2.149210050',   # Nazwa: Krajowice, rzeka: Wisłoka
         '2.149200110',   # Nazwa: Trybsz, rzeka: Białka
@@ -259,12 +275,10 @@ imgwpodestsq9atk = ImgwPodestSq9atk(
 # --------------------
 # air_pollution_sq9atk
 # --------------------
-from datetime import datetime
-from air_pollution_sq9atk import AirPollutionSq9atk
 airpollutionsq9atk = AirPollutionSq9atk(
     language=pl_google,
     service_url="http://api.gios.gov.pl/pjp-api/rest/",
-    station_id = 738,
+    station_id=738,
 )
 
 # ---------------
@@ -272,68 +286,63 @@ airpollutionsq9atk = AirPollutionSq9atk(
 # ---------------
 # https://developer.airly.org/ pod tym adresem można uzyskac klucz API
 # wystarczy sie zarejestrować
-from airly_sq9atk import AirlySq9atk
 airlysq9atk = AirlySq9atk(
-    language = pl_google,
-    api_key = '', # klucz api
-    service_url = 'https://airapi.airly.eu/v2/measurements', #location
-    mode = 'nearest',  # point|nearest|installationId
-    lat = 54.519813,
-    lon = 18.537679,
-    maxDistanceKM = 5,
-    installationId = 3476, # Gdynia
+    language=pl_google,
+    api_key='',  # klucz api
+    service_url='https://airapi.airly.eu/v2/measurements',  # location
+    mode='nearest',  # point|nearest|installationId
+    lat=54.519813,
+    lon=18.537679,
+    maxDistanceKM=5,
+    installationId=3476,  # Gdynia
 )
 
 # --------------------
 # geomagnetic_sq9atk
 # --------------------
-from geo_magnetic_sq9atk import GeoMagneticSq9atk
 geomagneticsq9atk = GeoMagneticSq9atk(
     language=pl_google,
     service_url="https://www.gismeteo.pl/weather-gdynia-3041/gm/",
 )
-        # https://www.gismeteo.pl/weather-warsaw-3196/gm/
-        # https://www.gismeteo.pl/weather-gdansk-3046/gm/
-        # https://www.gismeteo.pl/weather-szczecin-3101/gm/
-        # https://www.gismeteo.pl/weather-krakow-3212/gm/
-        # https://www.gismeteo.pl/weather-rzeszow-3215/gm/
-        # https://www.gismeteo.pl/weather-suwaki-269290/gm/
-        # https://www.gismeteo.pl/weather-jelenia-gora-3206/gm/
-        # https://www.gismeteo.pl/weather-poznan-3194/gm/
-        # https://www.gismeteo.pl/weather-lublin-3205/gm/
-        # https://www.gismeteo.pl/weather-gorzow-wielkopolski-3192/gm/
-        # https://www.gismeteo.pl/weather-tarnowskie-gory-3152/gm/
-        # https://www.gismeteo.pl/weather-ptakowice-280575/gm/
-        # więcej miejscowości po wejściu na dowolny z powyższych adresów w przeglądarce...
+# https://www.gismeteo.pl/weather-warsaw-3196/gm/
+# https://www.gismeteo.pl/weather-gdansk-3046/gm/
+# https://www.gismeteo.pl/weather-szczecin-3101/gm/
+# https://www.gismeteo.pl/weather-krakow-3212/gm/
+# https://www.gismeteo.pl/weather-rzeszow-3215/gm/
+# https://www.gismeteo.pl/weather-suwaki-269290/gm/
+# https://www.gismeteo.pl/weather-jelenia-gora-3206/gm/
+# https://www.gismeteo.pl/weather-poznan-3194/gm/
+# https://www.gismeteo.pl/weather-lublin-3205/gm/
+# https://www.gismeteo.pl/weather-gorzow-wielkopolski-3192/gm/
+# https://www.gismeteo.pl/weather-tarnowskie-gory-3152/gm/
+# https://www.gismeteo.pl/weather-ptakowice-280575/gm/
+# więcej miejscowości po wejściu na dowolny z powyższych adresów w przeglądarce...
 
 # ---------------
 # radioactive_sq9atk
 # ---------------
-from radioactive_sq9atk import RadioactiveSq9atk
 radioactivesq9atk = RadioactiveSq9atk(
     language=pl_google,
     service_url="http://radioactiveathome.org/map/",
-    sensor_id=39306 #czujnik w centrum Gdyni //nie działa//
-    ## więcej czujników na stronie http://radioactiveathome.org/map/
+    sensor_id=39306  # czujnik w centrum Gdyni //nie działa//
+    # więcej czujników na stronie http://radioactiveathome.org/map/
 )
 
 # ---------------
 # radioactive_sq2ips
 # ---------------
 
-from radioactive_sq2ips import RadioactiveSq2ips
 radioactivesq2ips = RadioactiveSq2ips(
     language=pl_google,
     service_url='https://monitoring.paa.gov.pl/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=paa:kcad_siec_pms_moc_dawki_mapa&outputFormat=application/json',
     sensor_id='d2e87d20-28e2-47ea-860d-98a4e98d8726',
     service_url_sr="https://monitoring.paa.gov.pl/_api/maps/MapLayer/15d20873-f8a7-8899-5d69-960cc9ebbbb6/DetailsTable/f5af6ec4-d759-3163-344e-cbf147d28e28/Data/d2e87d20-28e2-47ea-860d-98a4e98d8726"
-) #TODO: skrypt szukający id
+)  # TODO: skrypt szukający id
 
 
 # ---------------
 # propagation_sq9atk
 # ---------------
-from propagation_sq9atk import PropagationSq9atk
 propagationsq9atk = PropagationSq9atk(
     language=pl_google,
     service_url="https://rigreference.com/solar/img/tall",
@@ -341,7 +350,6 @@ propagationsq9atk = PropagationSq9atk(
 # ---------------
 # vhf_propagation_sq9atk
 # ---------------
-from vhf_tropo_sq9atk import VhfTropoSq9atk
 vhftroposq9atk = VhfTropoSq9atk(
     language=pl_google,
     service_url="https://www.dxinfocentre.com/tropo_eur.html",
@@ -351,33 +359,31 @@ vhftroposq9atk = VhfTropoSq9atk(
 # ---------------
 # calendar_sq9atk
 # ---------------
-from calendar_sq9atk import CalendarSq9atk
 calendarsq9atk = CalendarSq9atk(
     language=pl_google,
     service_url="http://calendar.zoznam.sk/sunset-pl.php?city=",
-    city_id=3099424, # Gdyna
+    city_id=3099424,  # Gdyna
 )
-        # 776069 Białystok
-        # 3102014 Bydgoszcz
-        # 3100946 Częstochowa
-        # 3099434 Gdańsk
-        # 3099424 Gdynia
-        # 3096472 Katowice
-        # 3094802 Kraków
-        # 3093133 Lodz
-        # 765876 Lublin
-        # 3088171 Poznań
-        # 760778 Radom
-        # 3085128 Sosnowiec
-        # 3083829 Szczecin
-        # 756135 Warsaw
-        # 3081368 Wrocław
+# 776069 Białystok
+# 3102014 Bydgoszcz
+# 3100946 Częstochowa
+# 3099434 Gdańsk
+# 3099424 Gdynia
+# 3096472 Katowice
+# 3094802 Kraków
+# 3093133 Lodz
+# 765876 Lublin
+# 3088171 Poznań
+# 760778 Radom
+# 3085128 Sosnowiec
+# 3083829 Szczecin
+# 756135 Warsaw
+# 3081368 Wrocław
 
 
-#----------------
-#calendar_sq2ips
-#----------------
-from calendar_sq2ips import CalendarSq2ips
+# ----------------
+# calendar_sq2ips
+# ----------------
 calendarsq2ips = CalendarSq2ips(
     language=pl_google,
     lat='54.52379',
@@ -392,51 +398,51 @@ calendarsq2ips = CalendarSq2ips(
 # spaceweather_sq2ips
 # ---------------
 
-from spaceweather_sq2ips import SpaceWeatherSq2ips
 spaceweathersq2ips = SpaceWeatherSq2ips(
-    urlG = "https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json", # burze geomagnetyczne
-    urlR = "https://services.swpc.noaa.gov/json/goes/secondary/xrays-6-hour.json", # zakłucenia radiowe
-    urlS = "https://services.swpc.noaa.gov/json/goes/primary/integral-protons-6-hour.json", # Burze radiacyjne
+    # burze geomagnetyczne
+    urlG="https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json",
+    # zakłucenia radiowe
+    urlR="https://services.swpc.noaa.gov/json/goes/secondary/xrays-6-hour.json",
+    # Burze radiacyjne
+    urlS="https://services.swpc.noaa.gov/json/goes/primary/integral-protons-6-hour.json",
 )
 
-#----------------
-#meteoalert_sq2ips
-#----------------
-from meteoalert_sq2ips import MeteoAlertSq2ips
+# ----------------
+# meteoalert_sq2ips
+# ----------------
 meteoalertsq2ips = MeteoAlertSq2ips(
-    city_id=2262, # Gdynia
+    city_id=2262,  # Gdynia
     start_message="ostrzezenia_meteorologiczne_i_hydrologiczne_imgw",
-    hydronames=["W_G_6_PM","Z_G_22_PM"], # Gdynia i bałtyk
-    validity_type=2, # 1=long 2=short
+    hydronames=["W_G_6_PM", "Z_G_22_PM"],  # Gdynia i bałtyk
+    validity_type=2,  # 1=long 2=short
 )
 
 # ---------------
 # meteostation_sq2ips
 # ---------------
 
-from meteostation_sq2ips import MeteoStationSq2ips
 meteostationsq2ips = MeteoStationSq2ips(
-    language = pl_google,
+    language=pl_google,
     ip=[],
     port=4210,
 )
 
 # WŁĄCZONE MODUŁY
 modules = [
-    #activitymap,       # marker na mapie wx.ostol.pl
+    # activitymap,       # marker na mapie wx.ostol.pl
     meteoalertsq2ips,   # ostrzeżenia imgw
-    meteostationsq2ips,  # 
+    meteostationsq2ips,  #
     openweathersq9atk,  # prognoza pogody
-    #meteosq9atk,       # pogoda alternatywa
-    #imgwpodestsq9atk,  # wodowskazy
-    #airpollutionsq9atk,# zanieczyszczenia powietrza z GIOŚ
+    # meteosq9atk,       # pogoda alternatywa
+    # imgwpodestsq9atk,  # wodowskazy
+    # airpollutionsq9atk,# zanieczyszczenia powietrza z GIOŚ
     airlysq9atk,        # zanieczyszczenia powietrza z Airly
     propagationsq9atk,  # propagacja KF
     vhftroposq9atk,     # propagacja tropo
-    #geomagneticsq9atk, # zaburzenia geomagnetyczne
-    #radioactivesq9atk, # promieniowanie jonizujące
+    # geomagneticsq9atk, # zaburzenia geomagnetyczne
+    # radioactivesq9atk, # promieniowanie jonizujące
     radioactivesq2ips,  # promieniowanie jonizujące z paa
-    #calendarsq9atk,    # wschód słońca
+    # calendarsq9atk,    # wschód słońca
     calendarsq2ips,     # wschód słońca bez internetu
 ]
 offline_modules = [

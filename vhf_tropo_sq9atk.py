@@ -13,6 +13,7 @@ from colorcodes import *
 
 from sr0wx_module import SR0WXModule
 
+
 class VhfTropoSq9atk(SR0WXModule):
     """Klasa pobierająca dane kalendarzowe"""
 
@@ -47,7 +48,8 @@ class VhfTropoSq9atk(SR0WXModule):
             return None
 
     def findMapUrlInHtml(self, html, target_id):
-        pattern = r'<img\s+(?:[^>]*\s+)?id="' + re.escape(target_id) + r'"(?:[^>]*)\s+src="([^"]+)"'
+        pattern = r'<img\s+(?:[^>]*\s+)?id="' + \
+            re.escape(target_id) + r'"(?:[^>]*)\s+src="([^"]+)"'
         match = re.search(pattern, html, re.IGNORECASE)
         if match:
             mapUrl = match.group(1)
@@ -69,7 +71,6 @@ class VhfTropoSq9atk(SR0WXModule):
             print(("Błąd pobierania mapy: %s" % e))
         return
 
-
     def readMapImageFile(self, fileName):
 
         mapImg = Image.open(fileName, 'r')
@@ -86,8 +87,8 @@ class VhfTropoSq9atk(SR0WXModule):
         self.__logger.info("::: Przetwarzam dane...")
         imgWidth = float(imgWidth)
         imgHeight = float(imgHeight)
-        lonRange =  self.__mapLonEnd - self.__mapLonStart
-        latRange =  self.__mapLatEnd - self.__mapLatStart
+        lonRange = self.__mapLonEnd - self.__mapLonStart
+        latRange = self.__mapLatEnd - self.__mapLatStart
         lonMod = (imgWidth / lonRange)
         latMod = (imgHeight / latRange)
         pixelY = round(latMod * (lat - self.__mapLatStart))
@@ -146,19 +147,19 @@ class VhfTropoSq9atk(SR0WXModule):
 
     def getColorPunctation(self, colorHex):
         colors = {
-            '#141414' : 0.00,  #czarny
-            '#8200dc' : 1.00,  #fioletowy
-            '#3377ff' : 2.00,  #błękitny
-            '#02d0a1' : 3.00,  #pistacjowy
-            '#a0e632' : 4.00,  #cytrynowy
-            '#e6dc32' : 5.00,  #żółty
-            '#e6af2d' : 6.00,  #musztardowy
-            '#f08228' : 7.00,  #pomarańczowy
-            '#fa3c3c' : 8.00,  #czerwony
-            '#ff80c0' : 9.00,  #różowy
-            '#ffb4dc' : 10.00, #różowy pastelowy
-            '#cc86cc' : 11.00, #różowy szary
-            '#c0c0c0' : 12.00  #szary
+            '#141414': 0.00,  # czarny
+            '#8200dc': 1.00,  # fioletowy
+            '#3377ff': 2.00,  # błękitny
+            '#02d0a1': 3.00,  # pistacjowy
+            '#a0e632': 4.00,  # cytrynowy
+            '#e6dc32': 5.00,  # żółty
+            '#e6af2d': 6.00,  # musztardowy
+            '#f08228': 7.00,  # pomarańczowy
+            '#fa3c3c': 8.00,  # czerwony
+            '#ff80c0': 9.00,  # różowy
+            '#ffb4dc': 10.00,  # różowy pastelowy
+            '#cc86cc': 11.00,  # różowy szary
+            '#c0c0c0': 12.00  # szary
         }
 
         result = False
@@ -183,7 +184,8 @@ class VhfTropoSq9atk(SR0WXModule):
     def getLocationCondition(self, mapImg, x, y):
         maxWidth, maxHeight = mapImg.size
 
-        samplesCoordinates = self.prepareSamplesCoordinates(x, y, self.__areaSize, maxWidth, maxHeight)
+        samplesCoordinates = self.prepareSamplesCoordinates(
+            x, y, self.__areaSize, maxWidth, maxHeight)
         samples = self.collectSamplesColors(mapImg, samplesCoordinates)
 
         occurences = self.calculateColorsOccurence(samples)
@@ -196,16 +198,15 @@ class VhfTropoSq9atk(SR0WXModule):
         shift = self.__areaSize
 
         return {
-            'N' :    self.getLocationCondition(mapImg, x, y-shift),
-            'NE' :   self.getLocationCondition(mapImg, x+shift, y-shift),
-            'E' :    self.getLocationCondition(mapImg, x+shift, y),
-            'SE' :    self.getLocationCondition(mapImg, x+shift, y+shift),
-            'S' :    self.getLocationCondition(mapImg, x, y+shift),
-            'SW' :    self.getLocationCondition(mapImg, x-shift, y+shift),
-            'W' :    self.getLocationCondition(mapImg, x-shift, y),
-            'NW' :    self.getLocationCondition(mapImg, x-shift, y-shift),
+            'N':    self.getLocationCondition(mapImg, x, y-shift),
+            'NE':   self.getLocationCondition(mapImg, x+shift, y-shift),
+            'E':    self.getLocationCondition(mapImg, x+shift, y),
+            'SE':    self.getLocationCondition(mapImg, x+shift, y+shift),
+            'S':    self.getLocationCondition(mapImg, x, y+shift),
+            'SW':    self.getLocationCondition(mapImg, x-shift, y+shift),
+            'W':    self.getLocationCondition(mapImg, x-shift, y),
+            'NW':    self.getLocationCondition(mapImg, x-shift, y-shift),
         }
-
 
     def getTopDirectionsValues(self, input_table):
         filtered_rows = []
@@ -240,10 +241,9 @@ class VhfTropoSq9atk(SR0WXModule):
             message = ' vhf_uwaga vhf_warunki_podwyzszone _ ' + message
         if mainConditionValue > 0.5:
             message += ' vhf_najlepsze_warunki_w_kierunku '
-            message += " _ ".join( self.getTopDirectionsValues(directionalConditionsValues))
+            message += " _ ".join(self.getTopDirectionsValues(directionalConditionsValues))
 
         return message
-
 
     def get_data(self, connection):
         try:
@@ -256,14 +256,17 @@ class VhfTropoSq9atk(SR0WXModule):
 
             mapWidth, mapHeight = mapImg.size
 
-            x, y = self.lonLatToMapXY(self.__qthLon, self.__qthLat, mapWidth, mapHeight)
+            x, y = self.lonLatToMapXY(
+                self.__qthLon, self.__qthLat, mapWidth, mapHeight)
 
             mainConditionValue = self.getLocationCondition(mapImg, x, y)
-            directionalConditionsValues = self.getDirectionalConditions(mapImg, x, y)
+            directionalConditionsValues = self.getDirectionalConditions(
+                mapImg, x, y)
 
             message = " ".join([
                 " _ vhf_propagacja_w_pasmie_vhf _ ",
-                "   " . join([ self.prepareMessage(mainConditionValue, directionalConditionsValues) ]),
+                "   " . join([self.prepareMessage(
+                    mainConditionValue, directionalConditionsValues)]),
                 " _ "
             ])
 
@@ -276,5 +279,6 @@ class VhfTropoSq9atk(SR0WXModule):
                 "source": "vhf_dx_info_center",
             }
         except Exception as e:
-            self.__logger.exception(COLOR_FAIL + "Exception when running %s: %s"+ COLOR_ENDC, str(self), e)
+            self.__logger.exception(
+                COLOR_FAIL + "Exception when running %s: %s" + COLOR_ENDC, str(self), e)
             connection.send(dict())

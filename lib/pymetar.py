@@ -50,15 +50,19 @@ Please e-mail bugs to: %s""" % (__version__, __author__)
 
 
 CLOUD_RE_STR = r"^(CAVOK|CLR|SKC|BKN|SCT|FEW|OVC|NSC)([0-9]{3})?$"
-COND_RE_STR  = r"^(-|\\+)?(VC|MI|BC|PR|TS|BL|SH|DR|FZ)?\
+COND_RE_STR = r"^(-|\\+)?(VC|MI|BC|PR|TS|BL|SH|DR|FZ)?\
 (DZ|RA|SN|SG|IC|PE|GR|GS|UP|BR|FG|FU|VA|SA|HZ|PY|DU|SQ|SS|DS|PO|\\+?FC)$"
+
 
 class EmptyReportException(Exception):
     """This gets thrown when the ReportParser gets fed an empty report"""
     pass
+
+
 class EmptyIDException(Exception):
     """This gets thrown when the ReportFetcher is called with an empty ID"""
     pass
+
 
 class NetworkException(Exception):
     """This gets thrown when a network error occurs"""
@@ -69,295 +73,297 @@ class NetworkException(Exception):
 # It seems the NOAA doesn't want to return plain text, but considering the
 # format of their response, this is not to save bandwidth :-)
 
-_WeatherConditions = {
-                      "DZ" : ("Drizzle", "rain", {
-                               "" :   "Moderate drizzle",
-                               "-" :  "Light drizzle",
-                               "+" :  "Heavy drizzle",
-                               "VC" : "Drizzle in the vicinity",
-                               "MI" : "Shallow drizzle",
-                               "BC" : "Patches of drizzle",
-                               "PR" : "Partial drizzle",
-                               "TS" : ("Thunderstorm", "storm"),
-                               "BL" : "Windy drizzle",
-                               "SH" : "Showers",
-                               "DR" : "Drifting drizzle",
-                               "FZ" : "Freezing drizzle",
-                             }),
-                      "RA" : ("Rain", "rain", {
-                               "" :   "Moderate rain",
-                               "-" :  "Light rain",
-                               "+" :  "Heavy rain",
-                               "VC" : "Rain in the vicinity",
-                               "MI" : "Shallow rain",
-                               "BC" : "Patches of rain",
-                               "PR" : "Partial rainfall",
-                               "TS" : ("Thunderstorm", "storm"),
-                               "BL" : "Blowing rainfall",
-                               "SH" : "Rain showers",
-                               "DR" : "Drifting rain",
-                               "FZ" : "Freezing rain",
-                             }),
-                      "SN" : ("Snow", "snow", {
-                               "" :   "Moderate snow",
-                               "-" :  "Light snow",
-                               "+" :  "Heavy snow",
-                               "VC" : "Snow in the vicinity",
-                               "MI" : "Shallow snow",
-                               "BC" : "Patches of snow",
-                               "PR" : "Partial snowfall",
-                               "TS" : ("Snowstorm", "storm"),
-                               "BL" : "Blowing snowfall",
-                               "SH" : "Snowfall showers",
-                               "DR" : "Drifting snow",
-                               "FZ" : "Freezing snow",
-                             }),
-                      "SG" : ("Snow grains", "snow", {
-                               "" :   "Moderate snow grains",
-                               "-" :  "Light snow grains",
-                               "+" :  "Heavy snow grains",
-                               "VC" : "Snow grains in the vicinity",
-                               "MI" : "Shallow snow grains",
-                               "BC" : "Patches of snow grains",
-                               "PR" : "Partial snow grains",
-                               "TS" : ("Snowstorm", "storm"),
-                               "BL" : "Blowing snow grains",
-                               "SH" : "Snow grain showers",
-                               "DR" : "Drifting snow grains",
-                               "FZ" : "Freezing snow grains",
-                             }),
-                      "IC" : ("Ice crystals", "snow", {
-                               "" :   "Moderate ice crystals",
-                               "-" :  "Few ice crystals",
-                               "+" :  "Heavy ice crystals",
-                               "VC" : "Ice crystals in the vicinity",
-                               "BC" : "Patches of ice crystals",
-                               "PR" : "Partial ice crystals",
-                               "TS" : ("Ice crystal storm", "storm"),
-                               "BL" : "Blowing ice crystals",
-                               "SH" : "Showers of ice crystals",
-                               "DR" : "Drifting ice crystals",
-                               "FZ" : "Freezing ice crystals",
-                             }),
-                      "PE" : ("Ice pellets", "snow", {
-                               "" :   "Moderate ice pellets",
-                               "-" :  "Few ice pellets",
-                               "+" :  "Heavy ice pellets",
-                               "VC" : "Ice pellets in the vicinity",
-                               "MI" : "Shallow ice pellets",
-                               "BC" : "Patches of ice pellets",
-                               "PR" : "Partial ice pellets",
-                               "TS" : ("Ice pellets storm", "storm"),
-                               "BL" : "Blowing ice pellets",
-                               "SH" : "Showers of ice pellets",
-                               "DR" : "Drifting ice pellets",
-                               "FZ" : "Freezing ice pellets",
-                             }),
-                      "GR" : ("Hail", "rain", {
-                               "" :   "Moderate hail",
-                               "-" :  "Light hail",
-                               "+" :  "Heavy hail",
-                               "VC" : "Hail in the vicinity",
-                               "MI" : "Shallow hail",
-                               "BC" : "Patches of hail",
-                               "PR" : "Partial hail",
-                               "TS" : ("Hailstorm", "storm"),
-                               "BL" : "Blowing hail",
-                               "SH" : "Hail showers",
-                               "DR" : "Drifting hail",
-                               "FZ" : "Freezing hail",
-                             }),
-                      "GS" : ("Small hail", "rain", {
-                               "" :   "Moderate small hail",
-                               "-" :  "Light small hail",
-                               "+" :  "Heavy small hail",
-                               "VC" : "Small hail in the vicinity",
-                               "MI" : "Shallow small hail",
-                               "BC" : "Patches of small hail",
-                               "PR" : "Partial small hail",
-                               "TS" : ("Small hailstorm", "storm"),
-                               "BL" : "Blowing small hail",
-                               "SH" : "Showers of small hail",
-                               "DR" : "Drifting small hail",
-                               "FZ" : "Freezing small hail",
-                             }),
-                      "UP" : ("Precipitation", "rain", {
-                               "" :   "Moderate precipitation",
-                               "-" :  "Light precipitation",
-                               "+" :  "Heavy precipitation",
-                               "VC" : "Precipitation in the vicinity",
-                               "MI" : "Shallow precipitation",
-                               "BC" : "Patches of precipitation",
-                               "PR" : "Partial precipitation",
-                               "TS" : ("Unknown thunderstorm", "storm"),
-                               "BL" : "Blowing precipitation",
-                               "SH" : "Showers, type unknown",
-                               "DR" : "Drifting precipitation",
-                               "FZ" : "Freezing precipitation",
-                             }),
-                      "BR" : ("Mist", "fog", {
-                               "" :   "Moderate mist",
-                               "-" :  "Light mist",
-                               "+" :  "Thick mist",
-                               "VC" : "Mist in the vicinity",
-                               "MI" : "Shallow mist",
-                               "BC" : "Patches of mist",
-                               "PR" : "Partial mist",
-                               "BL" : "Mist with wind",
-                               "DR" : "Drifting mist",
-                               "FZ" : "Freezing mist",
-                             }),
-                      "FG" : ("Fog", "fog", {
-                               "" :   "Moderate fog",
-                               "-" :  "Light fog",
-                               "+" :  "Thick fog",
-                               "VC" : "Fog in the vicinity",
-                               "MI" : "Shallow fog",
-                               "BC" : "Patches of fog",
-                               "PR" : "Partial fog",
-                               "BL" : "Fog with wind",
-                               "DR" : "Drifting fog",
-                               "FZ" : "Freezing fog",
-                             }),
-                      "FU" : ("Smoke", "fog", {
-                               "" :   "Moderate smoke",
-                               "-" :  "Thin smoke",
-                               "+" :  "Thick smoke",
-                               "VC" : "Smoke in the vicinity",
-                               "MI" : "Shallow smoke",
-                               "BC" : "Patches of smoke",
-                               "PR" : "Partial smoke",
-                               "TS" : ("Smoke w/ thunders", "storm"),
-                               "BL" : "Smoke with wind",
-                               "DR" : "Drifting smoke",
-                             }),
-                      "VA" : ("Volcanic ash", "fog", {
-                               "" :   "Moderate volcanic ash",
-                               "+" :  "Thick volcanic ash",
-                               "VC" : "Volcanic ash in the vicinity",
-                               "MI" : "Shallow volcanic ash",
-                               "BC" : "Patches of volcanic ash",
-                               "PR" : "Partial volcanic ash",
-                               "TS" : ("Volcanic ash w/ thunders", "storm"),
-                               "BL" : "Blowing volcanic ash",
-                               "SH" : "Showers of volcanic ash",
-                               "DR" : "Drifting volcanic ash",
-                               "FZ" : "Freezing volcanic ash",
-                             }),
-                      "SA" : ("Sand", "fog", {
-                               "" :   "Moderate sand",
-                               "-" :  "Light sand",
-                               "+" :  "Heavy sand",
-                               "VC" : "Sand in the vicinity",
-                               "BC" : "Patches of sand",
-                               "PR" : "Partial sand",
-                               "BL" : "Blowing sand",
-                               "DR" : "Drifting sand",
-                             }),
-                      "HZ" : ("Haze", "fog", {
-                               "" :   "Moderate haze",
-                               "-" :  "Light haze",
-                               "+" :  "Thick haze",
-                               "VC" : "Haze in the vicinity",
-                               "MI" : "Shallow haze",
-                               "BC" : "Patches of haze",
-                               "PR" : "Partial haze",
-                               "BL" : "Haze with wind",
-                               "DR" : "Drifting haze",
-                               "FZ" : "Freezing haze",
-                             }),
-                      "PY" : ("Sprays", "fog", {
-                               "" :   "Moderate sprays",
-                               "-" :  "Light sprays",
-                               "+" :  "Heavy sprays",
-                               "VC" : "Sprays in the vicinity",
-                               "MI" : "Shallow sprays",
-                               "BC" : "Patches of sprays",
-                               "PR" : "Partial sprays",
-                               "BL" : "Blowing sprays",
-                               "DR" : "Drifting sprays",
-                               "FZ" : "Freezing sprays",
-                             }),
-                      "DU" : ("Dust", "fog", {
-                               "" :   "Moderate dust",
-                               "-" :  "Light dust",
-                               "+" :  "Heavy dust",
-                               "VC" : "Dust in the vicinity",
-                               "BC" : "Patches of dust",
-                               "PR" : "Partial dust",
-                               "BL" : "Blowing dust",
-                               "DR" : "Drifting dust",
-                             }),
-                      "SQ" : ("Squall", "storm", {
-                               "" :   "Moderate squall",
-                               "-" :  "Light squall",
-                               "+" :  "Heavy squall",
-                               "VC" : "Squall in the vicinity",
-                               "PR" : "Partial squall",
-                               "TS" : "Thunderous squall",
-                               "BL" : "Blowing squall",
-                               "DR" : "Drifting squall",
-                               "FZ" : "Freezing squall",
-                             }),
-                      "SS" : ("Sandstorm", "fog", {
-                               "" :   "Moderate sandstorm",
-                               "-" :  "Light sandstorm",
-                               "+" :  "Heavy sandstorm",
-                               "VC" : "Sandstorm in the vicinity",
-                               "MI" : "Shallow sandstorm",
-                               "PR" : "Partial sandstorm",
-                               "TS" : ("Thunderous sandstorm", "storm"),
-                               "BL" : "Blowing sandstorm",
-                               "DR" : "Drifting sandstorm",
-                               "FZ" : "Freezing sandstorm",
-                             }),
-                      "DS" : ("Duststorm", "fog", {
-                               "" :   "Moderate duststorm",
-                               "-" :  "Light duststorm",
-                               "+" :  "Heavy duststorm",
-                               "VC" : "Duststorm in the vicinity",
-                               "MI" : "Shallow duststorm",
-                               "PR" : "Partial duststorm",
-                               "TS" : ("Thunderous duststorm", "storm"),
-                               "BL" : "Blowing duststorm",
-                               "DR" : "Drifting duststorm",
-                               "FZ" : "Freezing duststorm",
-                             }),
-                      "PO" : ("Dustwhirls", "fog", {
-                               "" :   "Moderate dustwhirls",
-                               "-" :  "Light dustwhirls",
-                               "+" :  "Heavy dustwhirls",
-                               "VC" : "Dustwhirls in the vicinity",
-                               "MI" : "Shallow dustwhirls",
-                               "BC" : "Patches of dustwhirls",
-                               "PR" : "Partial dustwhirls",
-                               "BL" : "Blowing dustwhirls",
-                               "DR" : "Drifting dustwhirls",
-                             }),
-                      "+FC" : ("Tornado", "storm", {
-                               "" :   "Moderate tornado",
-                               "+" :  "Raging tornado",
-                               "VC" : "Tornado in the vicinity",
-                               "PR" : "Partial tornado",
-                               "TS" : "Thunderous tornado",
-                               "BL" : "Tornado",
-                               "DR" : "Drifting tornado",
-                               "FZ" : "Freezing tornado",
-                              }),
-                      "FC" : ("Funnel cloud", "fog", {
-                               "" :   "Moderate funnel cloud",
-                               "-" :  "Light funnel cloud",
-                               "+" :  "Thick funnel cloud",
-                               "VC" : "Funnel cloud in the vicinity",
-                               "MI" : "Shallow funnel cloud",
-                               "BC" : "Patches of funnel cloud",
-                               "PR" : "Partial funnel cloud",
-                               "BL" : "Funnel cloud w/ wind",
-                               "DR" : "Drifting funnel cloud",
-                             }),
-                    }
 
-def metar_to_iso8601(metardate) :
+_WeatherConditions = {
+    "DZ": ("Drizzle", "rain", {
+        "":   "Moderate drizzle",
+        "-":  "Light drizzle",
+        "+":  "Heavy drizzle",
+        "VC": "Drizzle in the vicinity",
+        "MI": "Shallow drizzle",
+        "BC": "Patches of drizzle",
+        "PR": "Partial drizzle",
+        "TS": ("Thunderstorm", "storm"),
+        "BL": "Windy drizzle",
+        "SH": "Showers",
+        "DR": "Drifting drizzle",
+        "FZ": "Freezing drizzle",
+    }),
+    "RA": ("Rain", "rain", {
+        "":   "Moderate rain",
+        "-":  "Light rain",
+        "+":  "Heavy rain",
+        "VC": "Rain in the vicinity",
+        "MI": "Shallow rain",
+        "BC": "Patches of rain",
+        "PR": "Partial rainfall",
+        "TS": ("Thunderstorm", "storm"),
+        "BL": "Blowing rainfall",
+        "SH": "Rain showers",
+        "DR": "Drifting rain",
+        "FZ": "Freezing rain",
+    }),
+    "SN": ("Snow", "snow", {
+        "":   "Moderate snow",
+        "-":  "Light snow",
+        "+":  "Heavy snow",
+        "VC": "Snow in the vicinity",
+        "MI": "Shallow snow",
+        "BC": "Patches of snow",
+        "PR": "Partial snowfall",
+        "TS": ("Snowstorm", "storm"),
+        "BL": "Blowing snowfall",
+        "SH": "Snowfall showers",
+        "DR": "Drifting snow",
+        "FZ": "Freezing snow",
+    }),
+    "SG": ("Snow grains", "snow", {
+                          "":   "Moderate snow grains",
+                          "-":  "Light snow grains",
+                          "+":  "Heavy snow grains",
+        "VC": "Snow grains in the vicinity",
+        "MI": "Shallow snow grains",
+        "BC": "Patches of snow grains",
+        "PR": "Partial snow grains",
+        "TS": ("Snowstorm", "storm"),
+        "BL": "Blowing snow grains",
+        "SH": "Snow grain showers",
+        "DR": "Drifting snow grains",
+        "FZ": "Freezing snow grains",
+    }),
+    "IC": ("Ice crystals", "snow", {
+        "":   "Moderate ice crystals",
+        "-":  "Few ice crystals",
+        "+":  "Heavy ice crystals",
+        "VC": "Ice crystals in the vicinity",
+        "BC": "Patches of ice crystals",
+        "PR": "Partial ice crystals",
+        "TS": ("Ice crystal storm", "storm"),
+        "BL": "Blowing ice crystals",
+        "SH": "Showers of ice crystals",
+        "DR": "Drifting ice crystals",
+        "FZ": "Freezing ice crystals",
+    }),
+    "PE": ("Ice pellets", "snow", {
+                          "":   "Moderate ice pellets",
+                          "-":  "Few ice pellets",
+                          "+":  "Heavy ice pellets",
+        "VC": "Ice pellets in the vicinity",
+        "MI": "Shallow ice pellets",
+        "BC": "Patches of ice pellets",
+        "PR": "Partial ice pellets",
+        "TS": ("Ice pellets storm", "storm"),
+        "BL": "Blowing ice pellets",
+        "SH": "Showers of ice pellets",
+        "DR": "Drifting ice pellets",
+        "FZ": "Freezing ice pellets",
+    }),
+    "GR": ("Hail", "rain", {
+        "":   "Moderate hail",
+        "-":  "Light hail",
+        "+":  "Heavy hail",
+        "VC": "Hail in the vicinity",
+        "MI": "Shallow hail",
+        "BC": "Patches of hail",
+        "PR": "Partial hail",
+        "TS": ("Hailstorm", "storm"),
+        "BL": "Blowing hail",
+        "SH": "Hail showers",
+        "DR": "Drifting hail",
+        "FZ": "Freezing hail",
+    }),
+    "GS": ("Small hail", "rain", {
+        "":   "Moderate small hail",
+        "-":  "Light small hail",
+        "+":  "Heavy small hail",
+        "VC": "Small hail in the vicinity",
+        "MI": "Shallow small hail",
+        "BC": "Patches of small hail",
+        "PR": "Partial small hail",
+        "TS": ("Small hailstorm", "storm"),
+        "BL": "Blowing small hail",
+        "SH": "Showers of small hail",
+        "DR": "Drifting small hail",
+        "FZ": "Freezing small hail",
+    }),
+    "UP": ("Precipitation", "rain", {
+        "":   "Moderate precipitation",
+        "-":  "Light precipitation",
+        "+":  "Heavy precipitation",
+        "VC": "Precipitation in the vicinity",
+        "MI": "Shallow precipitation",
+        "BC": "Patches of precipitation",
+        "PR": "Partial precipitation",
+        "TS": ("Unknown thunderstorm", "storm"),
+        "BL": "Blowing precipitation",
+        "SH": "Showers, type unknown",
+        "DR": "Drifting precipitation",
+        "FZ": "Freezing precipitation",
+    }),
+    "BR": ("Mist", "fog", {
+        "":   "Moderate mist",
+        "-":  "Light mist",
+        "+":  "Thick mist",
+        "VC": "Mist in the vicinity",
+        "MI": "Shallow mist",
+        "BC": "Patches of mist",
+        "PR": "Partial mist",
+        "BL": "Mist with wind",
+        "DR": "Drifting mist",
+        "FZ": "Freezing mist",
+    }),
+    "FG": ("Fog", "fog", {
+        "":   "Moderate fog",
+        "-":  "Light fog",
+        "+":  "Thick fog",
+        "VC": "Fog in the vicinity",
+        "MI": "Shallow fog",
+        "BC": "Patches of fog",
+        "PR": "Partial fog",
+        "BL": "Fog with wind",
+        "DR": "Drifting fog",
+        "FZ": "Freezing fog",
+    }),
+    "FU": ("Smoke", "fog", {
+        "":   "Moderate smoke",
+        "-":  "Thin smoke",
+        "+":  "Thick smoke",
+        "VC": "Smoke in the vicinity",
+        "MI": "Shallow smoke",
+        "BC": "Patches of smoke",
+        "PR": "Partial smoke",
+        "TS": ("Smoke w/ thunders", "storm"),
+        "BL": "Smoke with wind",
+        "DR": "Drifting smoke",
+    }),
+    "VA": ("Volcanic ash", "fog", {
+        "":   "Moderate volcanic ash",
+        "+":  "Thick volcanic ash",
+        "VC": "Volcanic ash in the vicinity",
+        "MI": "Shallow volcanic ash",
+        "BC": "Patches of volcanic ash",
+        "PR": "Partial volcanic ash",
+        "TS": ("Volcanic ash w/ thunders", "storm"),
+        "BL": "Blowing volcanic ash",
+        "SH": "Showers of volcanic ash",
+        "DR": "Drifting volcanic ash",
+        "FZ": "Freezing volcanic ash",
+    }),
+    "SA": ("Sand", "fog", {
+        "":   "Moderate sand",
+        "-":  "Light sand",
+        "+":  "Heavy sand",
+        "VC": "Sand in the vicinity",
+        "BC": "Patches of sand",
+        "PR": "Partial sand",
+        "BL": "Blowing sand",
+        "DR": "Drifting sand",
+    }),
+    "HZ": ("Haze", "fog", {
+        "":   "Moderate haze",
+        "-":  "Light haze",
+        "+":  "Thick haze",
+        "VC": "Haze in the vicinity",
+        "MI": "Shallow haze",
+        "BC": "Patches of haze",
+        "PR": "Partial haze",
+        "BL": "Haze with wind",
+        "DR": "Drifting haze",
+        "FZ": "Freezing haze",
+    }),
+    "PY": ("Sprays", "fog", {
+        "":   "Moderate sprays",
+        "-":  "Light sprays",
+        "+":  "Heavy sprays",
+        "VC": "Sprays in the vicinity",
+        "MI": "Shallow sprays",
+        "BC": "Patches of sprays",
+        "PR": "Partial sprays",
+        "BL": "Blowing sprays",
+        "DR": "Drifting sprays",
+        "FZ": "Freezing sprays",
+    }),
+    "DU": ("Dust", "fog", {
+        "":   "Moderate dust",
+        "-":  "Light dust",
+        "+":  "Heavy dust",
+        "VC": "Dust in the vicinity",
+        "BC": "Patches of dust",
+        "PR": "Partial dust",
+        "BL": "Blowing dust",
+        "DR": "Drifting dust",
+    }),
+    "SQ": ("Squall", "storm", {
+        "":   "Moderate squall",
+        "-":  "Light squall",
+        "+":  "Heavy squall",
+        "VC": "Squall in the vicinity",
+        "PR": "Partial squall",
+        "TS": "Thunderous squall",
+        "BL": "Blowing squall",
+        "DR": "Drifting squall",
+        "FZ": "Freezing squall",
+    }),
+    "SS": ("Sandstorm", "fog", {
+        "":   "Moderate sandstorm",
+        "-":  "Light sandstorm",
+        "+":  "Heavy sandstorm",
+        "VC": "Sandstorm in the vicinity",
+        "MI": "Shallow sandstorm",
+        "PR": "Partial sandstorm",
+        "TS": ("Thunderous sandstorm", "storm"),
+        "BL": "Blowing sandstorm",
+        "DR": "Drifting sandstorm",
+        "FZ": "Freezing sandstorm",
+    }),
+    "DS": ("Duststorm", "fog", {
+        "":   "Moderate duststorm",
+        "-":  "Light duststorm",
+        "+":  "Heavy duststorm",
+        "VC": "Duststorm in the vicinity",
+        "MI": "Shallow duststorm",
+        "PR": "Partial duststorm",
+        "TS": ("Thunderous duststorm", "storm"),
+        "BL": "Blowing duststorm",
+        "DR": "Drifting duststorm",
+        "FZ": "Freezing duststorm",
+    }),
+    "PO": ("Dustwhirls", "fog", {
+        "":   "Moderate dustwhirls",
+        "-":  "Light dustwhirls",
+        "+":  "Heavy dustwhirls",
+        "VC": "Dustwhirls in the vicinity",
+        "MI": "Shallow dustwhirls",
+        "BC": "Patches of dustwhirls",
+        "PR": "Partial dustwhirls",
+        "BL": "Blowing dustwhirls",
+        "DR": "Drifting dustwhirls",
+    }),
+    "+FC": ("Tornado", "storm", {
+        "":   "Moderate tornado",
+        "+":  "Raging tornado",
+        "VC": "Tornado in the vicinity",
+        "PR": "Partial tornado",
+        "TS": "Thunderous tornado",
+        "BL": "Tornado",
+        "DR": "Drifting tornado",
+        "FZ": "Freezing tornado",
+    }),
+    "FC": ("Funnel cloud", "fog", {
+        "":   "Moderate funnel cloud",
+        "-":  "Light funnel cloud",
+        "+":  "Thick funnel cloud",
+        "VC": "Funnel cloud in the vicinity",
+        "MI": "Shallow funnel cloud",
+        "BC": "Patches of funnel cloud",
+        "PR": "Partial funnel cloud",
+        "BL": "Funnel cloud w/ wind",
+        "DR": "Drifting funnel cloud",
+    }),
+}
+
+
+def metar_to_iso8601(metardate):
     """Convert a metar date to an ISO8601 date."""
     if metardate is not None:
         (date, hour) = metardate.split()[:2]
@@ -365,6 +371,7 @@ def metar_to_iso8601(metardate) :
         # assuming tz is always 'UTC', aka 'Z'
         return "%s-%s-%s %s:%s:00Z" % \
             (year, month, day, hour[:2], hour[2:4])
+
 
 def parseLatLong(latlong):
     """
@@ -407,6 +414,7 @@ def parseLatLong(latlong):
 
     return f+i
 
+
 class WeatherReport:
     """Incorporates both the unparsed textual representation of the
     weather report and the parsed values as soon as they are filled
@@ -445,7 +453,7 @@ class WeatherReport:
         self.latf = None
         self.longf = None
 
-    def __init__(self, MetarStationCode = None):
+    def __init__(self, MetarStationCode=None):
         """Clear all fields and fill in wanted station id."""
         self._ClearAllFields()
         self.givenstationid = MetarStationCode
@@ -603,7 +611,7 @@ class WeatherReport:
         getStationPositionFloat() instead
         """
         # convert self.altitude to string for consistency
-        return (self.latitude, self.longitude, "%s"%self.altitude)
+        return (self.latitude, self.longitude, "%s" % self.altitude)
 
     def getStationPositionFloat(self):
         """
@@ -612,7 +620,7 @@ class WeatherReport:
         """
         return (self.latf, self.longf, self.altitude)
 
-    def getStationLatitude(self) :
+    def getStationLatitude(self):
         """
         Return the station's latitude in dd-mm[-ss]D format :
         dd : degrees
@@ -628,7 +636,7 @@ class WeatherReport:
         """
         return self.latf
 
-    def getStationLongitude(self) :
+    def getStationLongitude(self):
         """
         Return the station's longitude in dd-mm[-ss]D format :
         dd : degrees
@@ -644,7 +652,7 @@ class WeatherReport:
         """
         return self.longf
 
-    def getStationAltitude(self) :
+    def getStationAltitude(self):
         """
         Return the station's altitude above the sea in meters.
         """
@@ -670,7 +678,7 @@ class WeatherReport:
         Return the time when the observation was made in ISO 8601 format
         (e.g. 2002-07-25 15:12:00Z)
         """
-        return(metar_to_iso8601(self.rtime))
+        return (metar_to_iso8601(self.rtime))
 
     def getPixmap(self):
         """
@@ -684,32 +692,32 @@ class ReportParser:
     """Parse raw METAR data from a WeatherReport object into actual
     values and return the object with the values filled in."""
 
-    def __init__(self, MetarReport = None):
+    def __init__(self, MetarReport=None):
         """Set attribute Report as specified on instantation."""
         self.Report = MetarReport
 
-    def extractCloudInformation(self) :
+    def extractCloudInformation(self):
         """
         Extract cloud information. Return None or a tuple (sky type as a
         string of text and suggested pixmap name)
         """
         wcloud = self.match_WeatherPart(CLOUD_RE_STR)
-        if wcloud is not None :
+        if wcloud is not None:
             stype = wcloud[:3]
             if stype in ("CLR", "SKC", "CAV", "NSC"):
                 return ("Clear sky", "sun")
-            elif stype == "BKN" :
+            elif stype == "BKN":
                 return ("Broken clouds", "suncloud")
-            elif stype == "SCT" :
+            elif stype == "SCT":
                 return ("Scattered clouds", "suncloud")
-            elif stype == "FEW" :
+            elif stype == "FEW":
                 return ("Few clouds", "suncloud")
-            elif stype == "OVC" :
+            elif stype == "OVC":
                 return ("Overcast", "cloud")
         else:
-            return None # Not strictly necessary
+            return None  # Not strictly necessary
 
-    def extractSkyConditions(self) :
+    def extractSkyConditions(self):
         """
         Extract sky condition information from the encoded report. Return
         a tuple containing the description of the sky conditions as a
@@ -717,29 +725,29 @@ class ReportParser:
         sky condition.
         """
         wcond = self.match_WeatherPart(COND_RE_STR)
-        if wcond is not None :
-            if (len(wcond)>3) and (wcond.startswith('+') \
-                or wcond.startswith('-')) :
+        if wcond is not None:
+            if (len(wcond) > 3) and (wcond.startswith('+')
+                                     or wcond.startswith('-')):
                 wcond = wcond[1:]
-            if wcond.startswith('+') or wcond.startswith('-') :
+            if wcond.startswith('+') or wcond.startswith('-'):
                 pphen = 1
-            elif len(wcond) < 4 :
+            elif len(wcond) < 4:
                 pphen = 0
-            else :
+            else:
                 pphen = 2
             squal = wcond[:pphen]
-            sphen = wcond[pphen : pphen + 4]
+            sphen = wcond[pphen: pphen + 4]
             phenomenon = _WeatherConditions.get(sphen, None)
-            if phenomenon is not None :
+            if phenomenon is not None:
                 (name, pixmap, phenomenon) = phenomenon
                 pheninfo = phenomenon.get(squal, name)
-                if type(pheninfo) != type(()) :
+                if type(pheninfo) != type(()):
                     return (pheninfo, pixmap)
-                else :
+                else:
                     # contains pixmap info
                     return pheninfo
 
-    def match_WeatherPart(self, regexp) :
+    def match_WeatherPart(self, regexp):
         """
         Return the matching part of the encoded Metar report.
         regexp: the regexp needed to extract this part.
@@ -747,14 +755,14 @@ class ReportParser:
         WARNING: Some Metar reports may contain several matching
         strings, only the first one is taken into account!
         """
-        if self.Report.code is not None :
+        if self.Report.code is not None:
             rg = re.compile(regexp)
-            for wpart in self.Report.getRawMetarCode().split() :
+            for wpart in self.Report.getRawMetarCode().split():
                 match = rg.match(wpart)
                 if match:
-                    return match.string[match.start(0) : match.end(0)]
+                    return match.string[match.start(0): match.end(0)]
 
-    def ParseReport(self, MetarReport = None):
+    def ParseReport(self, MetarReport=None):
         """Take report with raw info only and return it with in
         parsed values filled in. Note: This function edits the
         WeatherReport object you supply!"""
@@ -792,7 +800,7 @@ class ReportParser:
                     p = data
                 try:
                     lat, lng, ht = p.split()[1:4]
-                    ht = int(ht[:-1]) # cut off 'M' for meters
+                    ht = int(ht[:-1])  # cut off 'M' for meters
                 except ValueError:
                     (lat, lng) = p.split()[1:3]
                     ht = None
@@ -808,7 +816,7 @@ class ReportParser:
             # The line containing date and time of the report
             # We have to make sure that the station ID is *not*
             # in this line to avoid trying to parse the ob: line
-            elif ((data.find("UTC")) != -1 and \
+            elif ((data.find("UTC")) != -1 and
                     (data.find(self.Report.givenstationid)) == -1):
                 rt = data.split("/")[1]
                 self.Report.rtime = rt.strip()
@@ -820,7 +828,6 @@ class ReportParser:
                 self.Report.tempf = float(f)
                 # The string we have split is "(NN C)", hence the slice
                 self.Report.temp = float(c[1:])
-
 
             # wind dir and speed
 
@@ -898,14 +905,14 @@ class ReportParser:
 
         # cloud info
         cloudinfo = self.extractCloudInformation()
-        if cloudinfo is not None :
+        if cloudinfo is not None:
             (cloudinfo, cloudpixmap) = cloudinfo
-        else :
+        else:
             (cloudinfo, cloudpixmap) = (None, None)
         conditions = self.extractSkyConditions()
-        if conditions is not None :
+        if conditions is not None:
             (conditions, condpixmap) = conditions
-        else :
+        else:
             (conditions, condpixmap) = (None, None)
 
         # fill the weather information
@@ -920,13 +927,13 @@ class ReportParser:
 
         return self.Report
 
+
 class ReportFetcher:
     """Fetches a report from a given METAR id, optionally taking into
        account a different baseurl and using environment var-specified
        proxies."""
 
-    def __init__(self, MetarStationCode = None, baseurl = \
-        "http://weather.noaa.gov/pub/data/observations/metar/decoded/"):
+    def __init__(self, MetarStationCode=None, baseurl="http://weather.noaa.gov/pub/data/observations/metar/decoded/"):
         """Set stationid attribute and base URL to fetch report from"""
         self.stationid = MetarStationCode
         self.baseurl = baseurl
@@ -941,11 +948,11 @@ class ReportFetcher:
         report = WeatherReport(StationID)
         report.reporturl = self.reporturl
         report.fullreport = self.fullreport
-        self.report = report # Caching it for GetReport()
+        self.report = report  # Caching it for GetReport()
 
         return report
 
-    def FetchReport(self, StationCode = None, proxy = None):
+    def FetchReport(self, StationCode=None, proxy=None):
         """
         Fetch a report for a given station ID from the baseurl given
         upon creation of the ReportFetcher instance.
@@ -988,11 +995,10 @@ class ReportFetcher:
         report = WeatherReport(self.stationid)
         report.reporturl = self.reporturl
         report.fullreport = self.fullreport
-        self.report = report # Caching it for GetReport()
+        self.report = report  # Caching it for GetReport()
 
         return report
 
     def GetReport(self):
         """Get a previously fetched report again"""
         return self.report
-

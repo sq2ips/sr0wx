@@ -13,7 +13,8 @@ elif sys.argv[1] == "-a":
     print("miasto/powiat: id stacji")
     names = requests.get(url).json()
     for i in range(len(names["features"])):
-        print(f'{names["features"][i]["properties"]["jpt_nazwa_"]}: {names["features"][i]["properties"]["jpt_kod_je"]}')
+        print(
+            f'{names["features"][i]["properties"]["jpt_nazwa_"]}: {names["features"][i]["properties"]["jpt_kod_je"]}')
 elif sys.argv[1] == "-f":
     print("Program szukający id stacji do modułu meteoalert_sq2ips.py\n")
     print(f"wyszukiwanie id na podstawie filtra: {sys.argv[2]}")
@@ -22,7 +23,8 @@ elif sys.argv[1] == "-f":
     any = True
     for i in range(len(names["features"])):
         if names["features"][i]["properties"]["jpt_nazwa_"].lower().find(sys.argv[2].lower()) != -1:
-            print(f'{names["features"][i]["properties"]["jpt_nazwa_"]}: {names["features"][i]["properties"]["jpt_kod_je"]}')
+            print(
+                f'{names["features"][i]["properties"]["jpt_nazwa_"]}: {names["features"][i]["properties"]["jpt_kod_je"]}')
     if any == False:
         print("Nic nie znaleziono")
 else:

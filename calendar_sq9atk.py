@@ -1,7 +1,9 @@
 #!/usr/bin/python -tt
 # -*- coding: utf-8 -*-
 
-import urllib.request, urllib.error, urllib.parse
+import urllib.request
+import urllib.error
+import urllib.parse
 import re
 import logging
 import pytz
@@ -12,15 +14,15 @@ from colorcodes import *
 
 from sr0wx_module import SR0WXModule
 
+
 class CalendarSq9atk(SR0WXModule):
     """Klasa pobierająca dane kalendarzowe"""
 
-    def __init__(self,language,service_url,city_id=3094802):
+    def __init__(self, language, service_url, city_id=3094802):
         self.__service_url = service_url
         self.__city_id = city_id
         self.__language = language
         self.__logger = logging.getLogger(__name__)
-
 
     def downloadFile(self, url):
         try:
@@ -39,10 +41,11 @@ class CalendarSq9atk(SR0WXModule):
         url = self.__service_url+str(self.__city_id)
         html = self.downloadFile(url)
         matches = r.findall(html)
-        self.__logger.info("Dane diagnostyczne: zawartość matches = " + str(matches))
+        self.__logger.info(
+            "Dane diagnostyczne: zawartość matches = " + str(matches))
         return {
-            'sunrise' : matches[0][1],
-            'sunset' : matches[0][3],
+            'sunrise': matches[0][1],
+            'sunset': matches[0][3],
         }
 
     def hourToNumbers(self, time="00:00"):
@@ -55,10 +58,13 @@ class CalendarSq9atk(SR0WXModule):
             times = self.getSunsetSunrise()
             self.__logger.info("::: Przetwarzam dane...\n")
 
-            sunrise = " ".join(["wscho_d_sl_on_ca","godzina",self.hourToNumbers(times['sunrise'])," "])
-            sunset = " ".join(["zacho_d_sl_on_ca","godzina",self.hourToNumbers(times['sunset'])," "])
+            sunrise = " ".join(
+                ["wscho_d_sl_on_ca", "godzina", self.hourToNumbers(times['sunrise']), " "])
+            sunset = " ".join(["zacho_d_sl_on_ca", "godzina",
+                              self.hourToNumbers(times['sunset']), " "])
 
-            message = " ".join([" _ kalendarium _ " ,sunrise ," _ " ,sunset ," _ "])
+            message = " ".join(
+                [" _ kalendarium _ ", sunrise, " _ ", sunset, " _ "])
 
             connection.send({
                 "message": message,
@@ -69,5 +75,6 @@ class CalendarSq9atk(SR0WXModule):
                 "source": "calendar_zoznam_sk",
             }
         except Exception as e:
-            self.__logger.exception(COLOR_FAIL + "Exception when running %s: %s"+ COLOR_ENDC, str(self), e)
+            self.__logger.exception(
+                COLOR_FAIL + "Exception when running %s: %s" + COLOR_ENDC, str(self), e)
             connection.send(dict())
