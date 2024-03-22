@@ -13,9 +13,10 @@ slownik = {
     #    "burze radiacyjne":"burze_radiacyjne",
 }
 slownik_auto = {
-    #   format: | nazwa wygeneruje się automatycznie
-    #   "slowo",
-    #    "silne",
-    #   "ekstremalne",
-    #    "burze geomagnetyczne",
+    #format: | nazwa wygeneruje się automatycznie
+    #"slowo",
+    #"silne",
+    #"ekstremalne",
+    #"burze geomagnetyczne",
+    #"lokalne mgły",
 }
