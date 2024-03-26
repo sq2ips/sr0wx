@@ -24,7 +24,7 @@ class SpaceWeatherSq2ips(SR0WXModule):
         del data[0]
         val_list = []
         for d in data:
-            if (datetime.now() - datetime.strptime(d[date], "%Y-%m-%d %H:%M:%S.000")).days <= 1:
+            if (datetime.now() - datetime.strptime(d[date], "%Y-%m-%d %H:%M:%S.000")).days < 1:
                 val_list.append(float(d[Kp]))
         val = max(val_list)
         self.__logger.info(f"Zakłucenia geomagnetyczne: Kp={val}")
