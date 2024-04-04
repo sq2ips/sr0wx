@@ -86,10 +86,18 @@ Parameters:
             self.__logger.info("::: Odpytuję adres: " + url.decode())
 
             url = url.decode()
-            # try:
-            request = urllib.request.Request(url)
-            webFile = urllib.request.urlopen(request, None, 5)
-            response = webFile.read()
+            for i in range(3):
+                try:
+                    request = urllib.request.Request(url)
+                    webFile = urllib.request.urlopen(request, None, 5)
+                    response = webFile.read()
+                    break
+                except Exception as e:
+                    if i != 3:
+
+                        self.__logger.warning(COLOR_WARNING + f"Exception sending data:\n{e}\ntrying again..." + COLOR_ENDC)
+                    else:
+                        raise Exception("Exception sending data:\n{e}")
 
             if response == 'OK'.encode():
                 self.__logger.info("::: Dane wysłano, status OK\n")
