@@ -69,4 +69,3 @@ Id trzeba ustawić w sekcji modułu meteoalert_sq2ips.py w pliku config.py w zmi
 
 ## Planowanie zmiany
 - Dodanie modułu pobierającego pogodę z meteo.imgw.pl
-- Dodanie modułu informującego o alertach pogody kosmicznej z modele.imgw.pl
