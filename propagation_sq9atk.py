@@ -51,8 +51,9 @@ class PropagationSq9atk(SR0WXModule):
     def collectBandConditionsFromImage(self, image, dayTime):
         try:
             imageData = image.load()
-            data = list()
-            for band in sorted(self.__pixels):
+            data = []
+            equal = True
+            for band in sorted(self.__pixels)[::-1]:
                 x = self.__pixels[band][dayTime]['x']
                 y = self.__pixels[band][dayTime]['y']
                 rgba = imageData[x, y]
@@ -61,20 +62,21 @@ class PropagationSq9atk(SR0WXModule):
                 # można zaremowac wybraną grupę aby nie podawać info o konkretnych warunkach
                 if self.__levels[color] == 'warunki_podwyzszone':
                     string = str(band) + '_metrow' + ' ' + self.__levels[color]
-                    data[:0] = [string]
 
-                if self.__levels[color] == 'warunki_normalne':
+                elif self.__levels[color] == 'warunki_normalne':
                     string = str(band) + '_metrow' + ' ' + self.__levels[color]
-                    data[:0] = [string]
 
-                if self.__levels[color] == 'warunki_obnizone':
+                elif self.__levels[color] == 'warunki_obnizone':
                     string = str(band) + '_metrow' + ' ' + self.__levels[color]
-                    data[:0] = [string]
 
-                if self.__levels[color] == 'pasmo_zamkniete':
+                elif self.__levels[color] == 'pasmo_zamkniete':
                     string = str(band) + '_metrow' + ' ' + self.__levels[color]
-                    data[:0] = [string]
 
+                if len(data) > 0 and data[-1:][0].split()[1] != string.split()[1]:
+                    equal = False
+                data.append(string)
+            if equal:
+                data = ["na_wszystkich_pasmach " + self.__levels[color]]
             return data
         except:
             return list()

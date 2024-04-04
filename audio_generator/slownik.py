@@ -19,4 +19,5 @@ slownik_auto = {
     #"ekstremalne",
     #"burze geomagnetyczne",
     #"lokalne mgły",
+    #"na wszystkich pasmach",
 }
