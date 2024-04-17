@@ -77,7 +77,7 @@ class PropagationSq9atk(SR0WXModule):
                 data.append(string)
             if equal:
                 data = ["na_wszystkich_pasmach " + self.__levels[color]]
-            return data
+            return [" _ pasma _ " + data[0]]
         except:
             return list()
 
@@ -90,10 +90,10 @@ class PropagationSq9atk(SR0WXModule):
             message = " ".join([
                 " _ informacje_o_propagacji ",
                 " _ dzien _ ",
-                " _ pasma _ ",
+                #" _ pasma _ ",
                 " _ " .join(self.collectBandConditionsFromImage(image, 'day')),
                 " _ noc _ ",
-                " _ pasma _ ",
+                #" _ pasma _ ",
                 " _ " .join(
                     self.collectBandConditionsFromImage(image, 'night')),
                 " _ "
