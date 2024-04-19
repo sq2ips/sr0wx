@@ -75,9 +75,11 @@ class PropagationSq9atk(SR0WXModule):
                 if len(data) > 0 and data[-1:][0].split()[1] != string.split()[1]:
                     equal = False
                 data.append(string)
-            data = [" _ pasma _ " + data[0]]
+                print(string)
+            data.insert(0, " _ pasma _ ")
             if equal:
                 data = ["na_wszystkich_pasmach " + self.__levels[color]]
+            print(data)
             return data
         except:
             return list()
