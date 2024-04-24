@@ -20,14 +20,13 @@ class SpaceWeatherSq2ips(SR0WXModule):
     def ProcessG(self, data):
         Kp = data[0].index("Kp")
         date = data[0].index("time_tag")
-
         del data[0]
         val_list = []
         for d in data:
             if (datetime.now() - datetime.strptime(d[date], "%Y-%m-%d %H:%M:%S.000")).days < 1:
                 val_list.append(float(d[Kp]))
         val = max(val_list)
-        self.__logger.info(f"Zakłucenia geomagnetyczne: Kp={val}")
+        self.__logger.info(f"Burze geomagnetyczne geomagnetyczne: Kp={val}")
 
         if val < 5:
             message = None
@@ -70,7 +69,7 @@ class SpaceWeatherSq2ips(SR0WXModule):
         for d in data:
             val_list.append(float(d["flux"]))
         val = max(val_list)
-        print(f"Burze radiacyjne: {val}")
+        self.__logger.info(f"Burze radiacyjne: {val}")
 
         if val < 10:
             message = None
