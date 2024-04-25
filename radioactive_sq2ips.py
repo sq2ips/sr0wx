@@ -23,7 +23,7 @@ class RadioactiveSq2ips(SR0WXModule):
 
     def request(self, url, id):
         self.__logger.info("::: Pobieranie danych...")
-        data = requests.get(url).json()
+        data = requests.get(url, verify=False).json()
         dataw = ''
         try:
             for i in range(0, len(data["features"])):
