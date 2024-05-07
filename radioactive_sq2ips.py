@@ -23,7 +23,7 @@ class RadioactiveSq2ips(SR0WXModule):
 
     def request(self, url, id):
         self.__logger.info("::: Pobieranie danych...")
-        data = requests.get(url).json()
+        data = requests.get(url, verify=False).json()
         dataw = ''
         try:
             for i in range(0, len(data["features"])):
@@ -45,7 +45,7 @@ class RadioactiveSq2ips(SR0WXModule):
         end = datetime.now().strftime("%Y-%m-%dT%H:%M:%S.000Z")
         url += f"?dateFrom={str(start)}&dateTo={str(end)}"
         self.__logger.info("::: Pobieranie średnich danych...")
-        data = requests.get(url).json()
+        data = requests.get(url, verify=False).json()
         prs = 0
         try:
             for i in range(len(data)):
