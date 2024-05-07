@@ -348,6 +348,13 @@ propagationsq9atk = PropagationSq9atk(
     service_url="https://rigreference.com/solar/img/tall",
 )
 # ---------------
+# propagation_sq2ips
+# ---------------
+propagationsq2ips = PropagationSq2ips(
+    language=pl_google,
+    service_url="https://www.hamqsl.com/solarxml.php",
+)
+# ---------------
 # vhf_propagation_sq9atk
 # ---------------
 vhftroposq9atk = VhfTropoSq9atk(
@@ -437,7 +444,8 @@ modules = [
     # imgwpodestsq9atk,  # wodowskazy
     # airpollutionsq9atk,# zanieczyszczenia powietrza z GIOŚ
     airlysq9atk,        # zanieczyszczenia powietrza z Airly
-    propagationsq9atk,  # propagacja KF
+    #propagationsq9atk,  # propagacja KF
+    propagationsq2ips,  # propagacja KF z hamqsl.com
     vhftroposq9atk,     # propagacja tropo
     # geomagneticsq9atk, # zaburzenia geomagnetyczne
     # radioactivesq9atk, # promieniowanie jonizujące

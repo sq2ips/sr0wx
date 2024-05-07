@@ -16,7 +16,7 @@ from sr0wx_module import SR0WXModule
 
 
 class PropagationSq9atk(SR0WXModule):
-    """Klasa pobierająca dane kalendarzowe"""
+    """Klasa pobierająca informacje o propagacji"""
 
     def __init__(self, language, service_url):
         self.__service_url = service_url

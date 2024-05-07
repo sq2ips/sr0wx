@@ -246,7 +246,7 @@ message += config.goodbye_msg
 # It's time to init ``pygame``'s mixer (and ``pygame``). Possibly defined
 # sound quality is far-too-good (44kHz 16bit, stereo), so you can change it.
 
-pygame.mixer.init(16000, -16, 2, 1024)
+pygame.mixer.init(44000, -16, 2, 1024)
 
 # Next (as a tiny timesaver & memory eater ;) program loads all necessary
 # samples into memory. I think that this is better approach than reading
