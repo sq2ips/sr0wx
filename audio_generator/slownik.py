@@ -11,8 +11,8 @@ slownik = {
     #    "alerty pogody kosmicznej":"alerty_pogody_kosmicznej",
     #    "zakłucenia radiowe":"zakl_ucenia_radiowe",
     #    "burze radiacyjne":"burze_radiacyjne",
-    "informacja o skażeniu powietrza":"informacja_o_skaz_eniu_powietrza",
-    "stan ogólny":"stan_ogolny",
+    #"informacja o skażeniu powietrza":"informacja_o_skaz_eniu_powietrza",
+    #"stan ogólny":"stan_ogolny",
 }
 slownik_auto = {
     #format: | nazwa wygeneruje się automatycznie
@@ -27,6 +27,6 @@ slownik_auto = {
     #"17 i 15 metrów",
     #"12 i 10 metrów",
     #"15 metrów",
-    "bardzo dobry",
-    "pył zawieszony pm1"
+    #"bardzo dobry",
+    #"pył zawieszony pm1"
 }

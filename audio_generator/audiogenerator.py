@@ -11,21 +11,20 @@ from slownik import slownik, slownik_auto
 
 
 def GetKey():
-    url = 'http://responsivevoice.org/'
+    url = 'https://responsivevoice.org/'
 
-    err = None
-    for i in range(3):
+    for i in range(4):
         try:
             data = requests.get(url, timeout=10)
+            if data.ok == False:
+                raise Exception("Got wrong response")
+            break
         except Exception as e:
-            err = e
-        if data.ok:
-            break;
-        else:
-            if err == None:
-                raise Exception("Wrong respons for server")
+            if i < 3:
+                print(f"Error: {e}, trying again...")
             else:
                 raise e
+
     soup = bs.BeautifulSoup(data.text, 'lxml')
     elem = soup.find('script', attrs={'id': 'responsive-voice-js'})
     src = elem.get('src')
@@ -57,18 +56,16 @@ def TrimPl(word):
 def GetMp3(word, filename):
 
     gender = "female"
-    url = f'http://texttospeech.responsivevoice.org/v1/text:synthesize?lang=pl&engine=g1&name=&pitch=0.5&rate=0.5&volume=1&key={GetKey()}&gender={gender}&text={quote_plus(word)}'
-    err = None
-    for i in range(3):
+    url = f'https://texttospeech.responsivevoice.org/v1/text:synthesize?lang=pl&engine=g1&name=&pitch=0.5&rate=0.5&volume=1&key={GetKey()}&gender={gender}&text={quote_plus(word)}'
+    for i in range(4):
         try:
             data = requests.get(url, timeout=10)
+            if data.ok == False:
+                raise Exception("Got wrong response")
+            break
         except Exception as e:
-            err = e
-        if data.ok:
-            break;
-        else:
-            if err == None:
-                raise Exception("Wrong respons for server")
+            if i < 3:
+                print(f"Error: {e}, trying again...")
             else:
                 raise e
     open(f'mp3/{filename}.mp3', 'wb').write(data.content)

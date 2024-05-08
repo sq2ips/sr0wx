@@ -77,42 +77,32 @@ Parameters:
                 "range": self.__station_range,
                 "info": self.__additional_info,
             }
-
             dump = json.dumps(station_info, separators=(',', ':'))
             b64data = base64.urlsafe_b64encode(dump.encode())
-
             url = self.__service_url.encode() + b64data
-
-            self.__logger.info("::: Odpytuję adres: " + url.decode())
-
             url = url.decode()
-            for i in range(3):
+            self.__logger.info("::: Odpytuję adres: " + url)
+            #----------------------
+
+            for i in range(4):
                 try:
                     request = urllib.request.Request(url)
                     webFile = urllib.request.urlopen(request, None, 5)
                     response = webFile.read()
+                    if response == 'OK'.encode:
+                        raise Exception("Non-OK response")
                     break
                 except Exception as e:
-                    if i != 3:
-
+                    if i < 3:
                         self.__logger.warning(COLOR_WARNING + f"Exception sending data:\n{e}\ntrying again..." + COLOR_ENDC)
                     else:
-                        raise Exception("Exception sending data:\n{e}")
+                        raise e
+            self.__logger.info("::: Dane wysłano, status OK\n")
 
-            if response == 'OK'.encode():
-                self.__logger.info("::: Dane wysłano, status OK\n")
-            else:
-                log = "Non-OK response from %s, (%s)"
-                self.__logger.error(log, url, response)
             connection.send({
                 "message": None,
                 "source": "nd", })
             return {"": ""}
-
-            # except urllib.error.URLError as e:
-            #    self.__logger.error(e)
-            # except urllib.error.timeout:
-            #    self.__logger.error("Timed out!")
         except Exception as e:
             self.__logger.exception(
                 COLOR_FAIL + "Exception when running %s: %s" + COLOR_ENDC, str(self), e)
