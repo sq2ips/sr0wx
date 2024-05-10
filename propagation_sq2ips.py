@@ -38,7 +38,7 @@ class PropagationSq2ips(SR0WXModule):
         conditions_names = {"Poor":"warunki_obnizone","Fair":"warunki_normalne","Good":"warunki_podwyzszone", "Band Closed":"pasmo_zamkniete"}
         text = " _ pasma _ "
         if len(list(set(list(conditions.values())))) == 1:
-            text = "na_wszystkich_pasmach " + conditions_names[(conditions.values())[0]]
+            text = "na_wszystkich_pasmach " + conditions_names[list(conditions.values())[0]]
         else:
             for band in conditions:
                 text += band_names[band] + " " + conditions_names[conditions[band]] + " _ "
