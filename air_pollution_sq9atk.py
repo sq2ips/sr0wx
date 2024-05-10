@@ -21,7 +21,7 @@ from sr0wx_module import SR0WXModule
 class AirPollutionSq9atk(SR0WXModule):
     """Klasa pobierająca info o zanieczyszczeniach powietrza"""
 
-    def __init__(self, language, service_url, city_id=1, station_id=3):
+    def __init__(self, language, service_url, city_id, station_id):
         self.__language = language
         self.__service_url = service_url
         self.__station_id = station_id
@@ -56,7 +56,7 @@ class AirPollutionSq9atk(SR0WXModule):
     def getSensorValue(self, sensorId):
         url = self.__service_url + self.__sensor_url + str(sensorId)
         data = self.getJson(url)
-        if data['values'][0]['value'] > 0:  # czasem tu schodzi null
+        if data['values'][0]['value'] != None:  # czasem tu schodzi null
             value = data['values'][0]['value']
         else:
             value = data['values'][1]['value']
