@@ -74,7 +74,7 @@ class MeteoStationSq2ips(SR0WXModule):
         for i in range(len(data)):
             if data[i][self.__coms.index("atemp\n")] == 0 and data[i][self.__coms.index("ahum\n")] == 0 and data[i][self.__coms.index("awin_dir\n")] == 0 and data[i][self.__coms.index("awin_gus\n")] == 0 and data[i][self.__coms.index("rain\n")] == 0:
                 self.__logger.warning(
-                    COLOR_WARNING + f"Satation {self.__ip[i]} reported only zeros, skipping..." + COLOR_ENDC)
+                    COLOR_WARNING + f"Station {self.__ip[i]} reported only zeros, skipping..." + COLOR_ENDC)
             else:
                 dataf.append(data[i])
 

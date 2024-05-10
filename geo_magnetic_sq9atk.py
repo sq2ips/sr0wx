@@ -61,7 +61,7 @@ class GeoMagneticSq9atk(SR0WXModule):
         r = re.compile(
             r'<div class="value item-(\d)(.*?)"><svg>(.*?)</svg>(\d)</div>')
 
-        return r.findall(html)
+        return r.findall(html.decode())
 
     def groupValuesByDays(self, data):
         hour = 0
