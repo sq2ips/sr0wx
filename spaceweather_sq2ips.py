@@ -7,10 +7,11 @@ from colorcodes import *
 
 
 class SpaceWeatherSq2ips(SR0WXModule):
-    def __init__(self, urlG, urlR, urlS):
+    def __init__(self, urlG, urlR, urlS, geomagneticShort):
         self.__urlG = urlG
         self.__urlR = urlR
         self.__urlS = urlS
+        self.__geomagneticShort = geomagneticShort
         self.__logger = logging.getLogger(__name__)
 
     def DownloadData(self, url):
@@ -21,12 +22,16 @@ class SpaceWeatherSq2ips(SR0WXModule):
         Kp = data[0].index("Kp")
         date = data[0].index("time_tag")
         del data[0]
-        val_list = []
-        for d in data:
-            if (datetime.now() - datetime.strptime(d[date], "%Y-%m-%d %H:%M:%S.000")).days < 1:
-                val_list.append(float(d[Kp]))
-        val = max(val_list)
-        self.__logger.info(f"Burze geomagnetyczne geomagnetyczne: Kp={val}")
+        if self.__geomagneticShort:
+            val = float(data[-1][Kp])
+            self.__logger.info(f"Burze geomagnetyczne geomagnetyczne (chwilowe): Kp={val}, data: {data[-1][date]}")
+        else:
+            val_list = []
+            for d in data:
+                if (datetime.now() - datetime.strptime(d[date], "%Y-%m-%d %H:%M:%S.000")).days < 1:
+                    val_list.append(float(d[Kp]))
+            val = max(val_list)
+            self.__logger.info(f"Burze geomagnetyczne geomagnetyczne: Kp={val}")
 
         if val < 5:
             message = None
