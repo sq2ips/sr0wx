@@ -103,7 +103,7 @@ class SpaceWeatherSq2ips(SR0WXModule):
 
                 if dG != None:
                     message += dG
-                    message += " burze_geomagnetyczne _"
+                    message += " burze_geomagnetyczne _ "
 
                 if dR != None:
                     message += dR
