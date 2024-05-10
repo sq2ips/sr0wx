@@ -62,7 +62,7 @@ class SpaceWeatherSq2ips(SR0WXModule):
         elif val >= 2*10**-3:
             message = "ekstremalne"
 
-        return (message)
+        return message
 
     def ProcessS(self, data):
         val_list = []
@@ -83,7 +83,7 @@ class SpaceWeatherSq2ips(SR0WXModule):
             message = "silne"
         elif val >= 10**5:
             message = "ekstremalne"
-
+        return message
     def get_data(self, connection):
         try:
             self.__logger.info("::: Pobieranie danych")

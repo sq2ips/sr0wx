@@ -29,9 +29,9 @@ class SR0WXModule(object):
         """Deprecated method. Runs `get_data()`."""
         msg = "Use if getData() is deprecated, use get_data() instead"
         warnings.warn(msg)
-        return self.get_data()
+        return self.get_data(None)
 
-    def get_data(self):
+    def get_data(self, connection):
         """Returns message to be played back by core of sr0wx.py. Not
 implemented here.
 
