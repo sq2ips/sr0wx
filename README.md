@@ -66,7 +66,9 @@ Gdynia: 2262\
 Id trzeba ustawić w sekcji modułu meteoalert_sq2ips.py w pliku config.py w zmiennej city_id.
 
 ## TODO
-- Skrypt szukający id stacji i regionu hydro do radioactive_sq2ips.py i meteoalert_sq2ips.py
+- Skrypt szukający regionu hydro do meteoalert_sq2ips.py
+- Dokumentacja
 
 ## Planowanie zmiany
 - Dodanie modułu pobierającego pogodę z meteo.imgw.pl
+- klucze api w pliku .env
