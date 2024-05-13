@@ -5,7 +5,7 @@ parameters = "Program szukający id regionu do modułu meteoalert_sq2ips.py:\n\n
 
 url = "https://meteo.imgw.pl/dyn/data/out1proc.json?v=1.2"
 
-if sys.argv[1] == "-h" or len(sys.argv) == 1:
+if  len(sys.argv) == 1 or sys.argv[1] == "-h":
     print(parameters)
     exit(0)
 elif sys.argv[1] == "-a":
