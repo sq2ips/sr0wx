@@ -43,7 +43,7 @@ class RadioactiveSq2ips(SR0WXModule):
     def request_sr(self, url):
         start = datetime.now().strftime("%Y-%m-%dT00:00:01.000Z")
         end = datetime.now().strftime("%Y-%m-%dT%H:%M:%S.000Z")
-        url += f"?dateFrom={str(start)}&dateTo={str(end)}"
+        url = url + self.__sensor_id + f"?dateFrom={str(start)}&dateTo={str(end)}"
         self.__logger.info("::: Pobieranie średnich danych...")
         data = requests.get(url, verify=False).json()
         prs = 0

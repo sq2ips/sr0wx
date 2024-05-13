@@ -338,8 +338,8 @@ radioactivesq2ips = RadioactiveSq2ips(
     language=pl_google,
     service_url='https://monitoring.paa.gov.pl/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=paa:kcad_siec_pms_moc_dawki_mapa&outputFormat=application/json',
     sensor_id='d2e87d20-28e2-47ea-860d-98a4e98d8726',
-    service_url_sr="https://monitoring.paa.gov.pl/_api/maps/MapLayer/15d20873-f8a7-8899-5d69-960cc9ebbbb6/DetailsTable/f5af6ec4-d759-3163-344e-cbf147d28e28/Data/d2e87d20-28e2-47ea-860d-98a4e98d8726"
-)  # TODO: skrypt szukający id
+    service_url_sr="https://monitoring.paa.gov.pl/_api/maps/MapLayer/15d20873-f8a7-8899-5d69-960cc9ebbbb6/DetailsTable/f5af6ec4-d759-3163-344e-cbf147d28e28/Data/"
+)
 
 
 # ---------------
