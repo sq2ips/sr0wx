@@ -5,6 +5,7 @@ import requests
 import logging
 from sr0wx_module import SR0WXModule
 
+from colorcodes import *
 
 class BaltykSq2ips(SR0WXModule):
     def __init__(self, service_url, region_id):
@@ -97,17 +98,26 @@ class BaltykSq2ips(SR0WXModule):
             .replace(".", " _ ")
         return (text)
 
-    def get_data(self):
-        data = self.request(self.__service_url)
-        datap = self.process(data)
-        message = "prognoza_na_obszar " + self.say_region()
-        time = self.process_time(data)
-        message += "waz_na_od_godziny " + time[0] + " do " + time[1] + " "
-        message += "baltyk_alert_"+datap[0]+" _ "
-        message += self.say_data(datap[1])
-        message += " _ prognoza_orientacyjna_12 "
-        message += self.say_data(datap[2])
-        return {
-            "message": message,
-            "source": "baltyk_pogodynka_pl",
-        }
+    def get_data(self, connection):
+        try:
+            data = self.request(self.__service_url)
+            datap = self.process(data)
+            message = "prognoza_na_obszar " + self.say_region()
+            time = self.process_time(data)
+            message += "waz_na_od_godziny " + time[0] + " do " + time[1] + " "
+            message += "baltyk_alert_"+datap[0]+" _ "
+            message += self.say_data(datap[1])
+            message += " _ prognoza_orientacyjna_12 "
+            message += self.say_data(datap[2])
+            connection.send({
+                            "message": message,
+                            "source": "baltyk_pogodynka_pl",
+                        })
+            return {
+                "message": message,
+                "source": "baltyk_pogodynka_pl",
+            }
+        except Exception as e:
+            self.__logger.exception(
+                COLOR_FAIL + "Exception when running %s: %s" + COLOR_ENDC, str(self), e)
+            connection.send(dict())

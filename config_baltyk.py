@@ -31,7 +31,7 @@
 
 
 from baltyk_sq2ips import BaltykSq2ips
-from baltyk_sq2dk import BaltykSq2dk
+#from baltyk_sq2dk import BaltykSq2dk
 import pl_google.pl_google as pl_google
 import logging
 import logging.handlers
@@ -56,11 +56,11 @@ log_handlers = [{
     }
 }]
 
-ctcss_tone = 0
+#ctcss_tone = 67.0
 serial_port = None
 serial_baud_rate = 9600
 serial_signal = 'DTR'  # lub 'RTS'
-
+multi_processing = True
 
 lang = "pl_google"
 pygame_bug = 0
@@ -73,12 +73,12 @@ read_sources_msg = False
 # ---------------
 # baltyk_sq2dk
 # ---------------
-baltyksq2dk = BaltykSq2dk(
-    language=pl_google,
-    service_url="https://baltyk.imgw.pl//getdata/forecast.php?type=sea&lang=pl",
+#baltyksq2dk = BaltykSq2dk(
+#    language=pl_google,
+#    service_url="https://baltyk.imgw.pl//getdata/forecast.php?type=sea&lang=pl",
 
     # niepewne źródło   # service_url="http://91.220.17.153/index-maps/forecastGetData.php?type=sea&lang=pl",
-    region_id="SOUTHEASTERN BALTIC"
+ #   region_id="SOUTHEASTERN BALTIC"
 
     # stary nie działający URL: service_url="http://baltyk.pogodynka.pl/index-maps/forecastGetData.php?type=sea&lang=pl",
     # "POLISH COASTAL WATERS"
@@ -89,7 +89,7 @@ baltyksq2dk = BaltykSq2dk(
     # "CENTRAL BALTIC"
     # "NORTHERN BALTIC"
     # "POLISH COASTAL WATERS"
-)
+#)
 baltyksq2ips = BaltykSq2ips(
     service_url="https://baltyk.imgw.pl//getdata/forecast.php?type=sea&lang=pl",
     region_id="SOUTHEASTERN BALTIC"
