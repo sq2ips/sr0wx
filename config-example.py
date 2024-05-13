@@ -37,6 +37,7 @@ from calendar_sq2ips import CalendarSq2ips
 from calendar_sq9atk import CalendarSq9atk
 from vhf_tropo_sq9atk import VhfTropoSq9atk
 from propagation_sq9atk import PropagationSq9atk
+from propagation_sq2ips import PropagationSq2ips
 from radioactive_sq2ips import RadioactiveSq2ips
 from radioactive_sq9atk import RadioactiveSq9atk
 from geo_magnetic_sq9atk import GeoMagneticSq9atk
@@ -79,7 +80,7 @@ multi_processing = True
 lang = "pl_google"
 pygame_bug = 0
 
-hello_msg = ['_', 'sr2wxg_cw', '_',
+hello_msg = ['_',
              'tu_eksperymentalna_automatyczna_stacja_pogodowa', 'sr0wx']
 goodbye_msg = ['_', 'tu_sr2wxg', "_", "kolejny_komunikat", "_", "beep2"]
 data_sources_error_msg = ['_', 'zrodlo_danych_niedostepne']
@@ -279,6 +280,7 @@ airpollutionsq9atk = AirPollutionSq9atk(
     language=pl_google,
     service_url="http://api.gios.gov.pl/pjp-api/rest/",
     station_id=738,
+    city_id=219,
 )
 
 # ---------------
@@ -412,6 +414,7 @@ spaceweathersq2ips = SpaceWeatherSq2ips(
     urlR="https://services.swpc.noaa.gov/json/goes/secondary/xrays-6-hour.json",
     # Burze radiacyjne
     urlS="https://services.swpc.noaa.gov/json/goes/primary/integral-protons-6-hour.json",
+    geomagneticShort = True,
 )
 
 # ----------------
