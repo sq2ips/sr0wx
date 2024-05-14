@@ -17,6 +17,7 @@ Program pobiera różne dane z internetu, np. stan pogody, prognozę pogody, ost
 - Przepisanie całej aplikacji z python 2 na 3
 - Dodanie generatora sampli napisanego w pythonie
 - Obsługa wieloprocesowości, wszystkie moduły uruchamiają się jednocześnie
+- Parametry konkretnej stacji są przechowywane w pliku .env
 
 ## Licencja
 LICENSE
@@ -32,7 +33,7 @@ Tworzymy katalog logu:\
 Aktualizujemy listy pakietów:\
 `sudo apt-get update`\
 Instalujemy potrzebne pakiety:\
-`sudo apt-get install git curl php7.0 php-curl php-xml ffmpeg python3 python3-pip`\
+`sudo apt-get install git curl php7.0 php-curl php-xml ffmpeg python3 python3-pip python3-dotenv`\
 Teraz klonujemy repozytorium:\
 `git clone https://github.com/sq2ips/sr0wx.git`\
 Wchodzimy do niego:\
@@ -44,8 +45,8 @@ Lub jeżeli jesteśmy na Raspberry pi i chcemy korzystać z ptt przez gpio:\
 Wchodzimy do podkatalogu pyliczba i instalujemy moduł\
 `cd pyliczba; sudo python3 setup.py install; cd ..`
 
-Teraz kopiujemy przykładowy plik konfiguracyjny:
-`cp config-example.py config.py`
+Teraz kopiujemy przykładowy plik .env:
+`cp .env.example .env`
 
 Uruchamiamy:
 `python3 sr0wx.py`
@@ -71,4 +72,3 @@ Id trzeba ustawić w sekcji modułu meteoalert_sq2ips.py w pliku config.py w zmi
 
 ## Planowanie zmiany
 - Dodanie modułu pobierającego pogodę z meteo.imgw.pl
-- klucze api w pliku .env
