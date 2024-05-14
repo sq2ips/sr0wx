@@ -142,7 +142,10 @@ for opt, arg in opts:
     if opt in ("-c", "--config"):
         if arg[-3:] == '.py':
             arg = arg[:-3]
-        config = __import__(arg)
+        if arg == "config_baltyk":
+            import config_baltyk as config
+        else:
+            config = __import__(arg)
 
 if config is None:
     import config as config
