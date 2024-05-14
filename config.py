@@ -30,9 +30,10 @@
 # Pozostałe tablice to tylko przechowalnia fraz go wygenerowania.
 
 
+from colorcodes import COLOR_ENDC, COLOR_FAIL, COLOR_WARNING
 from meteostation_sq2ips import MeteoStationSq2ips
-from meteoalert_sq2ips import MeteoAlertSq2ips
 from spaceweather_sq2ips import SpaceWeatherSq2ips
+from meteoalert_sq2ips import MeteoAlertSq2ips
 from calendar_sq2ips import CalendarSq2ips
 from calendar_sq9atk import CalendarSq9atk
 from vhf_tropo_sq9atk import VhfTropoSq9atk
@@ -48,6 +49,9 @@ from meteo_sq9atk import MeteoSq9atk
 from openweather_sq9atk import OpenWeatherSq9atk
 from activity_map import ActivityMap
 import pl_google.pl_google as pl_google
+
+from dotenv import load_dotenv
+import os
 import logging
 import logging.handlers
 import time
@@ -61,7 +65,7 @@ log_handlers = [{
     'log_level': logging.DEBUG,
     'class': logging.handlers.TimedRotatingFileHandler,
     'config': {
-        'filename': '../logs/' + str(datetime.now().strftime("%Y-%m-%d_%H:%M")) + '.log',
+        'filename': '../logs/pogoda/' + str(datetime.now().strftime("%Y-%m-%d_%H:%M")) + '.log',
         'when': 'D',
         'interval': 1,
         'backupCount': 30,
@@ -70,7 +74,7 @@ log_handlers = [{
     }
 }]
 
-# ctcss_tone = 67.0
+#ctcss_tone = 67.0
 serial_port = None
 serial_baud_rate = 9600
 serial_signal = 'DTR'  # lub 'RTS'
@@ -80,25 +84,42 @@ multi_processing = True
 lang = "pl_google"
 pygame_bug = 0
 
-hello_msg = ['_',
-             'tu_eksperymentalna_automatyczna_stacja_pogodowa', 'sr0wx']
-goodbye_msg = ['_', 'tu_sr2wxg', "_", "kolejny_komunikat", "_", "beep2"]
+if os.path.exists(".env"):
+    load_dotenv()
+    hello_msg = os.getenv("HELLO_MSG").split(",")
+    goodbye_msg = os.getenv("GOODBYE_MSG").split(",")
+    airly_key = os.getenv("AIRLY_KEY")
+    openweather_key = os.getenv("OPENWEATHER_KEY")
+    meteostation_ip = os.getenv("METEOSTATION_IP").split(",")
+    map_call = os.getenv("MAP_CALL")
+    map_lat = os.getenv("MAP_LAT")
+    map_lon = os.getenv("MAP_LON")
+    map_info = os.getenv("MAP_INFO")
+else:
+    raise FileNotFoundError("No .env file present.")
+
+
+#hello_msg = ['_', 'test']
+#goodbye_msg = ['_', "beep2"]
 data_sources_error_msg = ['_', 'zrodlo_danych_niedostepne']
 read_sources_msg = False
+
+
 
 # -------------
 # activity_map
 # ------------
+from activity_map import ActivityMap
 activitymap = ActivityMap(
-    service_url="http://wx.ostol.pl/map_requests?base=",
-    callsign="TEST",
-    latitude=0.0000000,
-    longitude=0.0000000,
+    service_url="http://wx.vhf.com.pl/map_requests?base=",
+    callsign=map_call,
+    latitude=map_lat,
+    longitude=map_lon,
     hour_quarter=10,
     above_sea_level=35,
     above_ground_level=20,
-    station_range=23,
-    additional_info="TEST",
+    station_range=25,
+    additional_info=map_info,
 )
 
 # ---------------
@@ -108,7 +129,7 @@ activitymap = ActivityMap(
 # wystarczy sie zarejestrować
 openweathersq9atk = OpenWeatherSq9atk(
     language=pl_google,
-    api_key='',  # klucz api
+    api_key=openweather_key,
     lat=54.5237904,
     lon=18.5129878,
     service_url='http://api.openweathermap.org/data/2.5/',
@@ -279,8 +300,23 @@ imgwpodestsq9atk = ImgwPodestSq9atk(
 airpollutionsq9atk = AirPollutionSq9atk(
     language=pl_google,
     service_url="http://api.gios.gov.pl/pjp-api/rest/",
-    station_id=738,
+    station_id=732,
     city_id=219,
+    # LISTA STACJI Z NUMERAMI Z CAŁEJ POLSKI
+    # http://api.gios.gov.pl/pjp-api/rest/station/findAll
+
+    # poniższe TYLKO DLA KRAKOWA!!!!!
+    # do station_id wpada co 20 minut inna cyfra z przedziału 0,1,2
+    # dzięki czemu za każdym razem wybieramy inną stację pomiarową
+    # station_id = 400 + (int(datetime.now().strftime('%M')))/20,
+    # 400 Kraków, Aleja Krasińskiego
+    # 401 Kraków, ul. Bujaka
+    # 402 Kraków, ul. Bulwarowa
+    # 10121 Kraków, ul. Dietla
+    # 10123 Kraków, ul. Złoty Róg
+    # 10139 Kraków, os. Piastów
+    # 10435 Kraków, ul. Telimeny
+    # 10447 Kraków, os. Wadów
 )
 
 # ---------------
@@ -290,7 +326,7 @@ airpollutionsq9atk = AirPollutionSq9atk(
 # wystarczy sie zarejestrować
 airlysq9atk = AirlySq9atk(
     language=pl_google,
-    api_key='',  # klucz api
+    api_key=airly_key,
     service_url='https://airapi.airly.eu/v2/measurements',  # location
     mode='nearest',  # point|nearest|installationId
     lat=54.519813,
@@ -326,7 +362,7 @@ geomagneticsq9atk = GeoMagneticSq9atk(
 radioactivesq9atk = RadioactiveSq9atk(
     language=pl_google,
     service_url="http://radioactiveathome.org/map/",
-    sensor_id=39306  # czujnik w centrum Gdyni //nie działa//
+    sensor_id=39306  # czujnik w centrum Gdyni
     # więcej czujników na stronie http://radioactiveathome.org/map/
 )
 
@@ -402,6 +438,12 @@ calendarsq2ips = CalendarSq2ips(
     temp=20,
     hori=0,
 )
+meteoalertsq2ips = MeteoAlertSq2ips(
+    city_id=2262,  # Gdynia
+    start_message="ostrzezenia_meteorologiczne_i_hydrologiczne_imgw",
+    hydronames=["W_G_6_PM", "Z_G_22_PM"],  # Gdynia i bałtyk
+    validity_type=2,  # 1=long 2=short
+)
 
 # ---------------
 # spaceweather_sq2ips
@@ -414,17 +456,8 @@ spaceweathersq2ips = SpaceWeatherSq2ips(
     urlR="https://services.swpc.noaa.gov/json/goes/secondary/xrays-6-hour.json",
     # Burze radiacyjne
     urlS="https://services.swpc.noaa.gov/json/goes/primary/integral-protons-6-hour.json",
+    # Chwilowe burze geomagnetyczne
     geomagneticShort = True,
-)
-
-# ----------------
-# meteoalert_sq2ips
-# ----------------
-meteoalertsq2ips = MeteoAlertSq2ips(
-    city_id=2262,  # Gdynia
-    start_message="ostrzezenia_meteorologiczne_i_hydrologiczne_imgw",
-    hydronames=["W_G_6_PM", "Z_G_22_PM"],  # Gdynia i bałtyk
-    validity_type=2,  # 1=long 2=short
 )
 
 # ---------------
@@ -433,28 +466,34 @@ meteoalertsq2ips = MeteoAlertSq2ips(
 
 meteostationsq2ips = MeteoStationSq2ips(
     language=pl_google,
-    ip=[],
+    # Lokalnie:
+    # ip="192.168.15.12",
+    # z sieci SP2ZIE:
+    # ip="153.19.0.138",
+    # SQ2DK:
+    ip=meteostation_ip,
     port=4210,
 )
 
 # WŁĄCZONE MODUŁY
 modules = [
-    # activitymap,       # marker na mapie wx.ostol.pl
-    meteoalertsq2ips,   # ostrzeżenia imgw
-    meteostationsq2ips,  #
-    openweathersq9atk,  # prognoza pogody
-    # meteosq9atk,       # pogoda alternatywa
-    # imgwpodestsq9atk,  # wodowskazy
-    # airpollutionsq9atk,# zanieczyszczenia powietrza z GIOŚ
-    airlysq9atk,        # zanieczyszczenia powietrza z Airly
-    #propagationsq9atk,  # propagacja KF
-    propagationsq2ips,  # propagacja KF z hamqsl.com
-    vhftroposq9atk,     # propagacja tropo
-    # geomagneticsq9atk, # zaburzenia geomagnetyczne
-    # radioactivesq9atk, # promieniowanie jonizujące
-    radioactivesq2ips,  # promieniowanie jonizujące z paa
-    # calendarsq9atk,    # wschód słońca
-    calendarsq2ips,     # wschód słońca bez internetu
+    activitymap,            # marker na mapie wx.ostol.pl
+    meteoalertsq2ips,       # ostrzeżenia meteorologiczne imgw
+    #meteostationsq2ips,    # dane ze stacji meteo
+    openweathersq9atk,      # prognoza pogody
+    # meteosq9atk,           # pogoda alternatywa
+    # imgwpodestsq9atk,       # wodowskazy
+    #airpollutionsq9atk,     # zanieczyszczenia powietrza z GIOŚ
+    airlysq9atk,            # zanieczyszczenia powietrza z Airly
+    spaceweathersq2ips,     # pogoda kosmiczna
+    #propagationsq9atk,      # propagacja KF
+    propagationsq2ips,      # propagacja KF z hamqsl.com
+    vhftroposq9atk,         # propagacja tropo
+    #geomagneticsq9atk,      # zaburzenia geomagnetyczne
+    #radioactivesq9atk,      # promieniowanie jonizujące
+    radioactivesq2ips,      # promieniowanie jonizujące z paa
+    #calendarsq9atk,        # wschód słońca
+    calendarsq2ips,        # wschód słońca bez internetu
 ]
 offline_modules = [
     calendarsq2ips,
