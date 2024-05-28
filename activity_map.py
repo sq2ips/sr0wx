@@ -26,6 +26,8 @@ import urllib.request
 import urllib.error
 import urllib.parse
 
+import requests
+
 from sr0wx_module import SR0WXModule
 
 
@@ -86,9 +88,8 @@ Parameters:
 
             for i in range(4):
                 try:
-                    request = urllib.request.Request(url)
-                    webFile = urllib.request.urlopen(request, None, 5)
-                    response = webFile.read()
+                    response = requests.get(url, timeout=10).text
+
                     if response == 'OK'.encode:
                         raise Exception("Non-OK response")
                     break
