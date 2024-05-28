@@ -14,13 +14,24 @@ class PropagationSq2ips(SR0WXModule):
         self.__logger = logging.getLogger(__name__)
     def DownloadData(self, url):
         self.__logger.info("::: Odpytuję adres: " + url)
-        response = requests.get(url)
-        root = ElementTree.fromstring(response.content)
-        if root.tag == 'solar' and response.ok:
-            self.__logger.info("::: Otrzymano dane, nagłówek zgodny.")
-            return root
-        else:
-            raise Exception("Otrzymano nieprawidłową odpowiedź.")
+
+        for i in range(4):
+            try:
+                response = requests.get(url, timeout=10)
+                root = ElementTree.fromstring(response.content)
+                if response.ok == False:
+                    raise Exception("Non-OK response")
+                elif root.tag == 'solar'.encode:
+                    print(root.tag)
+                    raise Exception("Nieprawidłowy nagłówek")
+                break
+            except Exception as e:
+                if i < 3:
+                    self.__logger.warning(COLOR_WARNING + f"Exception sending data:\n{e}\ntrying again..." + COLOR_ENDC)
+                else:
+                    raise e
+        self.__logger.info("::: Otrzymano dane, nagłówek zgodny.")
+        return root
     def process(self, root):
         self.__logger.info("::: Przetważanie danych...")
         conditions_day = {}

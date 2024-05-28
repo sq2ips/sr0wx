@@ -90,7 +90,7 @@ Parameters:
                 try:
                     response = requests.get(url, timeout=10).text
 
-                    if response == 'OK'.encode:
+                    if response != 'OK':
                         raise Exception("Non-OK response")
                     break
                 except Exception as e:
