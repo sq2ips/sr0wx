@@ -47,19 +47,23 @@ class MeteoAlertSq2ips(SR0WXModule):
 
     def downloadData(self):
         # urlap = "https://meteo.imgw.pl/api/meteo/messages/v1/prog/latest/pronieb/ALL"
-        urln = "https://meteo.imgw.pl/dyn/data/out1proc.json?v=1.2"
+        #urln = "https://meteo.imgw.pl/dyn/data/out1proc.json?v=1.2"
         urla = "https://meteo.imgw.pl/api/meteo/messages/v1/osmet/latest/osmet-teryt?lc="
+        urlk = "https://meteo.imgw.pl/api/meteo/messages/v1/osmet/latest/komet-teryt?lc="
         urlah = "https://meteo.imgw.pl/api/meteo/messages/v1/warnhydro/latest/warn"
-        self.__logger.info("::: Pobieranie ostrzeżeń meteorologicznych...")
+        self.__logger.info("::: Pobieranie ostrzeżeń...")
         alerts = requests.get(url=urla).json()
-        names = requests.get(url=urln).json()
+        #names = requests.get(url=urln).json()
+        komets = requests.get(url=urlk).json()
         alerts_hydro = requests.get(url=urlah).json()
-        return (alerts, names, alerts_hydro)
+        #return (alerts, names, alerts_hydro)
+        return  (alerts, komets, alerts_hydro)
 
     def process(self):
         data = self.downloadData()
         alerts = data[0]
-        names = data[1]
+        #names = data[1]
+        komets = data[1]
         alerts_hydro = data[2]
         self.__logger.info("::: Przetważanie danych...")
         # nazwy
@@ -69,31 +73,52 @@ class MeteoAlertSq2ips(SR0WXModule):
         self.__logger.info(f"id: {self.__city_id}")
         # Ostrzeżenia
         message = self.__start_message + " _ "
-        os = True
         id_w = []
-        try:
-            for i in range(len(alerts["teryt"][self.__city_id])):
-                id_w.append(alerts["teryt"][self.__city_id][i])
-        except KeyError:
-            os = False
-        else:
+        id_wk = []
+        if self.__city_id in alerts["teryt"]:
+            for i in alerts["teryt"][self.__city_id]:
+                id_w.append(i)
+
+        if self.__city_id in komets["teryt"]:
+            for i in komets["teryt"][self.__city_id]:
+                id_wk.append(i)
+
+        if len(id_w) > 0 or len(id_wk) > 0:
             os = True
-            # print(id_w)
-            warnings_used = []
-            for i in range(len(id_w)):
-                kod = alerts["warnings"][id_w[i]]["PhenomenonCode"]
-                if kod in warnings_used:
-                    self.__logger.warning("Powtórzenie ostrzeżenia: "+kod)
-                else:
-                    stopien = alerts["warnings"][id_w[i]]["Level"]
-                    prawd = alerts["warnings"][id_w[i]]["Probability"]
-                    wazne_do = alerts["warnings"][id_w[i]]["LxValidTo"]
-                    wazne_do_text = self.processDate(wazne_do)
-                    self.__logger.info(
-                        "kod: "+kod+" stopień:" + stopien + " ważne do:"+wazne_do)
-                    # message += " ostrzezenie_przed "+str(self.codes[kod])+" "+ str(self.stopnie[stopien]) + " stopnia " + "prawdopodobienstwo " + str(self.procent[int(prawd)]) + " procent" + " _ "
-                    message += " ostrzezenie_przed "+str(self.codes[kod])+" " + str(
-                        self.stopnie[stopien]) + " stopnia " + wazne_do_text + " _ "
+        else:
+            os = False
+
+        warnings_used = []
+        for i in id_wk:
+            kod = komets["komets"][i]["Phenomenon"][0]['Code']
+            if kod in warnings_used:
+                self.__logger.warning("Powtórzenie ostrzeżenia: "+kod)
+            else:
+                warnings_used.append(kod)
+                wazne_do = komets["komets"][i]["LxValidTo"]
+                wazne_do_text = self.processDate(wazne_do)
+                self.__logger.info(
+                    "kod: "+kod+ " ważne do: "+wazne_do)
+                # message += " ostrzezenie_przed "+str(self.codes[kod])+" "+ str(self.stopnie[stopien]) + " stopnia " + "prawdopodobienstwo " + str(self.procent[int(prawd)]) + " procent" + " _ "
+                message += " ostrzezenie_przed "+str(self.codes[kod]) + " " + wazne_do_text + " _ "
+
+        for i in id_w:
+            kod = alerts["warnings"][i]["PhenomenonCode"]
+            if kod in warnings_used:
+                self.__logger.warning("Powtórzenie ostrzeżenia: "+kod)
+            else:
+                warnings_used.append(kod)
+                stopien = alerts["warnings"][i]["Level"]
+                prawd = alerts["warnings"][i]["Probability"]
+                wazne_do = alerts["warnings"][i]["LxValidTo"]
+                wazne_do_text = self.processDate(wazne_do)
+                self.__logger.info(
+                    "kod: "+kod+" stopień: " + stopien + " ważne do: "+wazne_do)
+                # message += " ostrzezenie_przed "+str(self.codes[kod])+" "+ str(self.stopnie[stopien]) + " stopnia " + "prawdopodobienstwo " + str(self.procent[int(prawd)]) + " procent" + " _ "
+                message += " ostrzezenie_przed "+str(self.codes[kod])+" " + str(
+                    self.stopnie[stopien]) + " stopnia " + wazne_do_text + " _ "
+
+
         hydro_used = []
         for i in range(len(alerts_hydro["warnings"])):
             for j in range(len(alerts_hydro["warnings"][i]["Zlewnie"])):
@@ -110,7 +135,7 @@ class MeteoAlertSq2ips(SR0WXModule):
                         wazne_do = alerts_hydro["warnings"][i]["WarnHydro"]["LxValidTo"]
                         wazne_do_text = self.processDate(wazne_do)
                         self.__logger.info(
-                            "kod: "+kod+" stopień:" + stopien + " ważne do:"+wazne_do)
+                            "kod: "+kod+" stopień: " + stopien + " ważne do: "+wazne_do)
 
                         message += " ostrzezenie_przed " + \
                             str(self.codes[kod])+" "
