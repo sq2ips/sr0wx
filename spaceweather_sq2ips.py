@@ -7,11 +7,12 @@ from colorcodes import *
 
 
 class SpaceWeatherSq2ips(SR0WXModule):
-    def __init__(self, urlG, urlR, urlS, geomagneticShort):
+    def __init__(self, urlG, urlR, urlS, geomagneticShort, radioNoise):
         self.__urlG = urlG
         self.__urlR = urlR
         self.__urlS = urlS
         self.__geomagneticShort = geomagneticShort
+        self.__radioNoise = radioNoise
         self.__logger = logging.getLogger(__name__)
 
     def DownloadData(self, url):
@@ -92,13 +93,17 @@ class SpaceWeatherSq2ips(SR0WXModule):
     def get_data(self, connection):
         try:
             self.__logger.info("::: Pobieranie danych")
-            dataR = self.DownloadData(self.__urlR)
+            if self.__radioNoise:
+                dataR = self.DownloadData(self.__urlR)
             dataG = self.DownloadData(self.__urlG)
             dataS = self.DownloadData(self.__urlS)
 
             self.__logger.info("::: Przetważanie danych")
             dG = self.ProcessG(dataG)
-            dR = self.ProcessR(dataR)
+            if self.__radioNoise:
+                dR = self.ProcessR(dataR)
+            else:
+                dR = None
             dS = self.ProcessS(dataS)
 
             if dG == None and dR == None and dS == None:

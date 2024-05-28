@@ -391,6 +391,7 @@ propagationsq9atk = PropagationSq9atk(
 propagationsq2ips = PropagationSq2ips(
     language=pl_google,
     service_url="https://www.hamqsl.com/solarxml.php",
+    radioNoise = True
 )
 # ---------------
 # vhf_propagation_sq9atk
@@ -458,6 +459,7 @@ spaceweathersq2ips = SpaceWeatherSq2ips(
     urlS="https://services.swpc.noaa.gov/json/goes/primary/integral-protons-6-hour.json",
     # Chwilowe burze geomagnetyczne
     geomagneticShort = True,
+    radioNoise = True
 )
 
 # ---------------

@@ -29,4 +29,5 @@ slownik_auto = {
     #"15 metrów",
     #"bardzo dobry",
     #"pył zawieszony pm1"
+    #"poziom zakłuceń"
 }
