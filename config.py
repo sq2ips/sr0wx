@@ -459,7 +459,7 @@ spaceweathersq2ips = SpaceWeatherSq2ips(
     urlS="https://services.swpc.noaa.gov/json/goes/primary/integral-protons-6-hour.json",
     # Chwilowe burze geomagnetyczne
     geomagneticShort = True,
-    radioNoise = True
+    radioNoise = False
 )
 
 # ---------------
