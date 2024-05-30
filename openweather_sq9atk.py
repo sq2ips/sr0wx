@@ -1,6 +1,8 @@
 #!/usr/bin/python -tt
 # -*- coding: utf-8 -*-
 
+import requests
+
 import urllib.request
 import urllib.error
 import urllib.parse
@@ -8,6 +10,8 @@ import logging
 from datetime import datetime
 import json as JSON
 import socket
+
+from requests.sessions import Request
 
 from colorcodes import *
 
@@ -90,14 +94,20 @@ class OpenWeatherSq9atk(SR0WXModule):
         }
 
     def downloadFile(self, url):
-        try:
-            webFile = urllib.request.urlopen(url, None, 30)
-            return webFile.read()
-        except urllib.error.URLError as e:
-            print(e)
-        except socket.timeout:
-            print("Timed out!")
-        return ""
+        for i in range(4):
+            try:
+                response = requests.get(url, timeout=10)
+
+                if response.ok == False:
+                    raise Exception("Non-OK response")
+                break
+            except Exception as e:
+                if i < 3:
+                    self.__logger.warning(COLOR_WARNING + f"Exception sending data:\n{e}\ntrying again..." + COLOR_ENDC)
+                else:
+                    raise e
+        return response.text
+        self.__logger.info("::: Dane wysłano, status OK\n")
 
     def getHour(self):
         time = ":".join([str(datetime.now().hour), str(datetime.now().minute)])
