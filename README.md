@@ -1,5 +1,5 @@
 # sr0wx
-Automatyczna stacja pogodowa sr0wx autorstwa [@sq6jnx](https://github.com/sq6jnx/sr0wx.py), z modułami i poprawkami autorstwa [@sq9atk](https://github.com/sq9atk/sr0wx) oraz moimi zmianami i dodatkami.
+Automatyczna stacja pogodowa sr0wx autorstwa [@sq6jnx](https://github.com/sq6jnx/sr0wx.py), z modułami i poprawkami autorstwa [@sq9atk](https://github.com/sq9atk/sr0wx) oraz moimi zmianami, dodatkami i unowocześnieniami.
 
 Program ten jest wykorzystywany przez Koło Naukowe UMG o nazwie Morski Klub Łączności "SZKUNER" SP2ZIE do obsługi automatycznej stacji pogodowej sr2wxg.
 
@@ -17,7 +17,8 @@ Program pobiera różne dane z internetu, np. stan pogody, prognozę pogody, ost
 - Przepisanie całej aplikacji z python 2 na 3
 - Dodanie generatora sampli napisanego w pythonie
 - Obsługa wieloprocesowości, wszystkie moduły uruchamiają się jednocześnie
-- Parametry konkretnej stacji są przechowywane w pliku .env
+- Niejawne parametry konkretnej stacji (klucze api itp.) są przechowywane w pliku .env
+- Zmiana urllib na requests w kilku modułach dla zminimalizowania ilości błędów pobierania.
 
 ## Licencja
 LICENSE
