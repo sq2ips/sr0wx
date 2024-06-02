@@ -58,17 +58,18 @@ Cała konfiguracja znajduje się w pliku `config.py`.
 Znajdują się w nim sekcje dla poszczególnych modułów w których można ustawić różne parametry np. współrzędne do prognozy pogody, numer czujnika do stanu powietrza itp.
 Na końcu pliku jest lista `modules` w której można ustawić jakie moduły są włączone.
 
-Aby wyszukać id regionu do meteoalert_sq2ips należy:
+Aby wyszukać id regionu ostrzeżeń do meteoalert_sq2ips należy:
 `cd id_generator`\
 `python meteoalert_getid.py -f <nazwa miasta lub powiatu>`\
 np.\
 `python meteoalert_getid.py -f gdynia`\
 wynik:
 Gdynia: 2262\
-Id trzeba ustawić w sekcji modułu meteoalert_sq2ips.py w pliku config.py w zmiennej city_id.
+Id trzeba ustawić w sekcji modułu meteoalert_sq2ips.py w pliku config.py w zmiennej city_id.\
+
+Wyszukiwanie id regionu ostrzeżeń hydrologicznych jest analogiczne, trzeba uruchomić skrypt `meteoalert_hydro_getid.py`. Id trzeba ustawić w zmiennej `hydronames`, jest to tablica aby możba było ustawić kilka regionów na raz.
 
 ## TODO
-- Skrypt szukający regionu hydro do meteoalert_sq2ips.py
 - Dokumentacja
 
 ## Planowanie zmiany
