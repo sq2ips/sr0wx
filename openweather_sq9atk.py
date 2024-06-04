@@ -3,15 +3,8 @@
 
 import requests
 
-import urllib.request
-import urllib.error
-import urllib.parse
 import logging
 from datetime import datetime
-import json as JSON
-import socket
-
-from requests.sessions import Request
 
 from colorcodes import *
 
@@ -103,11 +96,12 @@ class OpenWeatherSq9atk(SR0WXModule):
                 break
             except Exception as e:
                 if i < 3:
-                    self.__logger.warning(COLOR_WARNING + f"Exception sending data:\n{e}\ntrying again..." + COLOR_ENDC)
+                    self.__logger.warning(COLOR_WARNING + f"Exception getting data:\n{e}\ntrying again..." + COLOR_ENDC)
                 else:
                     raise e
-        return response.text
-        self.__logger.info("::: Dane wysłano, status OK\n")
+
+        self.__logger.info("::: Dane pobrano, status OK\n")
+        return response.json()
 
     def getHour(self):
         time = ":".join([str(datetime.now().hour), str(datetime.now().minute)])
@@ -182,7 +176,8 @@ class OpenWeatherSq9atk(SR0WXModule):
                 str(self.__lat) + '&lon='+str(self.__lon) + \
                 '&units=metric&appid=' + self.__api_key
             self.__logger.info(weather_service_url)
-            weatherJson = JSON.loads(self.downloadFile(weather_service_url))
+            #weatherJson = JSON.loads(self.downloadFile(weather_service_url))
+            weatherJson = self.downloadFile(weather_service_url)
 
             self.__logger.info("::: Pobieram dane prognozy pogody...")
 
@@ -190,8 +185,9 @@ class OpenWeatherSq9atk(SR0WXModule):
                 str(self.__lat) + '&lon='+str(self.__lon) + \
                 '&units=metric&appid=' + self.__api_key
             self.__logger.info(forecast_service_url)
-            forecastJsonAll = JSON.loads(
-                self.downloadFile(forecast_service_url))
+            #forecastJsonAll = JSON.loads(
+            #    self.downloadFile(forecast_service_url))
+            forecastJsonAll = self.downloadFile(forecast_service_url)
 
             self.__logger.info("::: Przetwarzam dane...\n")
             message = ""
