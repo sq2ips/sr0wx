@@ -78,6 +78,7 @@ log_handlers = [{
 serial_port = None
 serial_baud_rate = 9600
 serial_signal = 'DTR'  # lub 'RTS'
+rpi_pin = 40
 # wielo procesowość dla modułów (wyłączone jeszcze nie działa)
 multi_processing = True
 

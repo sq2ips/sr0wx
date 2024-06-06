@@ -60,6 +60,7 @@ log_handlers = [{
 serial_port = None
 serial_baud_rate = 9600
 serial_signal = 'DTR'  # lub 'RTS'
+rpi_pin = 40
 multi_processing = True
 
 lang = "pl_google"

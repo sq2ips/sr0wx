@@ -297,18 +297,20 @@ for el in message:
                 sound_samples[el] = pygame.mixer.Sound(
                     config.lang + "/" + el + ".ogg")
 
+nopi = True
+if config.rpi_pin is not None:
+    try:
+        import RPi.GPIO as GPIO
+        GPIO.setmode(GPIO.BOARD)
+        GPIO.setup(config.rpi_pin, GPIO.OUT)
+        GPIO.output(config.rpi_pin, GPIO.HIGH)
+        logger.info(COLOR_OKGREEN + f"GPIO PTT: ON, PIN: {config.rpi_pin}" + COLOR_ENDC)
+        nopi = False
+    except ImportError:
+        logger.warning(COLOR_WARNING + "No Raspberry Pi GPIO module found, skipping..." + COLOR_ENDC)
+    except Exception as e:
+        logger.error(COLOR_FAIL + f"Unable to turn GPIO ptt on, got error: {e}, skipping...")
 
-nopi = False
-try:
-    import RPi.GPIO as GPIO
-except ImportError:
-    logger.error("No raspi module found, skipping...")
-    nopi = True
-
-if (nopi == False):
-    GPIO.setmode(GPIO.BOARD)
-    GPIO.setup(40, GPIO.OUT)
-    GPIO.output(40, GPIO.HIGH)
 
 # Program should be able to "press PTT" via RSS232. See ``config`` for
 # details.
@@ -382,10 +384,13 @@ except NameError:
     # sudo gpasswd --add ${USER} dialout
     logger.exception(COLOR_FAIL + "Couldn't close serial port" + COLOR_ENDC)
 
-if (nopi == False):
-    GPIO.output(40, GPIO.LOW)
-    logger.info(COLOR_WARNING + "PIN 40 OFF: PTT OFF" + COLOR_ENDC)
+if nopi == False:
+    GPIO.output(config.rpi_pin, GPIO.LOW)
+    logger.info(COLOR_OKGREEN + f"GPIO PTT: OFF, PIN: {config.rpi_pin}" + COLOR_ENDC)
     GPIO.cleanup()
+
+
 logger.info(COLOR_WARNING + "goodbye" + COLOR_ENDC)
+
 # Documentation is a good thing when you need to double or triple your
 # Lines-Of-Code index ;)
