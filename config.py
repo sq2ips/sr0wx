@@ -75,11 +75,13 @@ log_handlers = [{
 }]
 
 #ctcss_tone = 67.0
+# nadawanie przez port szeregowy
 serial_port = None
 serial_baud_rate = 9600
 serial_signal = 'DTR'  # lub 'RTS'
+# nadawanie przez GPIO w Raspberry Pi
 rpi_pin = 40
-# wielo procesowość dla modułów (wyłączone jeszcze nie działa)
+# wieloprocesowość dla modułów (wyłączone jeszcze nie działa)
 multi_processing = True
 
 lang = "pl_google"
@@ -493,6 +495,7 @@ modules = [
     # calendarsq9atk,       # wschód i zachód słońca
     calendarsq2ips,         # wschód i zachód słońca bez internetu
 ]
+# MODUŁY OFFLINE
 offline_modules = [
     calendarsq2ips,
 ]

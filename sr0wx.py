@@ -134,8 +134,14 @@ message = " "
 # Modules may be also given in commandline, separated by a comma.
 
 config = None
+
 try:
-    opts, args = getopt.getopt(sys.argv[1:], "c:", ["config="])
+    if len(sys.argv)>1 and sys.argv[1] == "-t":
+        test_mode = True
+        opts, args = getopt.getopt(sys.argv[2:], "c:", ["config="])
+    else:
+        test_mode = False
+        opts, args = getopt.getopt(sys.argv[1:], "c:", ["config="])
 except getopt.GetoptError:
     pass
 for opt, arg in opts:
@@ -147,6 +153,7 @@ for opt, arg in opts:
         else:
             config = __import__(arg)
 
+
 if config is None:
     import config as config
 
@@ -155,6 +162,8 @@ logger = setup_logging(config)
 logger.info(COLOR_WARNING + "sr0wx.py started" + COLOR_ENDC)
 # logger.info(LICENSE)
 
+if test_mode:
+    logger.info(COLOR_WARNING + "Test mode active" + COLOR_ENDC)
 
 if len(args) > 0:
     modules = args[0].split(",")
@@ -174,6 +183,7 @@ lang = my_import('.'.join((config.lang, config.lang)))
 sources = [lang.source, ]
 
 if config.multi_processing:
+    logger.info("multiprocessing is ON")
     processes = []
     connections = []
     module_s = []
@@ -192,7 +202,7 @@ if config.multi_processing:
         p.join()
 
     func_modules = ""
-    func_modules_counter = 0
+    any_func_modules = False
     for c in connections:
         module_data = c.recv()
         module_message = module_data.get("message", "")
@@ -201,19 +211,23 @@ if config.multi_processing:
             func_modules += COLOR_FAIL + str(module_s[connections.index(c)]) + COLOR_ENDC + "\n"
         elif module_message == None:
             module_message = ""
-            func_modules_counter += 1
+            #any_func_modules = True
             func_modules += COLOR_OKGREEN + str(module_s[connections.index(c)]) + COLOR_ENDC + "\n"
         else:
-            func_modules_counter += 1
+            any_func_modules = True
             func_modules += COLOR_OKGREEN + str(module_s[connections.index(c)]) + COLOR_ENDC + "\n"
         message = " ".join((message, module_message))
         if module_message != "" and module_source != "":
             sources.append(module_data['source'])
 else:
+    logger.info("multiprocessing is OFF")
+    func_modules = ""
+    any_func_modules = False
     for module in modules:
         try:
-            logger.info(COLOR_OKGREEN + "starting %s..." + COLOR_ENDC, module)
-            module_data = module.get_data()
+            logger.info(COLOR_OKBLUE + "starting %s..." + COLOR_ENDC, module)
+            dummy_pipe, Null = Pipe()
+            module_data = module.get_data(dummy_pipe)
             module_message = module_data.get("message", "")
             module_source = module_data.get("source", "")
 
@@ -223,12 +237,16 @@ else:
         except:
             logger.exception(
                 COLOR_FAIL + "Exception when running %s" + COLOR_ENDC, module)
+            func_modules += COLOR_FAIL + str(module) + COLOR_ENDC + "\n"
+        else:
+            any_func_modules = True
+            func_modules += COLOR_OKGREEN + str(module) + COLOR_ENDC + "\n"
 
 
 logger.info(COLOR_BOLD + "modules (" + COLOR_ENDC + COLOR_OKGREEN + "functioning" + COLOR_ENDC + COLOR_BOLD + " / " +
             COLOR_ENDC + COLOR_FAIL + "not functioning" + COLOR_ENDC + COLOR_BOLD + "):\n" + COLOR_ENDC + func_modules)
 
-if func_modules_counter == 0:
+if any_func_modules == False:
     logger.critical(
         COLOR_FAIL + "ERROR: No functioning modules, exiting..." + COLOR_ENDC)
     exit(1)
@@ -243,6 +261,10 @@ if hasattr(config, 'read_sources_msg'):
 else:
     message += sources
 message += config.goodbye_msg
+
+if test_mode:
+    logger.info(COLOR_WARNING + "Test mode active, exiting..." + COLOR_ENDC)
+    exit(0)
 
 # It's time to init ``pygame``'s mixer (and ``pygame``). Possibly defined
 # sound quality is far-too-good (44kHz 16bit, stereo), so you can change it.

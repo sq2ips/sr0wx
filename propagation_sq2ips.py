@@ -64,10 +64,8 @@ class PropagationSq2ips(SR0WXModule):
         if len(noise) != 1 and len(noise) != 2:
             return None
         text = ""
-        print(noise)
         for n in range(len(noise)):
             noise[n] = levels[noise[n]]
-        print(noise)
         text += noise[0]
         if len(noise)==2:
             text += " do " + noise[1]
