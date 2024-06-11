@@ -44,11 +44,11 @@ Modules are expected to return a `dict` with the following keys:
 """
         msg = "This method should be implemented in child class"
         raise NotImplementedError(msg)
-    def requestData(self, url, logger, timeout, repeat, header=None):
+    def requestData(self, url, logger, timeout, repeat, headers=None):
         for i in range(repeat):
             try:
                 logger.info("::: Odpytuję adres: " + url)
-                data = requests.get(url, timeout=timeout, headers=header)
+                data = requests.get(url, timeout=timeout, headers=headers)
                 if data.ok == False:
                     raise Exception("Got wrong response")
                 else:
@@ -58,4 +58,5 @@ Modules are expected to return a `dict` with the following keys:
                     logger.warning(COLOR_WARNING + f"Error: {e}, trying again..." + COLOR_ENDC)
                 else:
                     raise e
+        logger.info("::: Dane pobrano, status OK\n")
         return data

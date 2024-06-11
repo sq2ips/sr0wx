@@ -1,9 +1,5 @@
 # -*- coding: UTF-8 -*-
-import sys
-import importlib
 import logging
-import requests
-import json
 from datetime import datetime
 
 from colorcodes import *
@@ -25,9 +21,6 @@ class RadioactiveSq2ips(SR0WXModule):
         self.__logger.info("::: Pobieranie danych...")
 
         data = self.requestData(url, self.__logger, 20, 3).json()
-
-        #data = requests.get(url).json()
-        
         
         dataw = ''
         try:
@@ -50,7 +43,7 @@ class RadioactiveSq2ips(SR0WXModule):
         end = datetime.now().strftime("%Y-%m-%dT%H:%M:%S.000Z")
         url = url + self.__sensor_id + f"?dateFrom={str(start)}&dateTo={str(end)}"
         self.__logger.info("::: Pobieranie średnich danych...")
-        data = requests.get(url).json()
+        data = self.requestData(url, self.__logger, 10, 3).json()
         prs = 0
         try:
             for i in range(len(data)):

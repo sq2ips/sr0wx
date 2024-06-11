@@ -496,14 +496,14 @@ modules = [
     # meteostationsq2ips,   # dane ze stacji meteo
     openweathersq9atk,      # prognoza pogody
     # meteosq9atk,          # pogoda alternatywa
-    # imgwpodestsq9atk,     # wodowskazy
+    # imgwpodestsq9atk,     # wodowskazy | NIE DZIAŁA
     # airpollutionsq9atk,   # zanieczyszczenia powietrza z GIOŚ
     airlysq9atk,            # zanieczyszczenia powietrza z Airly
     spaceweathersq2ips,     # pogoda kosmiczna
     # propagationsq9atk,    # propagacja KF
     propagationsq2ips,      # propagacja KF z hamqsl.com
     vhftroposq9atk,         # propagacja tropo
-    # geomagneticsq9atk,    # zaburzenia geomagnetyczne
+    # geomagneticsq9atk,    # zaburzenia geomagnetyczne 
     # radioactivesq9atk,    # promieniowanie jonizujące
     radioactivesq2ips,      # promieniowanie jonizujące z paa
     # calendarsq9atk,       # wschód i zachód słońca

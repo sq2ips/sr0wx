@@ -25,50 +25,43 @@ class RadioactiveSq9atk(SR0WXModule):
         self.__logger = logging.getLogger(__name__)
 
     def downloadFile(self, url):
-        try:
-            self.__logger.info("::: Odpytuję adres: " + url)
-            webFile = urllib.request.urlopen(url, None, 30)
-            return webFile.read()
-        except urllib.error.URLError as e:
-            print(e)
-        except socket.timeout:
-            print("Timed out!")
-        return ""
+        data = self.requestData(url, self.__logger, 10, 3)
+        return data.text
 
     def isSensorMatchedById(self, sensorId, string):
-        pos = string.find(("Details sensor "+str(sensorId)).encode())
+        pos = string.find(("Details sensor "+str(sensorId)))
         return pos >= 0
 
     def isSensorRow(self, string):
         # na początku trzeba dodac spację bo inaczej find nie znajduje pierwszego znaku
-        string = " ".encode() + string
-        pos = string.find("Last sample".encode())
+        string = " " + string
+        pos = string.find("Last sample")
         return pos >= 0
 
     def cleanUpString(self, string):
-        string = string.replace(b"<br />", b"<br/>")
-        string = string.replace(b"<br>", b"<br/>")
-        string = string.replace(b"'", b"")
+        string = string.replace("<br />", "<br/>")
+        string = string.replace("<br>", "<br/>")
+        string = string.replace("'", "")
 
         return string
 
     def extractSensorData(self, string):
         string = self.cleanUpString(string)
-        tmpArr = string.split(b"<br/>")
+        tmpArr = string.split("<br/>")
 
-        arrPart = tmpArr[0].split(b".bindPopup(")
+        arrPart = tmpArr[0].split(".bindPopup(")
         tmpArr[0] = arrPart[1]
 
-        tmpCurrent = tmpArr[0].split(b"Last sample: ")
-        tmpAverage = tmpArr[2].split(b"24 hours average: ")
+        tmpCurrent = tmpArr[0].split("Last sample: ")
+        tmpAverage = tmpArr[2].split("24 hours average: ")
 
-        current = tmpCurrent[1].split(b" ")[0]
-        average = tmpAverage[1].split(b" ")[0]
+        current = tmpCurrent[1].split(" ")[0]
+        average = tmpAverage[1].split(" ")[0]
 
         return {"current": current, "average": average}
 
     def getSensorData(self, html):
-        dataArr = html.split("L.marker([".encode())
+        dataArr = html.split("L.marker([")
         ret = {}
         for row in dataArr:
             if self.isSensorRow(row):

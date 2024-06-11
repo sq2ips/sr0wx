@@ -197,7 +197,6 @@ class BaltykSq2dk(SR0WXModule):
         a = (glob.glob("./pl_google/mp3/*.mp3"))
         c = len(a)
         while b < len(a):
-            print((str(b/len(a)*100) + "%"))
             wyj = a[b].replace('.mp3', '') + ".ogg"
             self.__logger.info(("--- konwertowanie " + a[b] + " na " + wyj))
             os.system("ffmpeg -hide_banner -y -i " +

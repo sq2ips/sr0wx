@@ -2,13 +2,9 @@
 # -*- coding: utf-8 -*-
 
 import urllib.request
-import urllib.parse
-import urllib.error
 import logging
-import socket
 
 from PIL import Image
-from pprint import pprint
 
 from colorcodes import *
 
@@ -75,11 +71,9 @@ class PropagationSq9atk(SR0WXModule):
                 if len(data) > 0 and data[-1:][0].split()[1] != string.split()[1]:
                     equal = False
                 data.append(string)
-                print(string)
             data.insert(0, " _ pasma _ ")
             if equal:
                 data = ["na_wszystkich_pasmach " + self.__levels[color]]
-            print(data)
             return data
         except:
             return list()

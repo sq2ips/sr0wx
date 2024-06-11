@@ -25,15 +25,8 @@ class CalendarSq9atk(SR0WXModule):
         self.__logger = logging.getLogger(__name__)
 
     def downloadFile(self, url):
-        try:
-            self.__logger.info("::: Odpytuję adres: " + url)
-            webFile = urllib.request.urlopen(url, None, 30)
-            return webFile.read()
-        except urllib.error.URLError as e:
-            print(e)
-        except socket.timeout:
-            print("Timed out!")
-        return ""
+        data = self.requestData(url, self.__logger, 10, 3)
+        return data.text
 
     def getSunsetSunrise(self):
         self.__logger.info("::: Pobieram dane o wschodzie i zachodzie słońca")

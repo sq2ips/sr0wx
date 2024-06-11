@@ -114,7 +114,6 @@ class AirPollutionSq9atk(SR0WXModule):
             message += " stacja_pomiarowa " + \
                 self.mbstr2asci(self.getStationName()) + " _ "
             message += valuesMessage
-            print("\n")
             connection.send({
                 "message": message,
                 "source": "powietrze_malopolska_pl",

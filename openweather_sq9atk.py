@@ -87,21 +87,8 @@ class OpenWeatherSq9atk(SR0WXModule):
         }
 
     def downloadFile(self, url):
-        for i in range(4):
-            try:
-                response = requests.get(url, timeout=10)
-
-                if response.ok == False:
-                    raise Exception("Non-OK response")
-                break
-            except Exception as e:
-                if i < 3:
-                    self.__logger.warning(COLOR_WARNING + f"Exception getting data:\n{e}\ntrying again..." + COLOR_ENDC)
-                else:
-                    raise e
-
-        self.__logger.info("::: Dane pobrano, status OK\n")
-        return response.json()
+        data = self.requestData(url, self.__logger, 10, 3)
+        return data.json()
 
     def getHour(self):
         time = ":".join([str(datetime.now().hour), str(datetime.now().minute)])

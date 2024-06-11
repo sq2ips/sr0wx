@@ -26,9 +26,8 @@ class MeteoSq9atk(SR0WXModule):
         self.__logger = logging.getLogger(__name__)
 
     def downloadFile(self, url):
-        webFile = urllib.request.urlopen(url)
-        return webFile.read()
-
+        data = self.requestData(url, self.__logger, 10, 3)
+        return data.text
     def getHour(self):
         time = ":".join([str(datetime.now().hour), str(datetime.now().minute)])
         datetime_object = datetime.strptime(time, '%H:%M')

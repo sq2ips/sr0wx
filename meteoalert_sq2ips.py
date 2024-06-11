@@ -52,10 +52,10 @@ class MeteoAlertSq2ips(SR0WXModule):
         urlk = "https://meteo.imgw.pl/api/meteo/messages/v1/osmet/latest/komet-teryt?lc="
         urlah = "https://meteo.imgw.pl/api/meteo/messages/v1/warnhydro/latest/warn"
         self.__logger.info("::: Pobieranie ostrzeżeń...")
-        alerts = requests.get(url=urla).json()
+        alerts = self.requestData(urla, self.__logger, 10, 3).json()
         #names = requests.get(url=urln).json()
-        komets = requests.get(url=urlk).json()
-        alerts_hydro = requests.get(url=urlah).json()
+        komets = self.requestData(urlk, self.__logger, 10, 3).json()
+        alerts_hydro = self.requestData(urlah, self.__logger, 10, 3).json()
         #return (alerts, names, alerts_hydro)
         return  (alerts, komets, alerts_hydro)
 

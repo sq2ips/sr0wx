@@ -3,12 +3,7 @@
 
 import logging
 import re
-import subprocess
-import urllib.request
-import urllib.error
-import urllib.parse
 import time
-from pprint import pprint
 
 from colorcodes import *
 
@@ -42,26 +37,24 @@ class GeoMagneticSq9atk(SR0WXModule):
         }
 
     def downloadDataFromUrl(self, url):
-        self.__logger.info("::: Odpytuję adres: " + url)
-        opener = urllib.request.build_opener()
         headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 5.1; rv:10.0.1) Gecko/20100101 Firefox/10.0.1',
         }
-        opener.addheaders = list(headers.items())
-        response = opener.open(url)
+        data = self.requestData(url, self.__logger, 10, 3, headers=headers)
+        return data.text
 
-        return response.read()
 
     def getDataParsedHtmlData(self):
         self.__logger.info("::: Pobieram informacje...")
 
         html = self.downloadDataFromUrl(self.__service_url)
+        r = re.compile(r'<use href="#gm_(\d+)".*?>')
 
-        # r = re.compile(r'<div class="widget__value w_gm__value(.*?)">(\d)</div>')
-        r = re.compile(
-            r'<div class="value item-(\d)(.*?)"><svg>(.*?)</svg>(\d)</div>')
+        res = r.findall(html)
+        res = res[1:] # omijamy pierwszy element bo nie jest on częścią kontenera z danymi
 
-        return r.findall(html.decode())
+        return res
+
 
     def groupValuesByDays(self, data):
         hour = 0
@@ -73,7 +66,7 @@ class GeoMagneticSq9atk(SR0WXModule):
         for i, val in enumerate(data):
             if dayNum > 1 or hour > current_hour-1:  # omijamy godziny z przeszłości
                 if dayNum < 4 and i < 24:
-                    value = data[i+1][3]
+                    value = data[i+1]
                     output[dayNum][hour] = value
 
             hour += 3
@@ -89,6 +82,8 @@ class GeoMagneticSq9atk(SR0WXModule):
             'at': 0,
         }
         for key, row in data.items():
+            row = int(row)
+            key = int(key)
             if row > maxValue['value']:
                 maxValue['value'] = row
                 maxValue['at'] = key
@@ -102,7 +97,6 @@ class GeoMagneticSq9atk(SR0WXModule):
         try:
             values = self.getDataParsedHtmlData()
             daysValues = self.groupValuesByDays(values)
-
             message = ' _ sytuacja_geomagnetyczna_w_regionie '
 
             self.__logger.info("::: Przetwarzam dane...\n")
