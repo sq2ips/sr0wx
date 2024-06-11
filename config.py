@@ -30,32 +30,20 @@
 # Pozostałe tablice to tylko przechowalnia fraz go wygenerowania.
 
 
-from colorcodes import COLOR_ENDC, COLOR_FAIL, COLOR_WARNING
-from meteostation_sq2ips import MeteoStationSq2ips
-from spaceweather_sq2ips import SpaceWeatherSq2ips
-from meteoalert_sq2ips import MeteoAlertSq2ips
-from calendar_sq2ips import CalendarSq2ips
-from calendar_sq9atk import CalendarSq9atk
-from vhf_tropo_sq9atk import VhfTropoSq9atk
-from propagation_sq9atk import PropagationSq9atk
-from propagation_sq2ips import PropagationSq2ips
-from radioactive_sq2ips import RadioactiveSq2ips
-from radioactive_sq9atk import RadioactiveSq9atk
-from geo_magnetic_sq9atk import GeoMagneticSq9atk
-from airly_sq9atk import AirlySq9atk
-from air_pollution_sq9atk import AirPollutionSq9atk
-from imgw_podest_sq9atk import ImgwPodestSq9atk
-from meteo_sq9atk import MeteoSq9atk
-from openweather_sq9atk import OpenWeatherSq9atk
-from activity_map import ActivityMap
-import pl_google.pl_google as pl_google
-
+# biblioteki
 from dotenv import load_dotenv
 import os
 import logging
 import logging.handlers
 import time
 from datetime import datetime
+
+from colorcodes import *
+
+# język
+import pl_google.pl_google as pl_google
+
+# logger
 log_line_format = '%(asctime)s %(name)s %(levelname)s: %(message)s'
 log_handlers = [{
     'log_level': logging.DEBUG,
@@ -74,19 +62,7 @@ log_handlers = [{
     }
 }]
 
-#ctcss_tone = 67.0
-# nadawanie przez port szeregowy
-serial_port = None
-serial_baud_rate = 9600
-serial_signal = 'DTR'  # lub 'RTS'
-# nadawanie przez GPIO w Raspberry Pi
-rpi_pin = 40
-# wieloprocesowość dla modułów (wyłączone jeszcze nie działa)
-multi_processing = True
-
-lang = "pl_google"
-pygame_bug = 0
-
+# dane z pliku .env
 if os.path.exists(".env"):
     load_dotenv()
     hello_msg = os.getenv("HELLO_MSG").split(",")
@@ -101,17 +77,38 @@ if os.path.exists(".env"):
 else:
     raise FileNotFoundError("No .env file present.")
 
+#####################
 
+# KONFIGURACJA OGÓLNA
+
+#ctcss_tone = 67.0
+# nadawanie przez port szeregowy
+serial_port = None
+serial_baud_rate = 9600
+serial_signal = 'DTR'  # lub 'RTS'
+# nadawanie przez GPIO w Raspberry Pi
+rpi_pin = 40
+# wieloprocesowość dla modułów (wyłączone jeszcze nie działa)
+multi_processing = False
+
+lang = "pl_google" # język
+pygame_bug = 0
+
+# wiadomość początkowa i końcowa jest pliku .env
 #hello_msg = ['_', 'test']
 #goodbye_msg = ['_', "beep2"]
+# informacja gdy nie ma internetu
 data_sources_error_msg = ['_', 'zrodlo_danych_niedostepne']
+# czytanie informacji o źródłach danych
 read_sources_msg = False
 
+#####################
 
+# INICJALIZACJA I KONFIGURACJA MODUŁÓW
 
-# -------------
+# ---------------
 # activity_map
-# ------------
+# ---------------
 from activity_map import ActivityMap
 activitymap = ActivityMap(
     service_url="http://wx.vhf.com.pl/map_requests?base=",
@@ -130,6 +127,7 @@ activitymap = ActivityMap(
 # ---------------
 # https://openweathermap.org/api pod tym adresem można uzyskac klucz API
 # wystarczy sie zarejestrować
+from openweather_sq9atk import OpenWeatherSq9atk
 openweathersq9atk = OpenWeatherSq9atk(
     language=pl_google,
     api_key=openweather_key,
@@ -143,15 +141,17 @@ openweathersq9atk = OpenWeatherSq9atk(
 # ---------------
 # meteo_sq9atk
 # ---------------
+from meteo_sq9atk import MeteoSq9atk
 meteosq9atk = MeteoSq9atk(
     language=pl_google,
     service_url="https://pogoda.onet.pl/prognoza-pogody/gdynia-287798",
 )
 
 
-# -------------
+# ---------------
 # imgw_podest_sq9atk
-# ------------
+# ---------------
+from imgw_podest_sq9atk import ImgwPodestSq9atk
 imgwpodestsq9atk = ImgwPodestSq9atk(
     wodowskazy=[
 
@@ -297,9 +297,10 @@ imgwpodestsq9atk = ImgwPodestSq9atk(
     ]
 )
 
-# --------------------
+# ---------------
 # air_pollution_sq9atk
-# --------------------
+# ---------------
+from air_pollution_sq9atk import AirPollutionSq9atk
 airpollutionsq9atk = AirPollutionSq9atk(
     language=pl_google,
     service_url="http://api.gios.gov.pl/pjp-api/rest/",
@@ -327,6 +328,7 @@ airpollutionsq9atk = AirPollutionSq9atk(
 # ---------------
 # https://developer.airly.org/ pod tym adresem można uzyskac klucz API
 # wystarczy sie zarejestrować
+from airly_sq9atk import AirlySq9atk
 airlysq9atk = AirlySq9atk(
     language=pl_google,
     api_key=airly_key,
@@ -338,9 +340,10 @@ airlysq9atk = AirlySq9atk(
     installationId=3476,  # Gdynia
 )
 
-# --------------------
+# ---------------
 # geomagnetic_sq9atk
-# --------------------
+# ---------------
+from geo_magnetic_sq9atk import GeoMagneticSq9atk
 geomagneticsq9atk = GeoMagneticSq9atk(
     language=pl_google,
     service_url="https://www.gismeteo.pl/weather-gdynia-3041/gm/",
@@ -362,6 +365,7 @@ geomagneticsq9atk = GeoMagneticSq9atk(
 # ---------------
 # radioactive_sq9atk
 # ---------------
+from radioactive_sq9atk import RadioactiveSq9atk
 radioactivesq9atk = RadioactiveSq9atk(
     language=pl_google,
     service_url="http://radioactiveathome.org/map/",
@@ -372,7 +376,7 @@ radioactivesq9atk = RadioactiveSq9atk(
 # ---------------
 # radioactive_sq2ips
 # ---------------
-
+from radioactive_sq2ips import RadioactiveSq2ips
 radioactivesq2ips = RadioactiveSq2ips(
     language=pl_google,
     service_url='https://monitoring.paa.gov.pl/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=paa:kcad_siec_pms_moc_dawki_mapa&outputFormat=application/json',
@@ -384,6 +388,7 @@ radioactivesq2ips = RadioactiveSq2ips(
 # ---------------
 # propagation_sq9atk
 # ---------------
+from propagation_sq9atk import PropagationSq9atk
 propagationsq9atk = PropagationSq9atk(
     language=pl_google,
     service_url="https://rigreference.com/solar/img/tall",
@@ -391,6 +396,7 @@ propagationsq9atk = PropagationSq9atk(
 # ---------------
 # propagation_sq2ips
 # ---------------
+from propagation_sq2ips import PropagationSq2ips
 propagationsq2ips = PropagationSq2ips(
     language=pl_google,
     service_url="https://www.hamqsl.com/solarxml.php",
@@ -399,6 +405,7 @@ propagationsq2ips = PropagationSq2ips(
 # ---------------
 # vhf_propagation_sq9atk
 # ---------------
+from vhf_tropo_sq9atk import VhfTropoSq9atk
 vhftroposq9atk = VhfTropoSq9atk(
     language=pl_google,
     service_url="https://www.dxinfocentre.com/tropo_eur.html",
@@ -408,6 +415,7 @@ vhftroposq9atk = VhfTropoSq9atk(
 # ---------------
 # calendar_sq9atk
 # ---------------
+from calendar_sq9atk import CalendarSq9atk
 calendarsq9atk = CalendarSq9atk(
     language=pl_google,
     service_url="http://calendar.zoznam.sk/sunset-pl.php?city=",
@@ -433,6 +441,7 @@ calendarsq9atk = CalendarSq9atk(
 # ----------------
 # calendar_sq2ips
 # ----------------
+from calendar_sq2ips import CalendarSq2ips
 calendarsq2ips = CalendarSq2ips(
     language=pl_google,
     lat='54.52379',
@@ -442,6 +451,11 @@ calendarsq2ips = CalendarSq2ips(
     temp=20,
     hori=0,
 )
+
+# ----------------
+# meteoalert_sq2ips
+# ----------------
+from meteoalert_sq2ips import MeteoAlertSq2ips
 meteoalertsq2ips = MeteoAlertSq2ips(
     city_id=2262,  # Gdynia
     start_message="ostrzezenia_meteorologiczne_i_hydrologiczne_imgw",
@@ -452,7 +466,7 @@ meteoalertsq2ips = MeteoAlertSq2ips(
 # ---------------
 # spaceweather_sq2ips
 # ---------------
-
+from spaceweather_sq2ips import SpaceWeatherSq2ips
 spaceweathersq2ips = SpaceWeatherSq2ips(
     # burze geomagnetyczne
     urlG="https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json",
@@ -468,7 +482,7 @@ spaceweathersq2ips = SpaceWeatherSq2ips(
 # ---------------
 # meteostation_sq2ips
 # ---------------
-
+from meteostation_sq2ips import MeteoStationSq2ips
 meteostationsq2ips = MeteoStationSq2ips(
     language=pl_google,
     ip=meteostation_ip,
