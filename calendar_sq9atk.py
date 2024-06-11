@@ -18,7 +18,7 @@ from sr0wx_module import SR0WXModule
 class CalendarSq9atk(SR0WXModule):
     """Klasa pobierająca dane kalendarzowe"""
 
-    def __init__(self, language, service_url, city_id=3094802):
+    def __init__(self, language, service_url, city_id):
         self.__service_url = service_url
         self.__city_id = city_id
         self.__language = language
@@ -40,8 +40,8 @@ class CalendarSq9atk(SR0WXModule):
         r = re.compile(r'<h1>(.*)(\d\d:\d\d)(.*)(\d\d:\d\d)</h1>')
         url = self.__service_url+str(self.__city_id)
         html = self.downloadFile(url)
-        matches = r.findall(html)
-        self.__logger.info(
+        matches = r.findall(str(html))
+        self.__logger.debug(
             "Dane diagnostyczne: zawartość matches = " + str(matches))
         return {
             'sunrise': matches[0][1],
