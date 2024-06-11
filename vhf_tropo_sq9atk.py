@@ -3,8 +3,6 @@
 
 import re
 import logging
-import socket
-import requests
 
 from PIL import Image
 from pprint import pprint
@@ -35,17 +33,8 @@ class VhfTropoSq9atk(SR0WXModule):
         self.__mapLatEnd = float(27)
 
     def getHtmlFromUrl(self, url):
-        try:
-            resp = requests.get(url)
-            if resp.status_code == 200:
-                return resp.content
-            else:
-                print("HTML response error")
-                return None
-
-        except requests.exceptions.RequestException as e:
-            print(("HTML download error: %s" % e))
-            return None
+        data = self.requestData(url, self.__logger, 10, 3)
+        return data.text
 
     def findMapUrlInHtml(self, html, target_id):
         pattern = r'<img\s+(?:[^>]*\s+)?id="' + \
@@ -60,7 +49,7 @@ class VhfTropoSq9atk(SR0WXModule):
     def downloadMapFile(self, mapUrl, targetFileName):
         try:
             self.__logger.info("::: Odpytuję adres: " + mapUrl)
-            response = requests.get(mapUrl, timeout=30)
+            response = self.requestData(mapUrl, self.__logger, 20, 3)
 
             with open(targetFileName, "wb") as mapFile:
                 mapFile.write(response.content)
@@ -247,7 +236,7 @@ class VhfTropoSq9atk(SR0WXModule):
 
     def get_data(self, connection):
         try:
-            html = self.getHtmlFromUrl(self.__service_url).decode("ISO-8859-1")
+            html = self.getHtmlFromUrl(self.__service_url)
             mapUrl = self.findMapUrlInHtml(html, "imgClickAndChange")
 
             self.downloadMapFile(mapUrl, 'vhf_map.png')
