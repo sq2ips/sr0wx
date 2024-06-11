@@ -62,7 +62,8 @@ def GetMp3(word, filename):
             data = requests.get(url, timeout=10)
             if data.ok == False:
                 raise Exception("Got wrong response")
-            break
+            else:
+                break
         except Exception as e:
             if i < 3:
                 print(f"Error: {e}, trying again...")

@@ -18,6 +18,8 @@
 
 import warnings
 
+import requests
+from colorcodes import *
 
 class SR0WXModule(object):
     """Base class for SR0WX modules."""
@@ -42,3 +44,17 @@ Modules are expected to return a `dict` with the following keys:
 """
         msg = "This method should be implemented in child class"
         raise NotImplementedError(msg)
+    def requestData(self, url, logger, timeout, repeat):
+        for i in range(repeat):
+            try:
+                data = requests.get(url, timeout=timeout)
+                if data.ok == False:
+                    raise Exception("Got wrong response")
+                else:
+                    break
+            except Exception as e:
+                if i < repeat-1:
+                    logger.warning(COLOR_WARNING + f"Error: {e}, trying again..." + COLOR_ENDC)
+                else:
+                    raise e
+        return data
