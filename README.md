@@ -19,6 +19,7 @@ Program pobiera różne dane z internetu, np. stan pogody, prognozę pogody, ost
 - Obsługa wieloprocesowości, wszystkie moduły uruchamiają się jednocześnie
 - Niejawne parametry konkretnej stacji (klucze api itp.) są przechowywane w pliku .env
 - Zmiana urllib na requests w kilku modułach dla zminimalizowania ilości błędów pobierania.
+- Tryb testowy
 
 ## Licencja
 LICENSE
