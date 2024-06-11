@@ -8,8 +8,9 @@ from sr0wx_module import SR0WXModule
 from colorcodes import *
 
 class BaltykSq2ips(SR0WXModule):
-    def __init__(self, service_url, region_id):
+    def __init__(self, service_url, language, region_id):
         self.__service_url = service_url
+        self.__language = language
         self.__region_id = region_id
         self.__logger = logging.getLogger(__name__)
 

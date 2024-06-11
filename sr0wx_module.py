@@ -44,10 +44,11 @@ Modules are expected to return a `dict` with the following keys:
 """
         msg = "This method should be implemented in child class"
         raise NotImplementedError(msg)
-    def requestData(self, url, logger, timeout, repeat):
+    def requestData(self, url, logger, timeout, repeat, header=None):
         for i in range(repeat):
             try:
-                data = requests.get(url, timeout=timeout)
+                logger.info("::: Odpytuję adres: " + url)
+                data = requests.get(url, timeout=timeout, headers=header)
                 if data.ok == False:
                     raise Exception("Got wrong response")
                 else:

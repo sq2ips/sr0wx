@@ -1,13 +1,8 @@
 #!/usr/bin/python -tt
 # -*- coding: utf-8 -*-
 
-import urllib.request
-import urllib.error
-import urllib.parse
 import logging
 from datetime import datetime
-import json as JSON
-import socket
 
 from colorcodes import *
 
@@ -40,9 +35,8 @@ class AirlySq9atk(SR0WXModule):
             self.__logger.info("::: Pobieram dane o zanieczyszczeniach...")
 
             api_service_url = self.prepareApiServiceUrl()
-            self.__logger.info(api_service_url)
 
-            jsonData = JSON.loads(self.getAirlyData(api_service_url))
+            jsonData = self.getAirlyData(api_service_url)
 
             self.__logger.info("::: Przetwarzam dane...\n")
 
@@ -101,16 +95,10 @@ class AirlySq9atk(SR0WXModule):
         return urls[self.__mode]
 
     def getAirlyData(self, url):
-        request = urllib.request.Request(
-            url, headers={'Accept': 'application/json', 'apikey': self.__api_key})
-        try:
-            webFile = urllib.request.urlopen(request, None, 30)
-            return webFile.read()
-        except urllib.error.URLError as e:
-            print(e)
-        except socket.timeout:
-            print("Timed out!")
-        return ""
+        headers={'Accept': 'application/json', 'apikey': self.__api_key}
+        data = self.requestData(url, self.__logger, 10, 3, headers)
+        return data.json()
+
 
     def getHour(self):
         time = ":".join([str(datetime.now().hour), str(datetime.now().minute)])

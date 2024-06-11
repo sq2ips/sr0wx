@@ -1,37 +1,6 @@
 #!/usr/bin/python -tt
 # -*- coding: utf-8 -*-
 
-# AKTUALNIE ZALECANE JEST UBUNTU 16.04 MATE
-# Poniższy opis dotyczy tej dystrybucji
-
-# WYMAGANE DODATKOWE PAKIETY:
-#   sudo apt-get install git
-#   sudo apt-get install python-pygame
-#   sudo apt-get install python-tz
-#   sudo apt-get install python-imaging
-#   sudo apt-get install python-serial
-#   sudo apt-get install curl
-#   sudo apt-get install php7.0
-#   sudo apt-get install php7.0-curl
-#   sudo apt-get install php7.0-xml
-#   sudo apt-get install ffmpeg
-#
-# LUB WSZYSTKO NA RAZ
-#   sudo apt-get install git python-pygame python-tz python-imaging python-serial curl php7.0 php7.0-curl php7.0-xml ffmpeg
-
-# UPRAWNIENIA USERA DO PORTU COM
-#   sudo gpasswd --add ${USER} dialout
-
-# GENEROWANIE SAMPLI
-# Będąc w katalogu audio_generator:
-#   php index.php
-#
-# Generowane są sample z tablicy $słownik z pliku slownik.php.
-# Pozostałe tablice to tylko przechowalnia fraz go wygenerowania.
-
-
-from baltyk_sq2ips import BaltykSq2ips
-#from baltyk_sq2dk import BaltykSq2dk
 import pl_google.pl_google as pl_google
 import logging
 import logging.handlers
@@ -72,28 +41,33 @@ goodbye_msg = ['_', 'tu_sr2wxg', "_", "kolejny_komunikat_m", "beep2"]
 read_sources_msg = False
 
 # ---------------
-# baltyk_sq2dk
+# baltyk_sq2dk  | stary moduł
 # ---------------
+#from baltyk_sq2dk import BaltykSq2dk
 #baltyksq2dk = BaltykSq2dk(
 #    language=pl_google,
 #    service_url="https://baltyk.imgw.pl//getdata/forecast.php?type=sea&lang=pl",
-
-    # niepewne źródło   # service_url="http://91.220.17.153/index-maps/forecastGetData.php?type=sea&lang=pl",
- #   region_id="SOUTHEASTERN BALTIC"
-
-    # stary nie działający URL: service_url="http://baltyk.pogodynka.pl/index-maps/forecastGetData.php?type=sea&lang=pl",
-    # "POLISH COASTAL WATERS"
-
-    # "WESTERN BALTIC"
-    # "SOUTHERN BALTIC"
-    # "SOUTHEASTERN BALTIC"
-    # "CENTRAL BALTIC"
-    # "NORTHERN BALTIC"
-    # "POLISH COASTAL WATERS"
+#    region_id="SOUTHEASTERN BALTIC",
 #)
+
+
+# ---------------
+# baltyk_sq2ips
+# ---------------
+from baltyk_sq2ips import BaltykSq2ips
 baltyksq2ips = BaltykSq2ips(
+    language=pl_google,
     service_url="https://baltyk.imgw.pl//getdata/forecast.php?type=sea&lang=pl",
-    region_id="SOUTHEASTERN BALTIC"
+    #service_url="http://91.220.17.153/index-maps/forecastGetData.php?type=sea&lang=pl", # niepewne źródło
+    #service_url="http://baltyk.pogodynka.pl/index-maps/forecastGetData.php?type=sea&lang=pl", # stary, nie działający URL
+    region_id="SOUTHEASTERN BALTIC",
+
+    #"POLISH COASTAL WATERS"
+    #"WESTERN BALTIC"
+    #"SOUTHERN BALTIC"
+    #"SOUTHEASTERN BALTIC"
+    #"CENTRAL BALTIC"
+    #"NORTHERN BALTIC"
 )
 
 # WŁĄCZONE MODUŁY

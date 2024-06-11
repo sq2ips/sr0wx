@@ -1,12 +1,8 @@
 #!/usr/bin/python -tt
 # -*- coding: utf-8 -*-
 
-import urllib.request
-import urllib.error
-import urllib.parse
+
 import logging
-import json
-import socket
 
 from colorcodes import *
 
@@ -33,17 +29,8 @@ class AirPollutionSq9atk(SR0WXModule):
         self.__index_url = "aqindex/getIndex/"
 
     def getJson(self, url):
-        self.__logger.info("::: Odpytuję adres: " + url)
-
-        try:
-            data = urllib.request.urlopen(url, None, 45)
-            return json.load(data)
-        except urllib.error.URLError as e:
-            print(e)
-        except socket.timeout:
-            print("Timed out!")
-
-        return {}
+        data = self.requestData(url, self.__logger, 10, 3)
+        return data.json()
 
     def getStationName(self):
         url = self.__service_url + self.__stations_url
@@ -55,6 +42,7 @@ class AirPollutionSq9atk(SR0WXModule):
 
     def getSensorValue(self, sensorId):
         url = self.__service_url + self.__sensor_url + str(sensorId)
+        self.__logger.info("::: Pobieram dane o zanieczyszczeniach...")
         data = self.getJson(url)
         if data['values'][0]['value'] != None:  # czasem tu schodzi null
             value = data['values'][0]['value']

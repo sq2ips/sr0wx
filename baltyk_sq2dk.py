@@ -40,8 +40,8 @@ class BaltykSq2dk(SR0WXModule):
         self.__logger = logging.getLogger(__name__)
 
     def downloadFile(self, url):
-        webFile = urllib.request.urlopen(url)
-        return webFile.read()
+        data = self.requestData(url, self.__logger, 10, 3)
+        return data.json()
 
     def validityText(self, string):
         pos1 = string.find("validity".encode())
@@ -211,7 +211,7 @@ class BaltykSq2dk(SR0WXModule):
         os.system("rm *.mp3")
 
     def get_data(self):
-        self.__logger.info("::: Pobieram dane...")
+        self.__logger.info("::: Pobieranie progozy dla bałtyku...")
         html = self.downloadFile(self.__service_url)
 
         self.__logger.info("::: Przetwarzam dane...\n")
