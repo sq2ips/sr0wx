@@ -13,13 +13,14 @@ Program pobiera różne dane z internetu, np. stan pogody, prognozę pogody, ost
 - Dodanie modułu ostrzeżeń meteorologicznych (meteoalert_sq2ips.py)
 - Dodanie modułu stanu pogody z fizycznej stacji pogodowej przez UDP (meteostation_sq2ips.py)
 - Dodanie modułu alertów pogody kosmicznej (spaceweather_sq2ips)
-- Dodanie modułu pobierającego propagacje z hamqsl.com (propagation_sq2ips.py)
+- Dodanie modułu pobierającego propagacje oraz poziom zakłuceń z hamqsl.com (propagation_sq2ips.py)
 - Przepisanie całej aplikacji z python 2 na 3
 - Dodanie generatora sampli napisanego w pythonie
 - Obsługa wieloprocesowości, wszystkie moduły uruchamiają się jednocześnie
 - Niejawne parametry konkretnej stacji (klucze api itp.) są przechowywane w pliku .env
 - Zmiana urllib na requests w kilku modułach dla zminimalizowania ilości błędów pobierania.
-- Tryb testowy
+- Dodanie trybu testowego, moduły są urzychamiane ale nie są odtwarzane sample
+- Zmiana biblioteki do pobierania danych z urllib na requests, wielokrotne próby pobierania przy błedzie pobierania
 
 ## Licencja
 LICENSE
@@ -75,3 +76,4 @@ Wyszukiwanie id regionu ostrzeżeń hydrologicznych jest analogiczne, trzeba uru
 
 ## Planowanie zmiany
 - Dodanie modułu pobierającego pogodę z meteo.imgw.pl
+- Dodanie modułu pobierającego dane ze stacji pogodowych przez APRS
