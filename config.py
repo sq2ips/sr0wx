@@ -100,7 +100,7 @@ pygame_bug = 0
 # informacja gdy nie ma internetu
 data_sources_error_msg = ['_', 'zrodlo_danych_niedostepne']
 # czytanie informacji o źródłach danych
-read_sources_msg = True
+read_sources_msg = False
 
 #####################
 
