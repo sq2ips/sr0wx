@@ -47,18 +47,11 @@ class VhfTropoSq9atk(SR0WXModule):
             return None
 
     def downloadMapFile(self, mapUrl, targetFileName):
-        try:
-            self.__logger.info("::: Odpytuję adres: " + mapUrl)
-            response = self.requestData(mapUrl, self.__logger, 20, 3)
+        self.__logger.info("::: Pobieram mapę...")
+        response = self.requestData(mapUrl, self.__logger, 20, 3)
 
-            with open(targetFileName, "wb") as mapFile:
-                mapFile.write(response.content)
-
-        except requests.exceptions.Timeout:
-            print("Przekroczono czas oczekiwania")
-        except Exception as e:
-            print(("Błąd pobierania mapy: %s" % e))
-        return
+        with open(targetFileName, "wb") as mapFile:
+            mapFile.write(response.content)
 
     def readMapImageFile(self, fileName):
 
@@ -69,7 +62,7 @@ class VhfTropoSq9atk(SR0WXModule):
             mapCropped.save(fileName)
 
         except Exception as e:
-            print(("Błąd odczytu pliku z mapą: %s" % e))
+            raise Exception("Błąd odczytu pliku z mapą: %s" % e)
         return mapCropped
 
     def lonLatToMapXY(self, lon, lat, imgWidth, imgHeight):

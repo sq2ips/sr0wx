@@ -50,7 +50,7 @@ Modules are expected to return a `dict` with the following keys:
                 logger.info("::: Odpytuję adres: " + url)
                 data = requests.get(url, timeout=timeout, headers=headers)
                 if data.ok == False:
-                    raise Exception("Got wrong response")
+                    raise Exception("::: Got wrong response")
                 else:
                     break
             except Exception as e:
