@@ -88,7 +88,7 @@ serial_baud_rate = 9600
 serial_signal = 'DTR'  # lub 'RTS'
 # nadawanie przez GPIO w Raspberry Pi
 rpi_pin = 40
-# wieloprocesowość dla modułów (wyłączone jeszcze nie działa)
+# wieloprocesowość dla modułów
 multi_processing = True
 
 lang = "pl_google" # język
@@ -513,3 +513,12 @@ modules = [
 offline_modules = [
     calendarsq2ips,
 ]
+# MODUŁY AWARYJNE
+aux_modules = {
+    openweathersq9atk: meteosq9atk,
+    airlysq9atk: airpollutionsq9atk,
+    spaceweathersq2ips: geomagneticsq9atk,
+    radioactivesq2ips: radioactivesq9atk,
+    calendarsq2ips: calendarsq9atk,
+    propagationsq2ips: propagationsq9atk
+}

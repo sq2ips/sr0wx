@@ -50,7 +50,7 @@ class AirPollutionSq9atk(SR0WXModule):
             value = data['values'][1]['value']
         return [
             data['key'],
-            value
+            int(value)
         ]
 
     def getLevelIndexData(self):
@@ -102,11 +102,9 @@ class AirPollutionSq9atk(SR0WXModule):
 
     def get_data(self, connection):
         try:
-            self.__logger.info(
-                "::: Pobieram informacje o skażeniu powietrza...")
-            self.__logger.info("::: Przetwarzam dane...\n")
-
+            self.__logger.info("::: Pobieram informacje o skażeniu powietrza...")
             sensorsData = self.getSensorsData()
+            self.__logger.info("::: Przetwarzam dane...\n")
             valuesMessage = self.prepareMessage(sensorsData)
 
             message = " "
@@ -118,10 +116,6 @@ class AirPollutionSq9atk(SR0WXModule):
                 "message": message,
                 "source": "powietrze_malopolska_pl",
             })
-            return {
-                "message": message,
-                "source": "powietrze_malopolska_pl",
-            }
         except Exception as e:
             self.__logger.exception(
                 COLOR_FAIL + "Exception when running %s: %s" + COLOR_ENDC, str(self), e)

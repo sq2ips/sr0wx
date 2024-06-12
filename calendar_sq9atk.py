@@ -63,10 +63,6 @@ class CalendarSq9atk(SR0WXModule):
                 "message": message,
                 "source": "calendar_zoznam_sk",
             })
-            return {
-                "message": message,
-                "source": "calendar_zoznam_sk",
-            }
         except Exception as e:
             self.__logger.exception(
                 COLOR_FAIL + "Exception when running %s: %s" + COLOR_ENDC, str(self), e)

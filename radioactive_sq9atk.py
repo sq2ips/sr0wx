@@ -92,10 +92,6 @@ class RadioactiveSq9atk(SR0WXModule):
                 "message": message,
                 "source": "radioactiveathome_org",
             })
-            return {
-                "message": message,
-                "source": "radioactiveathome_org",
-            }
         except Exception as e:
             self.__logger.exception(
                 COLOR_FAIL + "Exception when running %s: %s" + COLOR_ENDC, str(self), e)

@@ -176,10 +176,6 @@ class ImgwPodestSq9atk(SR0WXModule):
                 "message": message,
                 "source": "imgw",
             })
-            return {
-                "message": message,
-                "source": "imgw",
-            }
         except Exception as e:
             s.__logger.exception(
                 COLOR_FAIL + "Exception when running %s: %s" + COLOR_ENDC, str(s), e)

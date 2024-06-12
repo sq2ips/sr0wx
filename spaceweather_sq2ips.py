@@ -127,10 +127,6 @@ class SpaceWeatherSq2ips(SR0WXModule):
                 "message": message,
                 "source": "nasa noaa",
             })
-            return {
-                "message": message,
-                "source": "nasa noaa",
-            }
         except Exception as e:
             self.__logger.exception(
                 COLOR_FAIL + "Exception when running %s: %s" + COLOR_ENDC, str(self), e)

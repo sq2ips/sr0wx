@@ -212,10 +212,6 @@ class MeteoStationSq2ips(SR0WXModule):
                 "message": message,
                 "source": "",
             })
-            return {
-                "message": message,
-                "source": "",
-            }
         except Exception as e:
             self.__logger.exception(
                 COLOR_FAIL + "Exception when running %s: %s" + COLOR_ENDC, str(self), e)

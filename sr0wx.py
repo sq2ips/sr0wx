@@ -168,6 +168,8 @@ if len(args) > 0:
 else:
     modules = config.modules
 
+aux_modules = {**config.aux_modules, **{v: k for k, v in config.aux_modules.items()}}
+
 try:
     logger.info("Checking internet connection...")
     requests.get('http://google.com', timeout=30)
@@ -186,15 +188,13 @@ if config.multi_processing:
     logger.info("multiprocessing is ON\n")
     processes = []
     connections = []
-    module_s = []
     for module in modules:
         conn1, conn2 = Pipe()
         connections.append(conn1)
         processes.append(Process(target=module.get_data, args=(conn2,)))
-        module_s.append(str(module))
 
     for p in processes:
-        logger.info(COLOR_OKBLUE + "starting %s..." + COLOR_ENDC, module_s[processes.index(p)])
+        logger.info(COLOR_OKBLUE + "starting %s..." + COLOR_ENDC, str(modules[processes.index(p)]))
 
         p.start()
 
@@ -208,15 +208,30 @@ if config.multi_processing:
         module_message = module_data.get("message", "")
         module_source = module_data.get("source", "")
         if module_message == "":
-            func_modules += COLOR_FAIL + str(module_s[connections.index(c)]) + COLOR_ENDC + "\n"
+            func_modules += COLOR_FAIL + str(modules[connections.index(c)]) + COLOR_ENDC
+            if modules[connections.index(c)] in aux_modules:
+                logger.info(COLOR_OKBLUE + f"Starting auxilary module {aux_modules[modules[connections.index(c)]]} for module {modules[connections.index(c)]}..." + COLOR_ENDC)
+                conn1, conn2 = Pipe()
+                aux_modules[modules[connections.index(c)]].get_data(conn2)
+                module_data = conn1.recv()
+                module_message = module_data.get("message", "")
+                module_source = module_data.get("source", "")
+                func_modules += " auxilary: "
+                if module_message == "":
+                    func_modules += COLOR_FAIL + str(aux_modules[modules[connections.index(c)]]) + COLOR_ENDC + "\n"
+                else:
+                    any_func_modules = True
+                    func_modules += COLOR_OKGREEN + str(aux_modules[modules[connections.index(c)]]) + COLOR_ENDC + "\n"
+                    message = " ".join((message, module_message))     
+            else:
+                func_modules += "\n"
+
         elif module_message == None:
-            module_message = ""
-            #any_func_modules = True
-            func_modules += COLOR_OKGREEN + str(module_s[connections.index(c)]) + COLOR_ENDC + "\n"
+            func_modules += COLOR_OKGREEN + str(modules[connections.index(c)]) + COLOR_ENDC + "\n"
         else:
             any_func_modules = True
-            func_modules += COLOR_OKGREEN + str(module_s[connections.index(c)]) + COLOR_ENDC + "\n"
-        message = " ".join((message, module_message))
+            func_modules += COLOR_OKGREEN + str(modules[connections.index(c)]) + COLOR_ENDC + "\n"
+            message = " ".join((message, module_message))
         if module_message != "" and module_source != "":
             sources.append(module_data['source'])
 else:
@@ -224,23 +239,22 @@ else:
     func_modules = ""
     any_func_modules = False
     for module in modules:
-        try:
-            logger.info(COLOR_OKBLUE + "starting %s..." + COLOR_ENDC, module)
-            dummy_pipe, Null = Pipe()
-            module_data = module.get_data(dummy_pipe)
-            module_message = module_data.get("message", "")
-            module_source = module_data.get("source", "")
-
-            message = " ".join((message, module_message))
-            if module_message != "" and module_source != "":
-                sources.append(module_data['source'])
-        except:
-            logger.exception(
-                COLOR_FAIL + "Exception when running %s" + COLOR_ENDC, module)
+        logger.info(COLOR_OKBLUE + "starting %s..." + COLOR_ENDC, module)
+        conn1, conn2 = Pipe()
+        module.get_data(conn2)
+        module_data = conn1.recv()
+        module_message = module_data.get("message", "")
+        module_source = module_data.get("source", "")
+        if module_message == "":
             func_modules += COLOR_FAIL + str(module) + COLOR_ENDC + "\n"
+        elif module_message == None:
+            func_modules += COLOR_OKGREEN + str(module) + COLOR_ENDC + "\n"
         else:
             any_func_modules = True
             func_modules += COLOR_OKGREEN + str(module) + COLOR_ENDC + "\n"
+            message = " ".join((message, module_message))
+        if module_message != "" and module_source != "":
+            sources.append(module_data['source'])
 
 
 logger.info(COLOR_BOLD + "modules (" + COLOR_ENDC + COLOR_OKGREEN + "functioning" + COLOR_ENDC + COLOR_BOLD + " / " +
@@ -353,7 +367,7 @@ if config.serial_port is not None:
         logger.error(log, config.serial_port, config.serial_baud_rate)
 
 
-pygame.time.delay(1000)
+pygame.time.delay(500)
 
 # OK, data prepared, samples loaded, let the party begin!
 #
@@ -393,7 +407,7 @@ for el in message:
 
 logger.info(COLOR_WARNING + "finishing...\n" + COLOR_ENDC)
 
-pygame.time.delay(1000)
+pygame.time.delay(500)
 
 # If we've opened serial it's now time to close it.
 try:

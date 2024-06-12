@@ -162,7 +162,6 @@ class OpenWeatherSq9atk(SR0WXModule):
             weather_service_url = self.__service_url + 'weather?lat=' + \
                 str(self.__lat) + '&lon='+str(self.__lon) + \
                 '&units=metric&appid=' + self.__api_key
-            self.__logger.info(weather_service_url)
             #weatherJson = JSON.loads(self.downloadFile(weather_service_url))
             weatherJson = self.downloadFile(weather_service_url)
 
@@ -171,12 +170,12 @@ class OpenWeatherSq9atk(SR0WXModule):
             forecast_service_url = self.__service_url + 'forecast?lat=' + \
                 str(self.__lat) + '&lon='+str(self.__lon) + \
                 '&units=metric&appid=' + self.__api_key
-            self.__logger.info(forecast_service_url)
+
             #forecastJsonAll = JSON.loads(
             #    self.downloadFile(forecast_service_url))
             forecastJsonAll = self.downloadFile(forecast_service_url)
 
-            self.__logger.info("::: Przetwarzam dane...\n")
+            self.__logger.info("::: Przetwarzam dane prognozy pogody...\n")
             message = ""
             if self.__no_current == False:
                 message += "".join([
@@ -207,15 +206,11 @@ class OpenWeatherSq9atk(SR0WXModule):
                 self.getWind(forecastJson['wind']),
             ])
 
-            self.__logger.info("::: Przetwarzam dane...\n")
+            self.__logger.info("::: Przetwarzam dane prognozy pogody...\n")
             connection.send({
                 "message": message,
                 "source": "open_weather_map",
             })
-            return {
-                "message": message,
-                "source": "open_weather_map",
-            }
         except Exception as e:
             self.__logger.exception(
                 COLOR_FAIL + "Exception when running %s: %s" + COLOR_ENDC, str(self), e)

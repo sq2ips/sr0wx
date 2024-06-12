@@ -116,10 +116,6 @@ class GeoMagneticSq9atk(SR0WXModule):
                     "message": message + "_",
                     "source": "gis_meteo",
                 })
-            return {
-                "message": message + "_",
-                "source": "gis_meteo",
-            }
         except Exception as e:
             self.__logger.exception(
                 COLOR_FAIL + "Exception when running %s: %s" + COLOR_ENDC, str(self), e)

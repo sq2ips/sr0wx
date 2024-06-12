@@ -47,7 +47,7 @@ Modules are expected to return a `dict` with the following keys:
     def requestData(self, url, logger, timeout, repeat, headers=None):
         for i in range(repeat):
             try:
-                logger.info("::: Odpytuję adres: " + url)
+                logger.info("::: Requesting data from address: " + url)
                 data = requests.get(url, timeout=timeout, headers=headers)
                 if data.ok == False:
                     raise Exception("::: Got wrong response")

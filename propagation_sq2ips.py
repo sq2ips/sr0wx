@@ -86,10 +86,6 @@ class PropagationSq2ips(SR0WXModule):
                 "message": message,
                 "source": "hamqsl",
             })
-            return {
-                "message": message,
-                "source": "hamqsl",
-            }
         except Exception as e:
             self.__logger.exception(
                 COLOR_FAIL + "Exception when running %s: %s" + COLOR_ENDC, str(self), e)

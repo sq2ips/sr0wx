@@ -102,8 +102,7 @@ Parameters:
 
             connection.send({
                 "message": None,
-                "source": "nd", })
-            return {"": ""}
+                "source": ""})
         except Exception as e:
             self.__logger.exception(
                 COLOR_FAIL + "Exception when running %s: %s" + COLOR_ENDC, str(self), e)

@@ -156,12 +156,8 @@ class MeteoAlertSq2ips(SR0WXModule):
             message = self.process()
             connection.send({
                 "message": message,
-                "source": "meteo imgw",
+                "source": "imgw_pib",
             })
-            return {
-                "message": message,
-                "source": "meteo imgw",
-            }
         except Exception as e:
             self.__logger.exception(
                 COLOR_FAIL + "Exception when running %s: %s" + COLOR_ENDC, str(self), e)

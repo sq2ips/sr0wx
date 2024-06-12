@@ -101,12 +101,8 @@ class RadioactiveSq2ips(SR0WXModule):
                 [" _ poziom_promieniowania _ ", curentValue, " _ ", averageValue, " _ "])
             connection.send({
                 "message": message,
-                "source": "PAA",
+                "source": "paa",
             })
-            return {
-                "message": message,
-                "source": "PAA",
-            }
         except Exception as e:
             self.__logger.exception(
                 COLOR_FAIL + "Exception when running %s: %s" + COLOR_ENDC, str(self), e)
