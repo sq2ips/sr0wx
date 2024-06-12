@@ -1,9 +1,7 @@
 #!/usr/bin/python -tt
 # -*- coding: utf-8 -*-
 
-import urllib.parse
-import urllib.error
-import urllib.request
+import requests
 import logging.handlers
 import logging
 from multiprocessing import Process, Pipe
@@ -171,19 +169,21 @@ else:
     modules = config.modules
 
 try:
-    dane = urllib.request.urlopen('http://google.pl', None, 30)
-except urllib.request.URLError as e:
+    logger.info("Checking internet connection...")
+    requests.get('http://google.com', timeout=30)
+except requests.ConnectionError:
+    logger.error(COLOR_FAIL + "No internet connection, offline mode active" + COLOR_ENDC + "\n")
     modules = config.offline_modules
     message += " ".join(config.data_sources_error_msg)
-    logger.info(COLOR_FAIL + "Brak połączenia z internetem" +
-                COLOR_ENDC + "\n")
+else:
+    logger.info("Connection OK")
 
 
 lang = my_import('.'.join((config.lang, config.lang)))
 sources = [lang.source, ]
 
 if config.multi_processing:
-    logger.info("multiprocessing is ON")
+    logger.info("multiprocessing is ON\n")
     processes = []
     connections = []
     module_s = []
@@ -220,7 +220,7 @@ if config.multi_processing:
         if module_message != "" and module_source != "":
             sources.append(module_data['source'])
 else:
-    logger.info("multiprocessing is OFF")
+    logger.info("multiprocessing is OFF\n")
     func_modules = ""
     any_func_modules = False
     for module in modules:
@@ -365,7 +365,7 @@ pygame.time.delay(1000)
 # aloud" will be less natural.
 
 for el in message:
-    # print el # wyświetlanie nazw próbek
+    #print(el) #wyświetlanie nazw sampli
     if el == "_":
         pygame.time.wait(500)
     else:
