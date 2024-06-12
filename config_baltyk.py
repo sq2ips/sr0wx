@@ -40,16 +40,6 @@ hello_msg = ['_', 'sr2wxg_cw', '_',
 goodbye_msg = ['_', 'tu_sr2wxg', "_", "kolejny_komunikat_m", "beep2"]
 read_sources_msg = False
 
-# ---------------
-# baltyk_sq2dk  | stary moduł
-# ---------------
-#from baltyk_sq2dk import BaltykSq2dk
-#baltyksq2dk = BaltykSq2dk(
-#    language=pl_google,
-#    service_url="https://baltyk.imgw.pl//getdata/forecast.php?type=sea&lang=pl",
-#    region_id="SOUTHEASTERN BALTIC",
-#)
-
 
 # ---------------
 # baltyk_sq2ips

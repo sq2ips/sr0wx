@@ -9,6 +9,8 @@ import shutil
 
 from slownik import slownik, slownik_auto
 
+gender = "female"
+lang = "pl"
 
 def GetKey():
     url = 'https://responsivevoice.org/'
@@ -55,8 +57,7 @@ def TrimPl(word):
 
 def GetMp3(word, filename):
 
-    gender = "female"
-    url = f'https://texttospeech.responsivevoice.org/v1/text:synthesize?lang=pl&engine=g1&name=&pitch=0.5&rate=0.5&volume=1&key={GetKey()}&gender={gender}&text={quote_plus(word)}'
+    url = f'https://texttospeech.responsivevoice.org/v1/text:synthesize?lang={lang}&engine=g1&name=&pitch=0.5&rate=0.5&volume=1&key={GetKey()}&gender={gender}&text={quote_plus(word)}'
     for i in range(4):
         try:
             data = requests.get(url, timeout=10)

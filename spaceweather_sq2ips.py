@@ -125,7 +125,7 @@ class SpaceWeatherSq2ips(SR0WXModule):
 
             connection.send({
                 "message": message,
-                "source": "nasa noaa",
+                "source": "swpc",
             })
         except Exception as e:
             self.__logger.exception(

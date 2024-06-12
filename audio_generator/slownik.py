@@ -13,6 +13,11 @@ slownik = {
     #    "burze radiacyjne":"burze_radiacyjne",
     #"informacja o skażeniu powietrza":"informacja_o_skaz_eniu_powietrza",
     #"stan ogólny":"stan_ogolny",
+    #"gdynia, ulica porębskiego":"gdynia_ul_pore_bskiego",
+    #"IMGW PIB":"imgw_pib",
+    #"ham QSL":"hamqsl",
+    #"DX info center":"vhf_dx_info_center",
+    #"państwowa agencja atomistyki":"paa",
 }
 slownik_auto = {
     #format: | nazwa wygeneruje się automatycznie
@@ -28,6 +33,7 @@ slownik_auto = {
     #"12 i 10 metrów",
     #"15 metrów",
     #"bardzo dobry",
-    #"pył zawieszony pm1"
-    #"poziom zakłuceń"
+    #"pył zawieszony pm1",
+    #"poziom zakłuceń",
+    #"SWPC",
 }

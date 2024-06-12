@@ -49,7 +49,7 @@ class CalendarSq2ips(SR0WXModule):
                 sun)).hour) + ":" + str(ephem.localtime(Gdynia.next_setting(sun)).minute))
             connection.send({
                 "message": message,
-                "source": "ephem",
+                "source": "",
             })
         except Exception as e:
             self.__logger.exception(
