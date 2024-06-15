@@ -14,13 +14,15 @@ from sr0wx_module import SR0WXModule
 class OpenWeatherSq9atk(SR0WXModule):
     """Klasa pobierająca dane o pogodzie"""
 
-    def __init__(self, language, api_key, lat, lon, service_url, no_current):
+    def __init__(self, language, api_key, lat, lon, service_url, current, saytime, start_message):
 
         self.__service_url = service_url
         self.__lat = lat
         self.__lon = lon
         self.__api_key = api_key
-        self.__no_current = no_current
+        self.__current = current
+        self.__saytime = saytime
+        self.__start_message = start_message
         self.__language = language
         self.__logger = logging.getLogger(__name__)
 
@@ -127,11 +129,6 @@ class OpenWeatherSq9atk(SR0WXModule):
 
     def getWind(self, json):
         msg = ' _ '
-        msg += ' predkosc_wiatru '
-        # msg += ' ' + self.__language.read_speed( int(json['speed']) )
-        msg += ' ' + \
-            self.__language.read_speed(int(json['speed']/1000*3600), 'kmph')
-
         if 'deg' in json:
             msg += ' _ wiatr '
             if 0 <= json['deg'] <= 23:
@@ -153,6 +150,9 @@ class OpenWeatherSq9atk(SR0WXModule):
             if 337 <= json['deg'] <= 360:
                 msg += ' polnocny '
             # msg += self.__language.read_degrees( int(json['deg']) )
+        # msg += ' ' + self.__language.read_speed( int(json['speed']) )
+        msg += ' ' + \
+            self.__language.read_speed(int(json['speed']/1000*3600), 'kmph')
         return msg
 
     def get_data(self, connection):
@@ -176,11 +176,14 @@ class OpenWeatherSq9atk(SR0WXModule):
             forecastJsonAll = self.downloadFile(forecast_service_url)
 
             self.__logger.info("::: Przetwarzam dane prognozy pogody...\n")
-            message = ""
-            if self.__no_current == False:
+            message = self.__start_message
+            if self.__current:
+                if self.__saytime:
+                    message += "".join([
+                        " stan_pogody_z_godziny ",
+                        self.getHour()
+                    ])
                 message += "".join([
-                    " stan_pogody_z_godziny ",
-                    self.getHour(),
                     self.getWeather(weatherJson['weather']),
                     self.getClouds(weatherJson['clouds']),
                     self.getMainConditions(weatherJson['main']), \
@@ -206,7 +209,6 @@ class OpenWeatherSq9atk(SR0WXModule):
                 self.getWind(forecastJson['wind']),
             ])
 
-            self.__logger.info("::: Przetwarzam dane prognozy pogody...\n")
             connection.send({
                 "message": message,
                 "source": "open_weather_map",

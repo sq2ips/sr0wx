@@ -7,7 +7,8 @@ from colorcodes import *
 
 
 class SpaceWeatherSq2ips(SR0WXModule):
-    def __init__(self, urlG, urlR, urlS, geomagneticShort, radioNoise):
+    def __init__(self, language, urlG, urlR, urlS, geomagneticShort, radioNoise):
+        self.__language = language
         self.__urlG = urlG
         self.__urlR = urlR
         self.__urlS = urlS
@@ -131,4 +132,3 @@ class SpaceWeatherSq2ips(SR0WXModule):
             self.__logger.exception(
                 COLOR_FAIL + "Exception when running %s: %s" + COLOR_ENDC, str(self), e)
             connection.send(dict())
-        return (message)

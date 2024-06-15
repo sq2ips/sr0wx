@@ -134,7 +134,9 @@ openweathersq9atk = OpenWeatherSq9atk(
     lat=54.5237904,
     lon=18.5129878,
     service_url='http://api.openweathermap.org/data/2.5/',
-    no_current=False
+    current = True,
+    saytime = False,
+    start_message="aktualny_stan_pogody"
 )
 
 
@@ -145,6 +147,8 @@ from meteo_sq9atk import MeteoSq9atk
 meteosq9atk = MeteoSq9atk(
     language=pl_google,
     service_url="https://pogoda.onet.pl/prognoza-pogody/gdynia-287798",
+    current=True,
+    saytime = False
 )
 
 
@@ -457,8 +461,10 @@ calendarsq2ips = CalendarSq2ips(
 # ----------------
 from meteoalert_sq2ips import MeteoAlertSq2ips
 meteoalertsq2ips = MeteoAlertSq2ips(
+    language=pl_google,
     city_id=2262,  # Gdynia
-    start_message="ostrzezenia_meteorologiczne_i_hydrologiczne_imgw",
+    #start_message="ostrzezenia_meteorologiczne_i_hydrologiczne_imgw",
+    start_message="",
     hydronames=["W_G_6_PM", "Z_G_22_PM"],  # Gdynia i bałtyk
     validity_type=2,  # 1=long 2=short
 )
@@ -468,6 +474,7 @@ meteoalertsq2ips = MeteoAlertSq2ips(
 # ---------------
 from spaceweather_sq2ips import SpaceWeatherSq2ips
 spaceweathersq2ips = SpaceWeatherSq2ips(
+    language=pl_google,
     # burze geomagnetyczne
     urlG="https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json",
     # zakłucenia radiowe
@@ -489,8 +496,18 @@ meteostationsq2ips = MeteoStationSq2ips(
     port=4210,
 )
 
+# ---------------
+# time_sq2ips
+# ---------------
+from time_sq2ips import TimeSq2ips
+timesq2ips = TimeSq2ips(
+    language=pl_google,
+    start_message=[" _ ", "raport_meteorologiczny", "z_godziny"]
+)
+
 # WŁĄCZONE MODUŁY
 modules = [
+    timesq2ips,
     activitymap,            # marker na mapie wx.ostol.pl
     meteoalertsq2ips,       # ostrzeżenia meteorologiczne imgw
     # meteostationsq2ips,   # dane ze stacji meteo

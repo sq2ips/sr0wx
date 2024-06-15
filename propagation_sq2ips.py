@@ -23,8 +23,8 @@ class PropagationSq2ips(SR0WXModule):
         else:
             self.__logger.info("::: Nagłówek zgodny.")
             return root
+
     def process(self, root):
-        self.__logger.info("::: Przetważanie danych...")
         conditions_day = {}
         conditions_night = {}
         for e in root[0]:
@@ -50,11 +50,12 @@ class PropagationSq2ips(SR0WXModule):
                 text += band_names[band] + " " + conditions_names[conditions[band]] + " _ "
         return text
     def getNoise(self, noise):
-        levels = {"0":"zero", "1":"jeden", "2":"dwa", "3":"trzy", "4":"cztery", "5":"pie_c_", "6":"szes_c_", "7":"siedem", "8":"osiem", "9":"dziewie_c_", "9+":"dziewie_c_+plus"}
+        levels = {"0":"zero", "1":"jeden", "2":"dwa", "3":"trzy", "4":"cztery", "5":"piec", "7":"siedem", "8":"osiem", "9":"dziewiec", "9+":"ponad_dziewie_c_"}
         if len(noise) != 1 and len(noise) != 2:
             return None
         text = ""
         for n in range(len(noise)):
+            #noise[n] = self.__language.read_number(int(noise[n]))
             noise[n] = levels[noise[n]]
         text += noise[0]
         if len(noise)==2:
@@ -64,12 +65,17 @@ class PropagationSq2ips(SR0WXModule):
     def get_data(self, connection):
         try:
             root = self.DownloadData(self.__service_url)
+            self.__logger.info("::: Przetważanie danych...")
             conditions_day, conditions_night, noise = self.process(root)
             text_day = self.getText(conditions_day)
             text_night = self.getText(conditions_night)
             noise_level = None
             if self.__radioNoise:
-                noise_level = self.getNoise(noise)
+                try:
+                    noise_level = self.getNoise(noise)
+                except Exception as e:
+                    if e == KeyError:
+                        self.__logger.warning(COLOR_WARNING + "Nieprawidłowa odczytana wartość poziomu zakłuceń, pomijane..." + COLOR_ENDC)
             message = " ".join([
                 " _ informacje_o_propagacji ",
                 " _ dzien _ ",
@@ -79,7 +85,7 @@ class PropagationSq2ips(SR0WXModule):
             ])
             if self.__radioNoise:
                 if noise_level == None:
-                    self.__logger.warning(COLOR_WARNING + "No noise data" + COLOR_ENDC)
+                    self.__logger.warning(COLOR_WARNING + "Brak danych o poziomie zakłuceń" + COLOR_ENDC)
                 else:
                     message += " _ poziom_zakl_ucen_ " + noise_level
             connection.send({

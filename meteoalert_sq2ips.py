@@ -7,7 +7,8 @@ from sr0wx_module import SR0WXModule
 
 
 class MeteoAlertSq2ips(SR0WXModule):
-    def __init__(self, city_id, start_message, hydronames, validity_type):
+    def __init__(self, language, city_id, start_message, hydronames, validity_type):
+        self.__language = language
         self.__validity_type = validity_type
         self.__hydronames = hydronames
         self.__start_message = start_message

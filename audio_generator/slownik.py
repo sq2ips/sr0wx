@@ -36,4 +36,6 @@ slownik_auto = {
     #"pył zawieszony pm1",
     #"poziom zakłuceń",
     #"SWPC",
+    #"ponad dziewięć",
+    "raport meteorologiczny"
 }
