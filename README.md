@@ -75,5 +75,5 @@ Wyszukiwanie id regionu ostrzeżeń hydrologicznych jest analogiczne, trzeba uru
 - Dokumentacja
 
 ## Planowanie zmiany
-- Dodanie modułu pobierającego pogodę z meteo.imgw.pl
+- Dodanie modułu pobierającego pogodę z yr.no
 - Dodanie modułu pobierającego dane ze stacji pogodowych przez APRS
