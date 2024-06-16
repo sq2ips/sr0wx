@@ -128,7 +128,7 @@ class OpenWeatherSq9atk(SR0WXModule):
         return msg
 
     def getWind(self, json):
-        msg = ' _ '
+        msg = ''
         if 'deg' in json:
             msg += ' _ wiatr '
             if 0 <= json['deg'] <= 23:

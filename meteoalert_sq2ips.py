@@ -12,7 +12,7 @@ class MeteoAlertSq2ips(SR0WXModule):
         self.__validity_type = validity_type
         self.__hydronames = hydronames
         self.__start_message = start_message
-        self.__city_id = str(city_id)
+        self.__city_id = city_id
         self.__logger = logging.getLogger(__name__)
         self.codes = {"SW": "silnym_wiatrem", "ID": "intensywnymi_opadami_deszczu", "OS": "opadami_sniegu", "IS": "intensywnymi_opadami_sniegu", "OM": "opadami_marznacymi", "ZZ": "zawiejami_lub_zamieciam_snieznymi", "OB": "oblodzeniem", "PR": "przymrozkami", "RO": "roztopami", "UP": "upalem", "MR": "silnym_mrozem", "MG": "gesta_mgla",
                       "MS": "mgla_intensywnie_osadzajaca_szadz", "BU": "burzami", "BG": "burzami_z_gradem", "DB": "silnym_deszczem_z_burzami", "GWSW": "gwaltownym_wzrostem_stanow_wody", "W_PSA": "wezbraniem_z_przekroczeniem_stanow_alarmowych", "W_PSO": "wezbraniem_z_przekroczeniem_stanow_ostrzegawczych", "SH": "susza_hydrologiczna"}
@@ -22,7 +22,7 @@ class MeteoAlertSq2ips(SR0WXModule):
 
     def processDate(self, text):
         if text[0:4] == "9999":
-            return ("waz_ne_do_odwol_ania ")
+            return "waz_ne_do_odwol_ania "
         months = {
             "1": " stycznia ", "2": " lutego ", "3": " marca ",
             "4": " kwietnia ", "5": " maja ", "6": " czerwca ", "7": " lipca ",
@@ -52,7 +52,7 @@ class MeteoAlertSq2ips(SR0WXModule):
         urla = "https://meteo.imgw.pl/api/meteo/messages/v1/osmet/latest/osmet-teryt?lc="
         urlk = "https://meteo.imgw.pl/api/meteo/messages/v1/osmet/latest/komet-teryt?lc="
         urlah = "https://meteo.imgw.pl/api/meteo/messages/v1/warnhydro/latest/warn"
-        self.__logger.info("::: Pobieranie ostrzeżeń...")
+        self.__logger.info("::: Pobieranie dane o zagrożeniach...")
         alerts = self.requestData(urla, self.__logger, 10, 3).json()
         #names = requests.get(url=urln).json()
         komets = self.requestData(urlk, self.__logger, 10, 3).json()
@@ -76,13 +76,13 @@ class MeteoAlertSq2ips(SR0WXModule):
         message = self.__start_message + " _ "
         id_w = []
         id_wk = []
-        if self.__city_id in alerts["teryt"]:
-            for i in alerts["teryt"][self.__city_id]:
-                id_w.append(i)
-
-        if self.__city_id in komets["teryt"]:
-            for i in komets["teryt"][self.__city_id]:
-                id_wk.append(i)
+        for id in self.__city_id:
+            if id in alerts["teryt"]: # Ostrzeżenia
+                for i in alerts["teryt"][id]:
+                    id_w.append(i)
+            if id in komets["teryt"]: # Komunikaty
+                for i in komets["teryt"][self.__city_id]:
+                    id_wk.append(i)
 
         if len(id_w) > 0 or len(id_wk) > 0:
             os = True

@@ -462,7 +462,7 @@ calendarsq2ips = CalendarSq2ips(
 from meteoalert_sq2ips import MeteoAlertSq2ips
 meteoalertsq2ips = MeteoAlertSq2ips(
     language=pl_google,
-    city_id=2262,  # Gdynia
+    city_id=["2262"],  # Gdynia
     #start_message="ostrzezenia_meteorologiczne_i_hydrologiczne_imgw",
     start_message="",
     hydronames=["W_G_6_PM", "Z_G_22_PM"],  # Gdynia i bałtyk
@@ -507,7 +507,7 @@ timesq2ips = TimeSq2ips(
 
 # WŁĄCZONE MODUŁY
 modules = [
-    timesq2ips,
+    timesq2ips,             # godzina
     activitymap,            # marker na mapie wx.ostol.pl
     meteoalertsq2ips,       # ostrzeżenia meteorologiczne imgw
     # meteostationsq2ips,   # dane ze stacji meteo
