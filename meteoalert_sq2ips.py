@@ -16,9 +16,9 @@ class MeteoAlertSq2ips(SR0WXModule):
         self.__logger = logging.getLogger(__name__)
         self.codes = {"SW": "silnym_wiatrem", "ID": "intensywnymi_opadami_deszczu", "OS": "opadami_sniegu", "IS": "intensywnymi_opadami_sniegu", "OM": "opadami_marznacymi", "ZZ": "zawiejami_lub_zamieciam_snieznymi", "OB": "oblodzeniem", "PR": "przymrozkami", "RO": "roztopami", "UP": "upalem", "MR": "silnym_mrozem", "MG": "gesta_mgla",
                       "MS": "mgla_intensywnie_osadzajaca_szadz", "BU": "burzami", "BG": "burzami_z_gradem", "DB": "silnym_deszczem_z_burzami", "GWSW": "gwaltownym_wzrostem_stanow_wody", "W_PSA": "wezbraniem_z_przekroczeniem_stanow_alarmowych", "W_PSO": "wezbraniem_z_przekroczeniem_stanow_ostrzegawczych", "SH": "susza_hydrologiczna"}
+        self.komcodes = {"SW": "silnym_wietrze", "ID": "intensywnych_opadach_deszczu", "OS": "opadach_sniegu", "IS": "intensywnych_opadach_sniegu", "OM": "opadach_marznacych", "ZZ": "zawiejach_lub_zamieciach_snieznych", "OB": "oblodzeniu", "PR": "przymrozkach", "RO": "roztopach", "UP": "upale", "MR": "silnym_mrozie", "MG": "gestej_mgle",
+                      "MS": "mgle_intensywnie_osadzajacej_szadz", "BU": "burzach", "BG": "burzach_z_gradem", "DB": "silnym_deszczu_z_burzami", "GWSW": "gwaltownym_wzroscie_stanow_wody", "W_PSA": "wezbraniu_z_przekroczeniem_stanow_alarmowych", "W_PSO": "wezbraniu_z_przekroczeniem_stanow_ostrzegawczych", "SH": "suszy_hydrologicznej"}
         self.stopnie = {"1": "pierwszego", "2": "drugiego", "3": "trzeciego"}
-        self.procent = {10: "dziesiec", 20: "dwadziescia", 30: "trzydziesci", 40: "czterdziesci", 50: "piecdziesiat",
-                        60: "szescdziesiat", 70: "siedemdziesiat", 80: "osiemdziesiat", 90: "dziewiecdziesiat", 100: "sto"}
 
     def processDate(self, text):
         if text[0:4] == "9999":
@@ -47,32 +47,22 @@ class MeteoAlertSq2ips(SR0WXModule):
         return text
 
     def downloadData(self):
-        # urlap = "https://meteo.imgw.pl/api/meteo/messages/v1/prog/latest/pronieb/ALL"
-        #urln = "https://meteo.imgw.pl/dyn/data/out1proc.json?v=1.2"
         urla = "https://meteo.imgw.pl/api/meteo/messages/v1/osmet/latest/osmet-teryt?lc="
         urlk = "https://meteo.imgw.pl/api/meteo/messages/v1/osmet/latest/komet-teryt?lc="
         urlah = "https://meteo.imgw.pl/api/meteo/messages/v1/warnhydro/latest/warn"
         self.__logger.info("::: Pobieranie dane o zagrożeniach...")
         alerts = self.requestData(urla, self.__logger, 10, 3).json()
-        #names = requests.get(url=urln).json()
         komets = self.requestData(urlk, self.__logger, 10, 3).json()
         alerts_hydro = self.requestData(urlah, self.__logger, 10, 3).json()
-        #return (alerts, names, alerts_hydro)
         return  (alerts, komets, alerts_hydro)
 
     def process(self):
         data = self.downloadData()
         alerts = data[0]
-        #names = data[1]
         komets = data[1]
         alerts_hydro = data[2]
         self.__logger.info("::: Przetważanie danych...")
-        # nazwy
-        # for i in range(len(names["features"])):
-        #    if self.__city in names["features"][i]["properties"]['jpt_nazwa_']:
-        #        id = names["features"][i]["properties"]['jpt_kod_je']
         self.__logger.info(f"id: {self.__city_id}")
-        # Ostrzeżenia
         message = self.__start_message + " _ "
         id_w = []
         id_wk = []
@@ -80,9 +70,12 @@ class MeteoAlertSq2ips(SR0WXModule):
             if id in alerts["teryt"]: # Ostrzeżenia
                 for i in alerts["teryt"][id]:
                     id_w.append(i)
-            if id in komets["teryt"]: # Komunikaty
-                for i in komets["teryt"][self.__city_id]:
-                    id_wk.append(i)
+            if type(komets) is list:
+                self.__logger.info(COLOR_WARNING + f"Nieprawidłowy typ danych komunikatów meteorologicznych, otrzymano: {komets}" + COLOR_ENDC)
+            else:
+                if id in komets["teryt"]: # Komunikaty
+                    for i in komets["teryt"][self.__city_id]:
+                        id_wk.append(i)
 
         if len(id_w) > 0 or len(id_wk) > 0:
             os = True
@@ -98,10 +91,8 @@ class MeteoAlertSq2ips(SR0WXModule):
                 warnings_used.append(kod)
                 wazne_do = komets["komets"][i]["LxValidTo"]
                 wazne_do_text = self.processDate(wazne_do)
-                self.__logger.info(
-                    "kod: "+kod+ " ważne do: "+wazne_do)
-                # message += " ostrzezenie_przed "+str(self.codes[kod])+" "+ str(self.stopnie[stopien]) + " stopnia " + "prawdopodobienstwo " + str(self.procent[int(prawd)]) + " procent" + " _ "
-                message += " ostrzezenie_przed "+str(self.codes[kod]) + " " + wazne_do_text + " _ "
+                self.__logger.info("kod: "+kod+ " ważne do: "+wazne_do)
+                message += " komunikat_o "+ self.komcodes[kod] + " " + wazne_do_text + " _ "
 
         for i in id_w:
             kod = alerts["warnings"][i]["PhenomenonCode"]
@@ -115,7 +106,6 @@ class MeteoAlertSq2ips(SR0WXModule):
                 wazne_do_text = self.processDate(wazne_do)
                 self.__logger.info(
                     "kod: "+kod+" stopień: " + stopien + " ważne do: "+wazne_do)
-                # message += " ostrzezenie_przed "+str(self.codes[kod])+" "+ str(self.stopnie[stopien]) + " stopnia " + "prawdopodobienstwo " + str(self.procent[int(prawd)]) + " procent" + " _ "
                 message += " ostrzezenie_przed "+str(self.codes[kod])+" " + str(
                     self.stopnie[stopien]) + " stopnia " + wazne_do_text + " _ "
 
@@ -125,7 +115,6 @@ class MeteoAlertSq2ips(SR0WXModule):
             for j in range(len(alerts_hydro["warnings"][i]["Zlewnie"])):
                 if alerts_hydro["warnings"][i]["Zlewnie"][j]["Code"] in self.__hydronames:
                     os = True
-                    # print(alerts_hydro["warnings"][i]["WarnHydro"])
                     kod = alerts_hydro["warnings"][i]["WarnHydro"]["Phenomena"]
                     if kod in hydro_used:
                         self.__logger.warning("Powtórzenie ostrzeżenia: "+kod)
@@ -141,7 +130,6 @@ class MeteoAlertSq2ips(SR0WXModule):
                         message += " ostrzezenie_przed " + \
                             str(self.codes[kod])+" "
                         if stopien in list(self.stopnie):
-                            # message += " ostrzezenie_przed "+str(self.codes[kod])+" "+ str(self.stopnie[stopien]) + " stopnia " + "prawdopodobienstwo " + str(self.procent[int(prawd)]) + " procent" + " _ "
                             message += " " + \
                                 str(self.stopnie[stopien]) + " stopnia "
                         message += wazne_do_text
