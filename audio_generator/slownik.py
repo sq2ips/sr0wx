@@ -59,7 +59,7 @@ slownik_auto = {
     #"ponad dziewięć",
     #"raport meteorologiczny"
     #"komunikat o"
-    "ważny do",
-    "ważny do jutra",
-    "ważny do końca dnia",
+    #"ważny do",
+    #"ważny do jutra",
+    #"ważny do końca dnia",
 }
