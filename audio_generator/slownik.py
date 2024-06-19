@@ -58,5 +58,8 @@ slownik_auto = {
     #"SWPC",
     #"ponad dziewięć",
     #"raport meteorologiczny"
-    "komunikat o"
+    #"komunikat o"
+    "ważny do",
+    "ważny do jutra",
+    "ważny do końca dnia",
 }

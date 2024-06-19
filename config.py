@@ -462,11 +462,12 @@ calendarsq2ips = CalendarSq2ips(
 from meteoalert_sq2ips import MeteoAlertSq2ips
 meteoalertsq2ips = MeteoAlertSq2ips(
     language=pl_google,
+    service_url="https://meteo.imgw.pl/api/meteo/messages/v1/",
     city_id=["2262"],  # Gdynia
     #start_message="ostrzezenia_meteorologiczne_i_hydrologiczne_imgw",
     start_message="",
     hydronames=["W_G_6_PM", "Z_G_22_PM"],  # Gdynia i bałtyk
-    validity_type=2,  # 1=long 2=short
+    short_validity=True,
 )
 
 # ---------------
@@ -507,24 +508,24 @@ timesq2ips = TimeSq2ips(
 
 # WŁĄCZONE MODUŁY
 modules = [
-    timesq2ips,             # godzina
-    activitymap,            # marker na mapie wx.ostol.pl
+#    timesq2ips,             # godzina
+#    activitymap,            # marker na mapie wx.ostol.pl
     meteoalertsq2ips,       # ostrzeżenia meteorologiczne imgw
-    # meteostationsq2ips,   # dane ze stacji meteo
-    openweathersq9atk,      # prognoza pogody
-    # meteosq9atk,          # pogoda alternatywa
-    # imgwpodestsq9atk,     # wodowskazy | NIE DZIAŁA
-    # airpollutionsq9atk,   # zanieczyszczenia powietrza z GIOŚ
-    airlysq9atk,            # zanieczyszczenia powietrza z Airly
-    spaceweathersq2ips,     # pogoda kosmiczna
-    # propagationsq9atk,    # propagacja KF
-    propagationsq2ips,      # propagacja KF z hamqsl.com
-    vhftroposq9atk,         # propagacja tropo
-    # geomagneticsq9atk,    # zaburzenia geomagnetyczne 
-    # radioactivesq9atk,    # promieniowanie jonizujące
-    radioactivesq2ips,      # promieniowanie jonizujące z paa
-    # calendarsq9atk,       # wschód i zachód słońca
-    calendarsq2ips,         # wschód i zachód słońca bez internetu
+#    # meteostationsq2ips,   # dane ze stacji meteo
+#    openweathersq9atk,      # prognoza pogody
+#    # meteosq9atk,          # pogoda alternatywa
+#    # imgwpodestsq9atk,     # wodowskazy | NIE DZIAŁA
+#    # airpollutionsq9atk,   # zanieczyszczenia powietrza z GIOŚ
+#    airlysq9atk,            # zanieczyszczenia powietrza z Airly
+#    spaceweathersq2ips,     # pogoda kosmiczna
+#    # propagationsq9atk,    # propagacja KF
+#    propagationsq2ips,      # propagacja KF z hamqsl.com
+#    vhftroposq9atk,         # propagacja tropo
+#    # geomagneticsq9atk,    # zaburzenia geomagnetyczne 
+#    # radioactivesq9atk,    # promieniowanie jonizujące
+#    radioactivesq2ips,      # promieniowanie jonizujące z paa
+#    # calendarsq9atk,       # wschód i zachód słońca
+#    calendarsq2ips,         # wschód i zachód słońca bez internetu
 ]
 # MODUŁY OFFLINE
 offline_modules = [
