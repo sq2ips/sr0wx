@@ -22,10 +22,6 @@ import json
 
 from colorcodes import *
 
-import urllib.request
-import urllib.error
-import urllib.parse
-
 import requests
 
 from sr0wx_module import SR0WXModule

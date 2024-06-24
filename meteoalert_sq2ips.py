@@ -1,4 +1,3 @@
-import requests
 import logging
 from colorcodes import *
 from datetime import datetime
@@ -31,31 +30,31 @@ class MeteoAlertSq2ips(SR0WXModule):
             "11": " listopada ", "12": " grudnia "}
         date = datetime.strptime(text[0:13], "%Y-%m-%dT%H")
 
-        if self.__short_validity == False:
-            if komets:
-                text = "waz_ny_do_godziny " #
-            else:
-                text = "waz_ne_do_godziny "
-            tekst += date.strftime("%H")+"_00 " + str(date.day) + "-go " + months[str(date.month)] + str(date.year)
-        elif self.__short_validity == True:
+        if self.__short_validity:
             if date.month == datetime.now().month and date.year == datetime.now().year and date.day <= datetime.now().day+1:
                 if date.day == datetime.now().day:
                     if komets:
-                        text = "waz_ny_do_kon_ca_dnia" #
+                        text = "waz_ny_do_kon_ca_dnia"
                     else:
                         text = "waz_ne_do_kon_ca_dnia"
                 elif date.day == datetime.now().day+1:
                     if komets:
-                        text = "waz_ny_do_jutra" #
+                        text = "waz_ny_do_jutra"
                     else:
                         text = "waz_ne_do_jutra"
             else:
                 if komets:
-                    text = "waz_ny_do " + str(date.day) + "-go " + months[str(date.month)] #
+                    text = "waz_ny_do " + str(date.day) + "-go " + months[str(date.month)]
                 else:
                     text = "waz_ne_do " + str(date.day) + "-go " + months[str(date.month)]
-        return text
+        else:
+            if komets:
+                text = "waz_ny_do_godziny "
+            else:
+                text = "waz_ne_do_godziny "
+            text += date.strftime("%H")+"_00 " + str(date.day) + "-go " + months[str(date.month)] + str(date.year)
 
+        return text
 
     def processId(self, alerts, komets):
         id_wa = []

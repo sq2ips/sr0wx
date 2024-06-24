@@ -1,14 +1,7 @@
 #!/usr/bin/python -tt
 # -*- coding: utf-8 -*-
 
-import urllib.request
-import urllib.error
-import urllib.parse
-import re
 import logging
-import pytz
-import socket
-from datetime import datetime
 
 from colorcodes import *
 

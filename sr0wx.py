@@ -226,7 +226,7 @@ if config.multi_processing:
             else:
                 func_modules += "\n"
 
-        elif module_message == None:
+        elif module_message is None:
             func_modules += COLOR_OKGREEN + str(modules[connections.index(c)]) + COLOR_ENDC + "\n"
         else:
             any_func_modules = True
@@ -260,7 +260,7 @@ else:
 logger.info(COLOR_BOLD + "modules (" + COLOR_ENDC + COLOR_OKGREEN + "functioning" + COLOR_ENDC + COLOR_BOLD + " / " +
             COLOR_ENDC + COLOR_FAIL + "not functioning" + COLOR_ENDC + COLOR_BOLD + "):\n" + COLOR_ENDC + func_modules)
 
-if any_func_modules == False:
+if not any_func_modules:
     logger.critical(
         COLOR_FAIL + "ERROR: No functioning modules, exiting..." + COLOR_ENDC)
     exit(1)
@@ -362,9 +362,8 @@ if config.serial_port is not None:
             logger.info(COLOR_OKGREEN + "RTS/PTT set to ON\n" + COLOR_ENDC)
             ser.setDTR(0)
             ser.setRTS(1)
-    except:
-        log = COLOR_FAIL + "Failed to open serial port %s@%i\n" + COLOR_ENDC
-        logger.error(log, config.serial_port, config.serial_baud_rate)
+    except Exception as e:
+        logger.error(COLOR_FAIL + f"Failed to open serial port {config.serial_port}@{config.serial_baud_rate}: {e}" + COLOR_ENDC)
 
 
 pygame.time.delay(500)
@@ -379,7 +378,7 @@ pygame.time.delay(500)
 # aloud" will be less natural.
 
 for el in message:
-    #print(el) #wyświetlanie nazw sampli
+    #print(el) # wyświetlanie nazw sampli
     if el == "_":
         pygame.time.wait(500)
     else:
@@ -418,7 +417,7 @@ except NameError:
     # sudo gpasswd --add ${USER} dialout
     logger.exception(COLOR_FAIL + "Couldn't close serial port" + COLOR_ENDC)
 
-if nopi == False:
+if not nopi:
     GPIO.output(config.rpi_pin, GPIO.LOW)
     logger.info(COLOR_OKGREEN + f"GPIO PTT: OFF, PIN: {config.rpi_pin}" + COLOR_ENDC)
     GPIO.cleanup()

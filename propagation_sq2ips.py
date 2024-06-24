@@ -1,4 +1,3 @@
-import requests
 from xml.etree import ElementTree
 
 import logging
@@ -84,7 +83,7 @@ class PropagationSq2ips(SR0WXModule):
                 text_night
             ])
             if self.__radioNoise:
-                if noise_level == None:
+                if noise_level is None:
                     self.__logger.warning(COLOR_WARNING + "Brak danych o poziomie zakłuceń" + COLOR_ENDC)
                 else:
                     message += " _ poziom_zakl_ucen_ " + noise_level

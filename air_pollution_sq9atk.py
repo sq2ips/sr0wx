@@ -44,7 +44,7 @@ class AirPollutionSq9atk(SR0WXModule):
         url = self.__service_url + self.__sensor_url + str(sensorId)
         self.__logger.info("::: Pobieram dane o zanieczyszczeniach...")
         data = self.getJson(url)
-        if data['values'][0]['value'] != None:  # czasem tu schodzi null
+        if data['values'][0]['value'] is not None:  # czasem tu schodzi null
             value = data['values'][0]['value']
         else:
             value = data['values'][1]['value']

@@ -1,4 +1,3 @@
-import requests
 from datetime import datetime
 
 from sr0wx_module import SR0WXModule
@@ -107,20 +106,20 @@ class SpaceWeatherSq2ips(SR0WXModule):
                 dR = None
             dS = self.ProcessS(dataS)
 
-            if dG == None and dR == None and dS == None:
+            if dG is None and dR is None and dS is None:
                 message = "brak_alerto_w_pogody_kosmicznej"
             else:
                 message = "alerty_pogody_kosmicznej _ "
 
-                if dG != None:
+                if dG is not None:
                     message += dG
                     message += " burze_geomagnetyczne _ "
 
-                if dR != None:
+                if dR is not None:
                     message += dR
                     message += " zakl_ucenia_radiowe _ "
 
-                if dS != None:
+                if dS is not None:
                     message += dS
                     message += " burze_radiacyjne "
 

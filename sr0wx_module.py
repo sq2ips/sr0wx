@@ -49,7 +49,7 @@ Modules are expected to return a `dict` with the following keys:
             try:
                 logger.info("::: Requesting data from address: " + url)
                 data = requests.get(url, timeout=timeout, headers=headers)
-                if data.ok == False:
+                if not data.ok:
                     raise Exception("::: Got wrong response")
                 else:
                     break

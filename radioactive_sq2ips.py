@@ -87,7 +87,7 @@ class RadioactiveSq2ips(SR0WXModule):
             # self.__logger.info(va)
             curentValue = " ".join(["wartos_c__aktualna", self.__language.read_decimal(
                 va)+" ", "mikrosjiwerta", "na_godzine_"])
-            if (value_sr != None):
+            if (value_sr is not None):
                 va_sr = int(round(value_sr, 2)*100)
                 self.__logger.info(
                     "Średnia wartość przetwożona: " + str(va_sr/100))

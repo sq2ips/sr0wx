@@ -1,16 +1,12 @@
 #!/usr/bin/python -tt
 # -*- coding: utf-8 -*-
 
-import urllib.request
-import urllib.error
-import urllib.parse
 import re
 import logging
-import pytz
+
 from datetime import datetime
 
 from bs4 import BeautifulSoup
-import unicodedata
 
 from colorcodes import *
 

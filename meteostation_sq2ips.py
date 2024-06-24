@@ -60,7 +60,7 @@ class MeteoStationSq2ips(SR0WXModule):
             pro.join()
         for con in conn:
             rec = con.recv()
-            if rec != None:
+            if rec is not None:
                 data.append(rec)
         if data == []:
             raise Exception("No functioning stations")
@@ -187,12 +187,12 @@ class MeteoStationSq2ips(SR0WXModule):
             data = self.compare()
             message = "aktualny_stan_pogody _ "
 
-            message += f"temperatura " + \
+            message += "temperatura " + \
                 self.__language.read_temperature(round(data[0])) + " "
             if data[7] != 0.0:
-                message += f"cisnienie " + \
+                message += "cisnienie " + \
                     self.__language.read_pressure(round(data[7])) + " "
-            message += f"wilgotnosc " + \
+            message += "wilgotnosc " + \
                 self.__language.read_percent(round(data[1]))+" _ "
             if round(data[3]*3.6) < 1:
                 message += " brak_wiatru "
