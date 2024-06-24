@@ -150,6 +150,9 @@ class MeteoAlertSq2ips(SR0WXModule):
                 os = False
             
             message = " ".join([self.processKomets(id_wk, komets), self.processAlerts(id_wa, alerts), self.processHydro(self.__hydronames, alerts_hydro)])
+            self.__logger.info(f"|{message}|")
+            if len(message.split()) == 0:
+                message = "_ ostrzezen_nie_ma _"
             connection.send({
                 "message": message,
                 "source": "imgw_pib",
