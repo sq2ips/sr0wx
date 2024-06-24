@@ -65,7 +65,6 @@ class RadioactiveSq2ips(SR0WXModule):
             else:
                 self.__logger.warning("Dane są nieaktualne o jeden dzień! oczekiwane: " + datetime.now().strftime(
                     "%Y-%m-%d") + ", otrzymane: " + datetime.strptime(data["tip_date"], "%Y-%m-%d %H:%M").strftime("%Y-%m-%d"))
-        value = data["tip_value"]
         self.__logger.info(
             "Wartość z czujnika "
             + data["stacja"]
@@ -85,8 +84,7 @@ class RadioactiveSq2ips(SR0WXModule):
             self.__logger.info("Wartość przetwożona: " + str(value))
             va = int(value*100)
             # self.__logger.info(va)
-            curentValue = " ".join(["wartos_c__aktualna", self.__language.read_decimal(
-                va)+" ", "mikrosjiwerta", "na_godzine_"])
+            curentValue = " ".join(["wartos_c__aktualna", self.__language.read_decimal(va)+" ", "mikrosjiwerta", "na_godzine_"])
             if (value_sr is not None):
                 va_sr = int(round(value_sr, 2)*100)
                 self.__logger.info(
