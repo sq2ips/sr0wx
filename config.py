@@ -480,7 +480,7 @@ spaceweathersq2ips = SpaceWeatherSq2ips(
     # zakłucenia radiowe
     urlR="https://services.swpc.noaa.gov/json/goes/secondary/xrays-6-hour.json",
     # Burze radiacyjne
-    urlS="https://services.swpc.noaa.gov/json/goes/primary/integral-protons-6-hour.json",
+    urlS="https://services.swpc.noaa.gov/json/goes/primary/integral-protons-1-day.json",
     # Chwilowe burze geomagnetyczne
     geomagneticShort = True,
     radioNoise = False

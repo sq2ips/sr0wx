@@ -3,7 +3,7 @@ from datetime import datetime
 from sr0wx_module import SR0WXModule
 import logging
 from colorcodes import *
-
+from datetime import datetime
 
 class SpaceWeatherSq2ips(SR0WXModule):
     def __init__(self, language, urlG, urlR, urlS, geomagneticShort, radioNoise):
@@ -54,7 +54,8 @@ class SpaceWeatherSq2ips(SR0WXModule):
         for d in data:
             val_list.append(float(d["flux"]))
         val = max(val_list)
-        self.__logger.info(f"zakłucenia radiowe {val}")
+        self.__logger.info(f"zakłucenia jonosfery {val}")
+
         if val < 10**-5:
             message = None
         elif val >= 10**-5 and val < 5*10**-5:
@@ -72,9 +73,12 @@ class SpaceWeatherSq2ips(SR0WXModule):
 
     def ProcessS(self, data):
         val_list = []
+
         for d in data:
-            val_list.append(float(d["flux"]))
+            if (datetime.now() - datetime.strptime(d["time_tag"], "%Y-%m-%dT%H:%M:%SZ")).seconds // 3600 <= 6:
+                val_list.append(float(d["flux"]))
         val = max(val_list)
+
         self.__logger.info(f"Burze radiacyjne: {val}")
 
         if val < 10:
@@ -117,7 +121,7 @@ class SpaceWeatherSq2ips(SR0WXModule):
 
                 if dR is not None:
                     message += dR
-                    message += " zakl_ucenia_radiowe _ "
+                    message += " zakl_ucenia_jonosfery _ "
 
                 if dS is not None:
                     message += dS

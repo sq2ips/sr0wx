@@ -1,6 +1,5 @@
 import requests
 from urllib.parse import urlparse, parse_qs, quote_plus
-import urllib.request
 import bs4 as bs
 from multiprocessing import Pool
 from tqdm import tqdm
@@ -17,8 +16,8 @@ def GetKey():
 
     for i in range(4):
         try:
-            data = requests.get(url, timeout=10)
-            if data.ok == False:
+            data = requests.get(url, timeout=15)
+            if not data.ok:
                 raise Exception("Got wrong response")
             break
         except Exception as e:
@@ -60,8 +59,8 @@ def GetMp3(word, filename):
     url = f'https://texttospeech.responsivevoice.org/v1/text:synthesize?lang={lang}&engine=g1&name=&pitch=0.5&rate=0.5&volume=1&key={GetKey()}&gender={gender}&text={quote_plus(word)}'
     for i in range(4):
         try:
-            data = requests.get(url, timeout=10)
-            if data.ok == False:
+            data = requests.get(url, timeout=15)
+            if not data.ok:
                 raise Exception("Got wrong response")
             else:
                 break
@@ -74,7 +73,7 @@ def GetMp3(word, filename):
 
 
 def convert(filename):
-    if os.path.exists("ogg/") == False:
+    if not os.path.exists("ogg/"):
         os.mkdir("ogg")
     os.system(
         f"ffmpeg -hide_banner -loglevel error -y -i mp3/{filename}.mp3 -ar 32000  -ab 48000 -acodec libvorbis ogg/{filename}.ogg")
@@ -90,7 +89,7 @@ def GetOgg(l):
 
 
 if __name__ == "__main__":
-    if os.path.exists("mp3/") == True:
+    if os.path.exists("mp3/"):
         shutil.rmtree('mp3')
     os.mkdir("mp3")
     slownik_list = []
@@ -104,4 +103,4 @@ if __name__ == "__main__":
         with tqdm(total=len(slownik_list)) as pbar:
             for _ in p.imap_unordered(GetOgg, slownik_list):
                 pbar.update()
-    os.removedirs(f"mp3/")
+    os.removedirs("mp3/")

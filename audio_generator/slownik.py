@@ -62,4 +62,5 @@ slownik_auto = {
     #"ważny do",
     #"ważny do jutra",
     #"ważny do końca dnia",
+    #"zakłucenia jonosfery"
 }
