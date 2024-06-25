@@ -31,24 +31,30 @@ LICENSE
 ## instalacja
 Zakładamy, że mamy menedżer pakietów apt.
 
-Przechodzimy do pustego katalogu w którym chcemy umieścić program, np.:\
+Przechodzimy do pustego katalogu, w którym chcemy umieścić program, np.:\
 `cd ~/sr0wx`\
 Jest to ważne ponieważ w tym katalogu domyślnie będzie się znajdować katalog z programem jaki i logiem.\
 Tworzymy katalog logu:\
 `mkdir ./logs`\
 Aktualizujemy listy pakietów:\
-`sudo apt-get update`\
+`sudo apt update & sudo apt upgrade`\
 Instalujemy potrzebne pakiety:\
-`sudo apt-get install git curl php7.0 php-curl php-xml ffmpeg python3 python3-pip python3-dotenv`\
+`sudo apt install git curl php7.0 php-curl php-xml ffmpeg python3 python3-pip python3-dotenv`\
 Teraz klonujemy repozytorium:\
 `git clone https://github.com/sq2ips/sr0wx.git`\
 Wchodzimy do niego:\
 `cd sr0wx`\
-Jeżeli system 
-Instalujemy potrzebne biblioteki:\
-`pip3 install -r requirements.txt`\
-Lub jeżeli jesteśmy na Raspberry pi i chcemy korzystać z ptt przez gpio:\
-`pip3 install -r requirements-rpi.txt`\
+Sprawdzamy czy system zarządza pakietami pythona:\
+`pip3 install --upgrade pip`
+
+Jeżeli dostaniemy błąd "error: externally-managed-environment" instalujemy biblioteki z apt:
+- `sudo apt install python3-socketio python3-socketio-client python3-websocket python3-websockets python3-urllib3 python3-tqdm python3-tz python3-ephem python3-bs4 python3-pil python3-serial python3-numpy python3-pygame python3-importlib-metadata python3-dotenv`
+- Jeżeli chcemy kożystać z PTT przez GPIO w Raspberry Pi: `sudo apt install python3-rpi.gpio`
+
+Jeżeli nie:
+- Instalujemy potrzebne biblioteki z pliku za pomocą pip: `pip3 install -r requirements.txt`
+- Lub jeżeli jesteśmy na Raspberry Pi i chcemy korzystać z PTT przez GPIO: `pip3 install -r requirements-rpi.txt`
+
 Wchodzimy do podkatalogu pyliczba i instalujemy moduł\
 `cd pyliczba; sudo python3 setup.py install; cd ..`
 
@@ -58,6 +64,7 @@ Teraz kopiujemy przykładowy plik .env:
 Uruchamiamy:
 `python3 sr0wx.py`
 
+TODO: instrukcja cron.
 ## Konfiguracja
 
 Cała konfiguracja znajduje się w pliku `config.py`.
@@ -71,7 +78,7 @@ np.\
 `python meteoalert_getid.py -f gdynia`\
 wynik:
 Gdynia: 2262\
-Id trzeba ustawić w sekcji modułu meteoalert_sq2ips.py w pliku config.py w zmiennej city_id.\
+Id trzeba ustawić w sekcji modułu meteoalert_sq2ips.py w pliku config.py w zmiennej city_id, jest to tablica aby można było ustawić więcej regionów na raz np. city_id = \["2262", "2202"].
 
 Wyszukiwanie id regionu ostrzeżeń hydrologicznych jest analogiczne, trzeba uruchomić skrypt `meteoalert_hydro_getid.py`. Id trzeba ustawić w zmiennej `hydronames`, jest to tablica aby możba było ustawić kilka regionów na raz.
 
