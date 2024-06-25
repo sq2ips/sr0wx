@@ -52,10 +52,9 @@ Jeżeli dostaniemy błąd "error: externally-managed-environment" instalujemy bi
 - Jeżeli chcemy kożystać z PTT przez GPIO w Raspberry Pi: `sudo apt install python3-rpi.gpio`
 
 Jeżeli nie:\
-Instalujemy potrzebne biblioteki z pliku za pomocą pip:\
-`pip3 install -r requirements.txt`\
-Lub jeżeli jesteśmy na Raspberry Pi i chcemy korzystać z PTT przez GPIO:\
-`pip3 install -r requirements-rpi.txt`\
+- Instalujemy potrzebne biblioteki z pliku za pomocą pip: `pip3 install -r requirements.txt`
+- Lub jeżeli jesteśmy na Raspberry Pi i chcemy korzystać z PTT przez GPIO: `pip3 install -r requirements-rpi.txt`\
+
 Wchodzimy do podkatalogu pyliczba i instalujemy moduł\
 `cd pyliczba; sudo python3 setup.py install; cd ..`
 
