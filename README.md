@@ -31,7 +31,7 @@ LICENSE
 ## instalacja
 Zakładamy, że mamy menedżer pakietów apt.
 
-Przechodzimy do pustego katalogu w którym chcemy umieścić program, np.:\
+Przechodzimy do pustego katalogu, w którym chcemy umieścić program, np.:\
 `cd ~/sr0wx`\
 Jest to ważne ponieważ w tym katalogu domyślnie będzie się znajdować katalog z programem jaki i logiem.\
 Tworzymy katalog logu:\
@@ -50,11 +50,11 @@ Sprawdzamy czy system zarządza pakietami pythona:\
 Jeżeli dostaniemy błąd "error: externally-managed-environment" instalujemy biblioteki z apt:\
 `sudo apt install python3-socketio python3-socketio-client python3-websocket python3-websockets python3-urllib3 python3-tqdm python3-tz python3-ephem python3-bs4 python3-pil python3-serial python3-numpy python3-pygame python3-importlib-metadata python3-dotenv`
 jeżeli chcemy kożystać z PTT przez GPIO w Raspberry Pi\
-`sudo apt install python3-rpi.gpio`
+`sudo apt install python3-rpi.gpio`\
 Jeżeli nie:\
 Instalujemy potrzebne biblioteki z pliku za pomocą pip:\
 `pip3 install -r requirements.txt`\
-Lub jeżeli jesteśmy na Raspberry Pi i chcemy korzystać z ptt przez gpio:\
+Lub jeżeli jesteśmy na Raspberry Pi i chcemy korzystać z PTT przez GPIO:\
 `pip3 install -r requirements-rpi.txt`\
 Wchodzimy do podkatalogu pyliczba i instalujemy moduł\
 `cd pyliczba; sudo python3 setup.py install; cd ..`
