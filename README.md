@@ -45,10 +45,10 @@ Teraz klonujemy repozytorium:\
 Wchodzimy do niego:\
 `cd sr0wx`\
 Sprawdzamy czy system zarządza pakietami pythona:\
-`pip3 install --upgrade pip`\
+`pip3 install --upgrade pip`
 
 Jeżeli dostaniemy błąd "error: externally-managed-environment" instalujemy biblioteki z apt:\
-` sudo apt install python3-socketio python3-socketio-client python3-websocket python3-websockets python3-urllib3 python3-tqdm python3-tz python3-ephem python3-bs4 python3-pil python3-serial python3-numpy python3-pygame python3-importlib-metadata python3-dotenv`\
+` sudo apt install python3-socketio python3-socketio-client python3-websocket python3-websockets python3-urllib3 python3-tqdm python3-tz python3-ephem python3-bs4 python3-pil python3-serial python3-numpy python3-pygame python3-importlib-metadata python3-dotenv`
 
 Jeżeli nie:\
 Instalujemy potrzebne biblioteki z pliku za pomocą pip:\
@@ -78,7 +78,7 @@ np.\
 `python meteoalert_getid.py -f gdynia`\
 wynik:
 Gdynia: 2262\
-Id trzeba ustawić w sekcji modułu meteoalert_sq2ips.py w pliku config.py w zmiennej city_id.\
+Id trzeba ustawić w sekcji modułu meteoalert_sq2ips.py w pliku config.py w zmiennej city_id, jest to tablica aby można było ustawić więcej regionów na raz np. city_id = \["2262", "2202"].\
 
 Wyszukiwanie id regionu ostrzeżeń hydrologicznych jest analogiczne, trzeba uruchomić skrypt `meteoalert_hydro_getid.py`. Id trzeba ustawić w zmiennej `hydronames`, jest to tablica aby możba było ustawić kilka regionów na raz.
 
