@@ -37,15 +37,21 @@ Jest to ważne ponieważ w tym katalogu domyślnie będzie się znajdować katal
 Tworzymy katalog logu:\
 `mkdir ./logs`\
 Aktualizujemy listy pakietów:\
-`sudo apt-get update`\
+`sudo apt update & sudo apt upgrade`\
 Instalujemy potrzebne pakiety:\
-`sudo apt-get install git curl php7.0 php-curl php-xml ffmpeg python3 python3-pip python3-dotenv`\
+`sudo apt install git curl php7.0 php-curl php-xml ffmpeg python3 python3-pip python3-dotenv`\
 Teraz klonujemy repozytorium:\
 `git clone https://github.com/sq2ips/sr0wx.git`\
 Wchodzimy do niego:\
 `cd sr0wx`\
-Jeżeli system 
-Instalujemy potrzebne biblioteki:\
+Sprawdzamy czy system zarządza pakietami pythona:\
+`pip3 install --upgrade pip`\
+
+Jeżeli dostaniemy błąd "error: externally-managed-environment" instalujemy biblioteki z apt:\
+` sudo apt install python3-socketio python3-socketio-client python3-websocket python3-websockets python3-urllib3 python3-tqdm python3-tz python3-ephem python3-bs4 python3-pil python3-serial python3-numpy python3-pygame python3-importlib-metadata python3-dotenv`\
+
+Jeżeli nie:\
+Instalujemy potrzebne biblioteki z pliku za pomocą pip:\
 `pip3 install -r requirements.txt`\
 Lub jeżeli jesteśmy na Raspberry pi i chcemy korzystać z ptt przez gpio:\
 `pip3 install -r requirements-rpi.txt`\
@@ -58,6 +64,7 @@ Teraz kopiujemy przykładowy plik .env:
 Uruchamiamy:
 `python3 sr0wx.py`
 
+TODO: instrukcja cron.
 ## Konfiguracja
 
 Cała konfiguracja znajduje się w pliku `config.py`.
