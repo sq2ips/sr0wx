@@ -9,8 +9,8 @@ Program pobiera różne dane z internetu, np. stan pogody, prognozę pogody, ost
 ## Lista zmian
 - Dodanie modułu wyliczającego wschody i zachody słońca bez połączenia z internetem (calendar_sq2ips.py)
 - Dodanie modułu pobierającego poziom promieniowania ze strony PAA (radioactive_sq2ips.py)
-- Dodanie modułu prognozy dla bałtyku autorstwa sq2dk oraz osobnego pliku konfiguracyjnego w celu uruchamiania tej prognozy osobno od głównej. Dodatkowo dodany jest katalog z samplami w formacie mp3 które stacja pobiera gdy nie zostały odnalezione (baltyk_sq2dk.py)
-- Dodanie modułu ostrzeżeń meteorologicznych (meteoalert_sq2ips.py)
+- Dodanie modułu prognozy dla bałtyku autorstwa sq2dk oraz osobnego pliku konfiguracyjnego w celu uruchamiania tej prognozy osobno od głównej (baltyk_sq2dk.py)
+- Dodanie modułu ostrzeżeń meteorologicznych z IMGW PIB (meteoalert_sq2ips.py)
 - Dodanie modułu stanu pogody z fizycznej stacji pogodowej przez UDP (meteostation_sq2ips.py)
 - Dodanie modułu alertów pogody kosmicznej (spaceweather_sq2ips)
 - Dodanie modułu pobierającego propagacje oraz poziom zakłuceń z hamqsl.com (propagation_sq2ips.py)
