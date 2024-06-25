@@ -84,7 +84,7 @@ Parameters:
 
             for i in range(4):
                 try:
-                    response = requests.get(url, timeout=10).text
+                    response = requests.get(url, timeout=15).text
 
                     if response != 'OK':
                         raise Exception("Non-OK response")
