@@ -1,7 +1,7 @@
 # sr0wx
 Ten projekt to fork automatycznej radioamatorskiej stacja pogodowej SR0WX autorstwa [@sq6jnx](https://github.com/sq6jnx/sr0wx.py), rozwijanej przez [@sq9atk](https://github.com/sq9atk/sr0wx), który staram się rozwijać i unowocześniać.
 
-Program ten jest wykorzystywany przez Koło Naukowe UMG o nazwie Morski Klub Łączności "SZKUNER" SP2ZIE do obsługi automatycznej stacji pogodowej [@SR2WXG](https://www.sp2zie.pl/index.php/stacja-systemu-sr0wx).
+Program ten jest wykorzystywany przez Koło Naukowe UMG o nazwie Morski Klub Łączności "SZKUNER" SP2ZIE do obsługi automatycznej stacji pogodowej [SR2WXG](https://www.sp2zie.pl/index.php/stacja-systemu-sr0wx).
 
 ## Działanie
 Program pobiera różne dane z internetu, np. stan pogody, prognozę pogody, ostrzeżenia imgw, poziom promieniowania i inne, konwertuje je na poszczególne słowa które są samplami audio a następnie odtwarza je. Do komputera podłączone jest radio, które odtwarza komunikat na paśmie amatorskim na częstotliwości 144.950 MHz.
