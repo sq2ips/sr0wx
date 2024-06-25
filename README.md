@@ -48,12 +48,13 @@ Sprawdzamy czy system zarządza pakietami pythona:\
 `pip3 install --upgrade pip`
 
 Jeżeli dostaniemy błąd "error: externally-managed-environment" instalujemy biblioteki z apt:\
-` sudo apt install python3-socketio python3-socketio-client python3-websocket python3-websockets python3-urllib3 python3-tqdm python3-tz python3-ephem python3-bs4 python3-pil python3-serial python3-numpy python3-pygame python3-importlib-metadata python3-dotenv`
-
+`sudo apt install python3-socketio python3-socketio-client python3-websocket python3-websockets python3-urllib3 python3-tqdm python3-tz python3-ephem python3-bs4 python3-pil python3-serial python3-numpy python3-pygame python3-importlib-metadata python3-dotenv`
+jeżeli chcemy kożystać z PTT przez GPIO w Raspberry Pi\
+`sudo apt install python3-rpi.gpio`
 Jeżeli nie:\
 Instalujemy potrzebne biblioteki z pliku za pomocą pip:\
 `pip3 install -r requirements.txt`\
-Lub jeżeli jesteśmy na Raspberry pi i chcemy korzystać z ptt przez gpio:\
+Lub jeżeli jesteśmy na Raspberry Pi i chcemy korzystać z ptt przez gpio:\
 `pip3 install -r requirements-rpi.txt`\
 Wchodzimy do podkatalogu pyliczba i instalujemy moduł\
 `cd pyliczba; sudo python3 setup.py install; cd ..`
