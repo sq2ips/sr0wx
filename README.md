@@ -1,10 +1,10 @@
 # sr0wx
-Automatyczna stacja pogodowa sr0wx autorstwa [@sq6jnx](https://github.com/sq6jnx/sr0wx.py), z modułami i poprawkami autorstwa [@sq9atk](https://github.com/sq9atk/sr0wx) oraz moimi zmianami, dodatkami i unowocześnieniami.
+Ten projekt to fork automatycznej radioamatorskiej stacja pogodowej SR0WX autorstwa [@sq6jnx](https://github.com/sq6jnx/sr0wx.py), rozwijanej przez [@sq9atk](https://github.com/sq9atk/sr0wx), który staram się rozwijać i unowocześniać.
 
-Program ten jest wykorzystywany przez Koło Naukowe UMG o nazwie Morski Klub Łączności "SZKUNER" SP2ZIE do obsługi automatycznej stacji pogodowej sr2wxg.
+Program ten jest wykorzystywany przez Koło Naukowe UMG o nazwie Morski Klub Łączności "SZKUNER" SP2ZIE do obsługi automatycznej stacji pogodowej [@SR2WXG](https://www.sp2zie.pl/index.php/stacja-systemu-sr0wx).
 
 ## Działanie
-Program pobiera różne dane z internetu, np. stan pogody, prognozę pogody, ostrzeżenia imgw, poziom promieniowania i inne, konwertuje je na poszczególne słowa które są samplami audio a następnie odtwarza je.
+Program pobiera różne dane z internetu, np. stan pogody, prognozę pogody, ostrzeżenia imgw, poziom promieniowania i inne, konwertuje je na poszczególne słowa które są samplami audio a następnie odtwarza je. Do komputera podłączone jest radio, które odtwarza komunikat na paśmie amatorskim na częstotliwości 144.950 MHz.
 
 ## Lista zmian
 - Dodanie modułu wyliczającego wschody i zachody słońca bez połączenia z internetem (calendar_sq2ips.py)
@@ -19,8 +19,11 @@ Program pobiera różne dane z internetu, np. stan pogody, prognozę pogody, ost
 - Obsługa wieloprocesowości, wszystkie moduły uruchamiają się jednocześnie
 - Niejawne parametry konkretnej stacji (klucze api itp.) są przechowywane w pliku .env
 - Zmiana urllib na requests w kilku modułach dla zminimalizowania ilości błędów pobierania.
-- Dodanie trybu testowego, moduły są urzychamiane ale nie są odtwarzane sample
+- Dodanie trybu testowego, moduły są uruchamiane ale nie są odtwarzane sample
 - Zmiana biblioteki do pobierania danych z urllib na requests, wielokrotne próby pobierania przy błedzie pobierania
+
+## W toku
+- Praca nad modułuem pobierającym pogodę z yr.no
 
 ## Licencja
 LICENSE
@@ -41,6 +44,7 @@ Teraz klonujemy repozytorium:\
 `git clone https://github.com/sq2ips/sr0wx.git`\
 Wchodzimy do niego:\
 `cd sr0wx`\
+Jeżeli system 
 Instalujemy potrzebne biblioteki:\
 `pip3 install -r requirements.txt`\
 Lub jeżeli jesteśmy na Raspberry pi i chcemy korzystać z ptt przez gpio:\
@@ -75,5 +79,4 @@ Wyszukiwanie id regionu ostrzeżeń hydrologicznych jest analogiczne, trzeba uru
 - Dokumentacja
 
 ## Planowanie zmiany
-- Dodanie modułu pobierającego pogodę z yr.no
 - Dodanie modułu pobierającego dane ze stacji pogodowych przez APRS
