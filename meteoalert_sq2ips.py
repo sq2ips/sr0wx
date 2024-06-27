@@ -82,11 +82,10 @@ class MeteoAlertSq2ips(SR0WXModule):
                 wazne_do_text = self.processDate(wazne_do, True)
                 self.__logger.info("kod: "+kod+ " ważne do: "+wazne_do)
                 message += " ".join(["komunikat_o", self.komcodes[kod], wazne_do_text, "_ "])
-        return message
+        return message, warnings_used
     
-    def processAlerts(self, id_wa, alerts):
+    def processAlerts(self, id_wa, alerts, warnings_used):
         message = ""
-        warnings_used = []
         for i in id_wa:
             kod = alerts["warnings"][i]["PhenomenonCode"]
             if kod in warnings_used:
@@ -112,7 +111,7 @@ class MeteoAlertSq2ips(SR0WXModule):
                         self.__logger.warning("Powtórzenie ostrzeżenia: "+kod)
                     else:
                         hydro_used.append(kod)
-                        prawd = alerts_hydro["warnings"][i]["WarnHydro"]["Probability"]
+                        #prawd = alerts_hydro["warnings"][i]["WarnHydro"]["Probability"]
                         stopien = alerts_hydro["warnings"][i]["WarnHydro"]["Level"]
                         wazne_do = alerts_hydro["warnings"][i]["WarnHydro"]["LxValidTo"]
                         wazne_do_text = self.processDate(wazne_do)
@@ -127,14 +126,14 @@ class MeteoAlertSq2ips(SR0WXModule):
 
     def get_data(self, connection):
         try:
-            url_alerts = self.__service_url + "osmet/latest/osmet-teryt?lc="
             url_komets = self.__service_url + "osmet/latest/komet-teryt?lc="
+            url_alerts = self.__service_url + "osmet/latest/osmet-teryt?lc="
             url_alerts_hydro = self.__service_url + "warnhydro/latest/warn"
             
             self.__logger.info("::: Pobieranie dane o ostrzeżeniach...")
 
-            alerts = self.requestData(url_alerts, self.__logger, 10, 3).json()
             komets = self.requestData(url_komets, self.__logger, 10, 3).json()
+            alerts = self.requestData(url_alerts, self.__logger, 10, 3).json()
             alerts_hydro = self.requestData(url_alerts_hydro, self.__logger, 10, 3).json()
 
             self.__logger.info("::: Przetważanie danych...")
@@ -148,7 +147,11 @@ class MeteoAlertSq2ips(SR0WXModule):
             else:
                 os = False
             
-            message = " ".join(["_", self.processKomets(id_wk, komets), self.processAlerts(id_wa, alerts), self.processHydro(self.__hydronames, alerts_hydro)])
+            msg_komets, warnings_used = self.processKomets(id_wk, komets)
+            msg_alerts = self.processAlerts(id_wa, alerts, warnings_used)
+            msg_hydro = self.processHydro(self.__hydronames, alerts_hydro)
+
+            message = " ".join(["_", msg_komets, msg_alerts, msg_hydro])
             if len(message.split()) == 0:
                 message = "_ ostrzezen_nie_ma _"
             connection.send({
