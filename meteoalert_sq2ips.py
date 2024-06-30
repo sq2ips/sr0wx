@@ -1,6 +1,6 @@
 import logging
 from colorcodes import *
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from sr0wx_module import SR0WXModule
 
@@ -20,28 +20,27 @@ class MeteoAlertSq2ips(SR0WXModule):
         self.stopnie = {"1": "pierwszego", "2": "drugiego", "3": "trzeciego"}
         self.__service_url = service_url
 
-    def processDate(self, text, komets=False):
-        if text[0:4] == "9999":
+    def processDate(self, validity, komets=False):
+        if validity[0:4] == "9999":
             return "waz_ne_do_odwol_ania "
         months = {
             "1": " stycznia ", "2": " lutego ", "3": " marca ",
             "4": " kwietnia ", "5": " maja ", "6": " czerwca ", "7": " lipca ",
             "8": " sierpnia ", "9": " września ", "10": " października ",
             "11": " listopada ", "12": " grudnia "}
-        date = datetime.strptime(text[0:13], "%Y-%m-%dT%H")
-
+        date = datetime.strptime(validity[0:13], "%Y-%m-%dT%H")
+        text = ""
         if self.__short_validity:
-            if date.month == datetime.now().month and date.year == datetime.now().year and date.day <= datetime.now().day+1:
-                if date.day == datetime.now().day:
-                    if komets:
-                        text = "waz_ny_do_kon_ca_dnia"
-                    else:
-                        text = "waz_ne_do_kon_ca_dnia"
-                elif date.day == datetime.now().day+1:
-                    if komets:
-                        text = "waz_ny_do_jutra"
-                    else:
-                        text = "waz_ne_do_jutra"
+            if date.day == datetime.now().day:
+                if komets:
+                    text = "waz_ny_do_kon_ca_dnia"
+                else:
+                    text = "waz_ne_do_kon_ca_dnia"
+            elif date.day == (datetime.now()+timedelta(days=1)).day:
+                if komets:
+                    text = "waz_ny_do_jutra"
+                else:
+                    text = "waz_ne_do_jutra"
             else:
                 if komets:
                     text = "waz_ny_do " + str(date.day) + "-go " + months[str(date.month)]
