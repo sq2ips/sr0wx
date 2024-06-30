@@ -12,12 +12,14 @@ from datetime import datetime
 class MeteoYrSq2ips(SR0WXModule):
     """Klasa pobierająca informacje o pogodzie"""
 
-    def __init__(self, language, service_url, id, nominal_validity):
+    def __init__(self, language, service_url, id, current, nominal_validity):
         self.__service_url = service_url
         self.__language = language
         self.__id = id
+        self.__current = current
         self.__nominal_validity = nominal_validity
-        self.codes = {"lightrain":"lekka_ulewa", "partlycloudy":"czesciowe_zachmurzenie", "clearsky":"bezchmurnie", "fog":"mgla", "cloudy":"pochmurno", "rain":"opady_deszczu", "fair":"pochmurno", "rainshowers":"ulewa", "lightrainshowers":"lekka_ulewa", "heavyrain":"intensywne_opady_deszczu", "heavyrainshowers":"silna_ulewa", "rainshowersandthunder":"burza", "heavyrainandthunder":"silna_burza"}
+        self.codes = {"lightrain":"lekka_ulewa", "partlycloudy":"czesciowe_zachmurzenie", "clearsky":"bezchmurnie", "fog":"mgla", "cloudy":"pochmurno", "rain":"opady_deszczu", "fair":"pochmurno", "rainshowers":"ulewa", "lightrainshowers":"lekka_ulewa", "heavyrain":"intensywne_opady_deszczu", "heavyrainshowers":"silna_ulewa", "rainshowersandthunder":"burza", "heavyrainshowersandthunder":"burza_z_silna__ulewa_", "heavyrainandthunder":"burza_z_intensywnymi_opadami_deszczu"}
+        self.forecast_intervals = [0, 2]
         self.__logger = logging.getLogger(__name__)
 
     def downloadData(self, service_url, id):
@@ -68,7 +70,7 @@ class MeteoYrSq2ips(SR0WXModule):
 
         # temperatura
         temp = round(data["temperature"]["value"])
-        temp_fl = round(temp["temperature"]["feelsLike"])
+        temp_fl = round(data["temperature"]["feelsLike"])
         
         if temp != temp_fl:
             msg += " ".join([" temperatura", self.__language.read_number(temp)])
@@ -92,7 +94,7 @@ class MeteoYrSq2ips(SR0WXModule):
     def processValidity(self, date_start, date_end):
         ds = datetime.strptime(date_start, "%Y-%m-%dT%H:%M:%S%z")
         de = datetime.strptime(date_end, "%Y-%m-%dT%H:%M:%S%z")
-        return (de-ds).hours
+        return (de-ds).seconds//3600
 
     def processForecast(self, data):
         if self.__nominal_validity:
@@ -106,16 +108,16 @@ class MeteoYrSq2ips(SR0WXModule):
 
         # prognoza na następne x godzin
         if validity == 1:
-            msg = "prognoza_na_nastepna "
+            msg = " _ prognoza_na_nastepna "
         else:
-            msg = "prognoza_na_nastepne "
-        msg = " ".join([self.__language.read_validity_hour(validity), "_ "])
+            msg = " _ prognoza_na_nastepne "
+        msg += " ".join([self.__language.read_validity_hour(validity), "_ "])
         
         # stan pogody
-        msg += " ".join([data["symbolCode"]["next6Hours"], "_ "])
+        msg += " ".join([self.codes[data["symbolCode"]["next6Hours"].split("_")[0]], "_ "])
         
         # pokrywa chmur
-        cloud = round(data["cloudCover"])
+        cloud = round(data["cloudCover"]["value"])
         msg += " ".join([" pokrywa_chmur", self.__language.read_percent(cloud)])
 
         # opady
@@ -128,14 +130,10 @@ class MeteoYrSq2ips(SR0WXModule):
         temp_fl = round(data["feelsLike"]["value"])
 
         if temp != temp_fl:
-            msg += " ".join([" temperatura", self.__language.read_number(temp)])
+            msg += " ".join([" _ temperatura", self.__language.read_number(temp)])
             msg += " ".join([" odczuwalna", self.__language.read_temperature(temp_fl)])
         else:
-            msg += " ".join([" temperatura", self.__language.read_temperature(temp)])
-        
-        # ciśnienie
-        pres = round(data["pressure"])
-        msg += " ".join([" cisnienie", self.__language.read_pressure(pres)])
+            msg += " ".join([" _ temperatura", self.__language.read_temperature(temp)])
         
         # wiatr
         wind_speed = round(data["wind"]["speed"]*3.6)
@@ -147,11 +145,21 @@ class MeteoYrSq2ips(SR0WXModule):
             msg += " ".join([" w_porywach", "do", self.__language.read_gust(wind_gust)])
         else:
             msg += " ".join([" wiatr", self.getWind(wind_dir), self.__language.read_speed(wind_speed), "kmph"])
+
+        # ciśnienie
+        pres = round(data["pressure"]["value"])
+        msg += " ".join([" cisnienie", self.__language.read_pressure(pres)])
         
         # wilgotność
-        hum = data["humidity"]["value"]
+        hum = round(data["humidity"]["value"])
         msg += " ".join([" wilgotnosc", self.__language.read_percent(hum)])
 
+        return msg
+
+    def getForecast(self, data):
+        msg = ""
+        for i in self.forecast_intervals:
+            msg += self.processForecast(data["longIntervals"][i])
         return msg
 
     def get_data(self, connection):
@@ -160,7 +168,10 @@ class MeteoYrSq2ips(SR0WXModule):
             self.__logger.info("::: Pobieranie danych pogodowych...")
             current, forecast = self.downloadData(self.__service_url, self.__id)
             self.__logger.info("::: Przetwarzanie danych...")
-            message += self.getCurrent(current)
+            if self.__current:
+                message += " ".join([self.getCurrent(current), self.getForecast(forecast)])
+            else:
+                message += " ".join([self.getCurrent(current)])
             connection.send({
                 "message": message,
                 "source": "yr",

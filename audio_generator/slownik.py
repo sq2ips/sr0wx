@@ -66,7 +66,10 @@ slownik_auto = {
     #"zakłucenia jonosfery"
     #"milimetr",
     #"milimetry",
-    #"milimetrów"
-    #"godzinę"
-    #"prognoza na następną"
+    #"milimetrów",
+    #"godzinę",
+    #"prognoza na następną",
+    #"burza z intensywnymi opadami deszczu",
+    #"burza z silną ulewą",
+    "dwie"
 }

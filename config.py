@@ -501,6 +501,7 @@ meteoyrsq2ips = MeteoYrSq2ips(
     language=pl_google,
     service_url="https://www.yr.no/",
     id="2-3099424", # Gdynia
+    current=True,
     nominal_validity=False,
 )
 
