@@ -67,4 +67,6 @@ slownik_auto = {
     #"milimetr",
     #"milimetry",
     #"milimetrów"
+    #"godzinę"
+    #"prognoza na następną"
 }

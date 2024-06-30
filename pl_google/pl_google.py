@@ -245,6 +245,20 @@ class PLGoogle(SR0WXLanguage):
             value = value[-2:]
         return '-'.join([directions[d][0 if i < 0 else 1]
                          for i, d in enumerate(value, -len(value)+1)])
+    
+    @remove_accents
+    def read_validity_hour(self, hour):
+        hours = [
+            u("godzine"),
+            u("godziny"),
+            u("godzin"),
+        ]
+        if hour == 1:
+            return hours[0]
+        elif hour == 2:
+            return " ".join(["dwie", hours[1]])
+        else:
+            return read_number(hour, hours)
 
     @remove_accents
     def read_datetime(self, value, out_fmt, in_fmt=None):
@@ -462,5 +476,6 @@ read_degrees = pl.read_degrees
 read_micrograms = pl.read_micrograms
 read_decimal = pl.read_decimal
 read_direction = pl.read_direction
+read_validity_hour = pl.read_validity_hour
 read_datetime = pl.read_datetime
 read_callsign = pl.read_callsign

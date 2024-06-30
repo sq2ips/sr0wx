@@ -500,7 +500,8 @@ from meteo_yr_sq2ips import MeteoYrSq2ips
 meteoyrsq2ips = MeteoYrSq2ips(
     language=pl_google,
     service_url="https://www.yr.no/",
-    id="2-3099424",
+    id="2-3099424", # Gdynia
+    nominal_validity=False,
 )
 
 # ---------------

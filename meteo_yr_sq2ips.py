@@ -7,14 +7,17 @@ from colorcodes import *
 
 from sr0wx_module import SR0WXModule
 
+from datetime import datetime
+
 class MeteoYrSq2ips(SR0WXModule):
     """Klasa pobierająca informacje o pogodzie"""
 
-    def __init__(self, language, service_url, id):
+    def __init__(self, language, service_url, id, nominal_validity):
         self.__service_url = service_url
         self.__language = language
         self.__id = id
-        self.codes = {"lightrain":"lekka_ulewa", "partlycloudy":"czesciowe_zachmurzenie", "clearsky":"bezchmurnie", "fog":"mgla", "cloudy":"pochmurno", "rain":"opady_deszczu", "fair":"pochmurno", "rainshowers":"ulewa", "lightrainshowers":"lekka_ulewa", "heavyrain":"intensywne_opady_deszczu", "heavyrainshowers":"silna_ulewa", "rainshowersandthunder":"burza"}
+        self.__nominal_validity = nominal_validity
+        self.codes = {"lightrain":"lekka_ulewa", "partlycloudy":"czesciowe_zachmurzenie", "clearsky":"bezchmurnie", "fog":"mgla", "cloudy":"pochmurno", "rain":"opady_deszczu", "fair":"pochmurno", "rainshowers":"ulewa", "lightrainshowers":"lekka_ulewa", "heavyrain":"intensywne_opady_deszczu", "heavyrainshowers":"silna_ulewa", "rainshowersandthunder":"burza", "heavyrainandthunder":"silna_burza"}
         self.__logger = logging.getLogger(__name__)
 
     def downloadData(self, service_url, id):
@@ -53,33 +56,103 @@ class MeteoYrSq2ips(SR0WXModule):
     def getCurrent(self, data):
         msg = ""
 
+        # stan pogody
         code = data["symbolCode"]["next1Hour"].split("_")
         code = code[0]
         msg += " ".join([self.codes[code], "_ "])
 
-        temp = data["temperature"]
-        msg += " ".join(["temperatura", self.__language.read_temperature(round(temp["value"])), ""])
-        if temp["value"] != temp["feelsLike"]:
-            msg += " ".join(["odczuwalna", self.__language.read_temperature(round(temp["feelsLike"])), ""])
-
-        wind = data["wind"]
-        if round(wind["speed"]*3.6) != round(wind["gust"]*3.6):
-            msg += " ".join(["wiatr", self.getWind(wind["direction"]), self.__language.read_number(round(wind["speed"]*3.6)), ""])
-            msg += " ".join(["w_porywach", "do", self.__language.read_gust(round(wind["gust"]*3.6))])
-        else:
-            msg += " ".join([self.getWind(wind["direction"]), self.__language.read_speed(round(wind["speed"]*3.6), "kmph")])
-
-        rain = data["precipitation"]["value"]
+        # opady
+        rain = round(data["precipitation"]["value"])
         if rain != 0:
-            msg += " ".join([" opady", self.__language.read_precipitation(round(rain))])
+            msg += " ".join([" opady", self.__language.read_precipitation(rain)])
+
+        # temperatura
+        temp = round(data["temperature"]["value"])
+        temp_fl = round(temp["temperature"]["feelsLike"])
+        
+        if temp != temp_fl:
+            msg += " ".join([" temperatura", self.__language.read_number(temp)])
+            msg += " ".join([" odczuwalna", self.__language.read_temperature(temp_fl)])
+        else:
+            msg += " ".join([" temperatura", self.__language.read_temperature(temp)])
+
+        # wiatr
+        wind_speed = round(data["wind"]["speed"]*3.6)
+        wind_gust = round(data["wind"]["gust"]*3.6)
+        wind_dir = data["wind"]["direction"]
+
+        if wind_speed != wind_gust:
+            msg += " ".join([" wiatr", self.getWind(wind_dir), self.__language.read_number(wind_speed)])
+            msg += " ".join([" w_porywach", "do", self.__language.read_gust(wind_gust)])
+        else:
+            msg += " ".join([" wiatr", self.getWind(wind_dir), self.__language.read_speed(wind_speed), "kmph"])
         
         return msg
-    
-    #def processForecast(self, data):
-    #    
 
-    #def getForecast(self, data):
-    #    pass
+    def processValidity(self, date_start, date_end):
+        ds = datetime.strptime(date_start, "%Y-%m-%dT%H:%M:%S%z")
+        de = datetime.strptime(date_end, "%Y-%m-%dT%H:%M:%S%z")
+        return (de-ds).hours
+
+    def processForecast(self, data):
+        if self.__nominal_validity:
+            date_start = data["nominal_start"]
+            date_end = data["nominal_end"]
+        else:
+            date_start = data["start"]
+            date_end = data["end"]
+        
+        validity = self.processValidity(date_start, date_end)
+
+        # prognoza na następne x godzin
+        if validity == 1:
+            msg = "prognoza_na_nastepna "
+        else:
+            msg = "prognoza_na_nastepne "
+        msg = " ".join([self.__language.read_validity_hour(validity), "_ "])
+        
+        # stan pogody
+        msg += " ".join([data["symbolCode"]["next6Hours"], "_ "])
+        
+        # pokrywa chmur
+        cloud = round(data["cloudCover"])
+        msg += " ".join([" pokrywa_chmur", self.__language.read_percent(cloud)])
+
+        # opady
+        rain = round(data["precipitation"]["value"])
+        if rain != 0:
+            msg += " ".join([" opady", self.__language.read_precipitation(rain)])
+
+        # temperatura
+        temp = round(data["temperature"]["value"])
+        temp_fl = round(data["feelsLike"]["value"])
+
+        if temp != temp_fl:
+            msg += " ".join([" temperatura", self.__language.read_number(temp)])
+            msg += " ".join([" odczuwalna", self.__language.read_temperature(temp_fl)])
+        else:
+            msg += " ".join([" temperatura", self.__language.read_temperature(temp)])
+        
+        # ciśnienie
+        pres = round(data["pressure"])
+        msg += " ".join([" cisnienie", self.__language.read_pressure(pres)])
+        
+        # wiatr
+        wind_speed = round(data["wind"]["speed"]*3.6)
+        wind_gust = round(data["wind"]["gust"]*3.6)
+        wind_dir = data["wind"]["direction"]
+
+        if wind_speed != wind_gust:
+            msg += " ".join([" wiatr", self.getWind(wind_dir), self.__language.read_number(wind_speed)])
+            msg += " ".join([" w_porywach", "do", self.__language.read_gust(wind_gust)])
+        else:
+            msg += " ".join([" wiatr", self.getWind(wind_dir), self.__language.read_speed(wind_speed), "kmph"])
+        
+        # wilgotność
+        hum = data["humidity"]["value"]
+        msg += " ".join([" wilgotnosc", self.__language.read_percent(hum)])
+
+        return msg
 
     def get_data(self, connection):
         try:
