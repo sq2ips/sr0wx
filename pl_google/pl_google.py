@@ -95,6 +95,70 @@ class PLGoogle(SR0WXLanguage):
         return retval
 
     @remove_accents
+    def read_gust(self, f):
+        f = str(f)
+        d = {"1": "jeden",
+             "2": "dwoch",
+             "3": "trzech",
+             "4": "czterech",
+             "5": "pieciu",
+             "6": "szesciu",
+             "7": "siedmiu",
+             "8": "osmiu",
+             "9": "dziewieciu",
+             "10": "dziesieciu",
+             "11": "jedenastu",
+             "12": "dwunastu",
+             "13": "trzynastu",
+             "14": "czternastu",
+             "15": "pietnastu",
+             "16": "szesnastu",
+             "17": "siedemnastu",
+             "18": "osiemnastu",
+             "19": "dziewietnastu",
+             "20": "dwudziestu",
+             "30": "trzydziestu",
+             "40": "czterdziestu",
+             "50": "piecdziesieciu",
+             "60": "szejscdziesieciu",
+             "70": "siedemdziesieciu",
+             "80": "osiemdziesieciu",
+             "90": "dziewiecdziesieciu",
+             "100": "stu",
+             "200": "dwustu",
+             "300": "trzystu",
+             "400": "czterystu",
+             "500": "pieciuset",
+             "600": "szesciuset",
+             "700": "siedmiuset",
+             "800": "osmiuset",
+             "900": "dziewieciuset"}
+        if len(f) == 1:
+            if f == "1":
+                return ("jednego kilometra_na_godzine")
+            else:
+                return (d[f]+" kilometrow_na_godzine")
+        elif len(f) == 2:
+            if f[1] == "0" or f[0] == "1":
+                return (d[f]+" kilometrow_na_godzine")
+            else:
+                return (d[f[0]+"0"]+" "+d[f[1]]+" kilometrow_na_godzine")
+        elif len(f) == 3:
+            if f[1] == "0" and f[2] == "0":
+                return (d[f]+" kilometrow_na_godzine")
+            else:
+                if f[2] != "0":
+                    if f[1] == "0":
+                        return (d[f[0]+"00"]+" "+d[f[2]]+" kilometrow_na_godzine")
+                    else:
+                        return (d[f[0]+"00"]+" "+d[f[1]+"0"]+" "+d[f[2]]+" kilometrow_na_godzine")
+                else:
+                    if f[1] == "0":
+                        return (d[f[0]+"00"]+" kilometrow_na_godzine")
+                    else:
+                        return (d[f[0]+"00"]+" "+d[f[1]+"0"]+" kilometrow_na_godzine")
+
+    @remove_accents
     def read_pressure(self, value):
         hPa = ["hektopaskal", "hektopaskale", "hektopaskali"]
         return self.read_number(value, hPa)
@@ -126,6 +190,16 @@ class PLGoogle(SR0WXLanguage):
             'kmph': [_(u("kilometr na godzinę")), _(u("kilometry na godzinę")), _(u("kilometrów na godzinę"))]
         }
         return read_number(no, units[unit])
+
+    @remove_accents
+    def read_precipitation(self, value):
+        units = [
+            _(u("milimetr")),
+            _(u("milimetry")),
+            _(u("milimetrów"))
+        ]
+        return read_number(value, units)
+        
 
     @remove_accents
     def read_degrees(self, value):
@@ -382,6 +456,8 @@ read_distance = pl.read_distance
 read_percent = pl.read_percent
 read_temperature = pl.read_temperature
 read_speed = pl.read_speed
+read_gust = pl.read_gust
+read_precipitation = pl.read_precipitation
 read_degrees = pl.read_degrees
 read_micrograms = pl.read_micrograms
 read_decimal = pl.read_decimal
