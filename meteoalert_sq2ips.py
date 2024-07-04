@@ -151,7 +151,7 @@ class MeteoAlertSq2ips(SR0WXModule):
             msg_hydro = self.processHydro(self.__hydronames, alerts_hydro)
 
             message = " ".join(["_", msg_komets, msg_alerts, msg_hydro])
-            if len(message.split()) == 0:
+            if len(message.split()) == 1:
                 message = "_ ostrzezen_nie_ma _"
             connection.send({
                 "message": message,
