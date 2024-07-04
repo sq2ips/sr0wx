@@ -7,19 +7,18 @@ from colorcodes import *
 
 from sr0wx_module import SR0WXModule
 
-from datetime import datetime
+from datetime import datetime, timedelta
 
 class MeteoYrSq2ips(SR0WXModule):
     """Klasa pobierająca informacje o pogodzie"""
 
-    def __init__(self, language, service_url, id, current, nominal_validity):
+    def __init__(self, language, service_url, id, current, intervals):
         self.__service_url = service_url
         self.__language = language
         self.__id = id
         self.__current = current
-        self.__nominal_validity = nominal_validity
-        self.codes = {"lightrain":"lekka_ulewa", "partlycloudy":"czesciowe_zachmurzenie", "clearsky":"bezchmurnie", "fog":"mgla", "cloudy":"pochmurno", "rain":"opady_deszczu", "fair":"pochmurno", "rainshowers":"ulewa", "lightrainshowers":"lekka_ulewa", "heavyrain":"intensywne_opady_deszczu", "heavyrainshowers":"silna_ulewa", "rainshowersandthunder":"burza", "heavyrainshowersandthunder":"burza_z_silna__ulewa_", "heavyrainandthunder":"burza_z_intensywnymi_opadami_deszczu"}
-        self.forecast_intervals = [0, 2]
+        self.__intervals = intervals
+        self.codes = {"lightrain":"lekkie_opady_deszczu", "partlycloudy":"czesciowe_zachmurzenie", "clearsky":"bezchmurnie", "fog":"mgla", "cloudy":"pochmurno", "rain":"opady_deszczu", "fair":"pochmurno", "rainshowers":"ulewa", "lightrainshowers":"lekka_ulewa", "heavyrain":"intensywne_opady_deszczu", "heavyrainshowers":"silna_ulewa", "rainshowersandthunder":"burza", "heavyrainshowersandthunder":"burza_z_silna__ulewa_", "heavyrainandthunder":"burza_z_intensywnymi_opadami_deszczu"}
         self.__logger = logging.getLogger(__name__)
 
     def downloadData(self, service_url, id):
@@ -91,20 +90,16 @@ class MeteoYrSq2ips(SR0WXModule):
         
         return msg
 
-    def processValidity(self, date_start, date_end):
-        ds = datetime.strptime(date_start, "%Y-%m-%dT%H:%M:%S%z")
-        de = datetime.strptime(date_end, "%Y-%m-%dT%H:%M:%S%z")
-        return (de-ds).seconds//3600
+    def processValidity(self, date_end):
+        #ds = datetime.strptime(date_start[:-6], "%Y-%m-%dT%H:%M:%S")
+        de = datetime.strptime(date_end[:-6], "%Y-%m-%dT%H:%M:%S")
+        return de-datetime.now()
 
     def processForecast(self, data):
-        if self.__nominal_validity:
-            date_start = data["nominal_start"]
-            date_end = data["nominal_end"]
-        else:
-            date_start = data["start"]
-            date_end = data["end"]
+        #date_start = data["start"]
+        date_end = data["end"]
         
-        validity = self.processValidity(date_start, date_end)
+        validity = self.processValidity(date_end).seconds//3600
 
         # prognoza na następne x godzin
         if validity == 1:
@@ -147,18 +142,28 @@ class MeteoYrSq2ips(SR0WXModule):
             msg += " ".join([" wiatr", self.getWind(wind_dir), self.__language.read_speed(wind_speed), "kmph"])
 
         # ciśnienie
-        pres = round(data["pressure"]["value"])
-        msg += " ".join([" cisnienie", self.__language.read_pressure(pres)])
+        #pres = round(data["pressure"]["value"])
+        #msg += " ".join([" _ cisnienie", self.__language.read_pressure(pres)])
         
         # wilgotność
-        hum = round(data["humidity"]["value"])
-        msg += " ".join([" wilgotnosc", self.__language.read_percent(hum)])
+        #hum = round(data["humidity"]["value"])
+        #msg += " ".join([" wilgotnosc", self.__language.read_percent(hum)])
 
         return msg
 
+    def getInterval(self, data, time):
+        intervals = []
+        for i in data["longIntervals"]:
+            intervals.append(abs(self.processValidity(i["end"])-time))
+        self.__logger.info(f"::: Wartość interwału na {time} godzin: {min(intervals)+time}, indeks {intervals.index(min(intervals))}")
+        return intervals.index(min(intervals))
+
     def getForecast(self, data):
         msg = ""
-        for i in self.forecast_intervals:
+        intervals = []
+        for i in self.__intervals:
+            intervals.append(self.getInterval(data, timedelta(hours=i)))
+        for i in intervals:
             msg += self.processForecast(data["longIntervals"][i])
         return msg
 

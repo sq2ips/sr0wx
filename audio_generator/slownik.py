@@ -71,5 +71,5 @@ slownik_auto = {
     #"prognoza na następną",
     #"burza z intensywnymi opadami deszczu",
     #"burza z silną ulewą",
-    "dwie"
+    #"dwie"
 }
