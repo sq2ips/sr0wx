@@ -58,9 +58,18 @@ slownik_auto = {
     #"SWPC",
     #"ponad dziewięć",
     #"raport meteorologiczny"
+    #"odczuwalna"
     #"komunikat o"
     #"ważny do",
     #"ważny do jutra",
     #"ważny do końca dnia",
     #"zakłucenia jonosfery"
+    #"milimetr",
+    #"milimetry",
+    #"milimetrów",
+    #"godzinę",
+    #"prognoza na następną",
+    #"burza z intensywnymi opadami deszczu",
+    #"burza z silną ulewą",
+    #"dwie"
 }

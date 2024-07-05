@@ -496,6 +496,15 @@ meteostationsq2ips = MeteoStationSq2ips(
     port=4210,
 )
 
+from meteo_yr_sq2ips import MeteoYrSq2ips
+meteoyrsq2ips = MeteoYrSq2ips(
+    language=pl_google,
+    service_url="https://www.yr.no",
+    id="2-3099424", # Gdynia
+    current=True,
+    intervals=[6, 12]
+)
+
 # ---------------
 # time_sq2ips
 # ---------------
@@ -507,11 +516,12 @@ timesq2ips = TimeSq2ips(
 
 # WŁĄCZONE MODUŁY
 modules = [
-    timesq2ips,             # godzina
     activitymap,            # marker na mapie wx.ostol.pl
+    timesq2ips,             # godzina
     meteoalertsq2ips,       # ostrzeżenia meteorologiczne imgw
     # meteostationsq2ips,   # dane ze stacji meteo
-    openweathersq9atk,      # prognoza pogody
+    meteoyrsq2ips,          # pogoda z yr
+    openweathersq9atk,      # pogoda openweathermap
     # meteosq9atk,          # pogoda alternatywa
     # imgwpodestsq9atk,     # wodowskazy | NIE DZIAŁA
     # airpollutionsq9atk,   # zanieczyszczenia powietrza z GIOŚ
