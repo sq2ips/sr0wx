@@ -170,7 +170,7 @@ class MeteoYrSq2ips(SR0WXModule):
 
     def get_data(self, connection):
         try:
-            message = "aktualny_stan_pogody "
+            message = "aktualny_stan_pogody _ "
             self.__logger.info("::: Pobieranie danych pogodowych...")
             current, forecast = self.downloadData(self.__service_url, self.__id)
             self.__logger.info("::: Przetwarzanie danych...")
