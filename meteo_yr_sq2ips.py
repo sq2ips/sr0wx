@@ -22,12 +22,12 @@ class MeteoYrSq2ips(SR0WXModule):
         self.__logger = logging.getLogger(__name__)
 
     def downloadData(self, service_url, id):
-        links_url = service_url + "/api/v0/locations/" + id
+        links_url = "/".join([service_url,"api/v0/locations",id])
         links = self.requestData(links_url, self.__logger, 10, 3)
         links_data = links.json()["_links"]
         
-        url_current = service_url + links_data["currenthour"]["href"]
-        url_forecast = service_url + links_data["forecast"]["href"]
+        url_current = "".join([service_url,links_data["currenthour"]["href"]])
+        url_forecast = "".join([service_url,links_data["forecast"]["href"]])
         current = self.requestData(url_current, self.__logger, 10, 3)
         forecast = self.requestData(url_forecast, self.__logger, 10, 3)
         return (current.json(), forecast.json())
@@ -109,11 +109,12 @@ class MeteoYrSq2ips(SR0WXModule):
         msg += " ".join([self.__language.read_validity_hour(validity), "_ "])
         
         # stan pogody
-        msg += " ".join([self.codes[data["symbolCode"]["next6Hours"].split("_")[0]], "_ "])
+        msg += " ".join([self.codes[data["symbolCode"]["next1Hour"].split("_")[0]], "_ "])
         
         # pokrywa chmur
         cloud = round(data["cloudCover"]["value"])
-        msg += " ".join([" pokrywa_chmur", self.__language.read_percent(cloud)])
+        if cloud != 0:
+            msg += " ".join([" pokrywa_chmur", self.__language.read_percent(cloud)])
 
         # opady
         rain = round(data["precipitation"]["value"])
@@ -169,7 +170,7 @@ class MeteoYrSq2ips(SR0WXModule):
 
     def get_data(self, connection):
         try:
-            message = "_ "
+            message = "aktualny_stan_pogody "
             self.__logger.info("::: Pobieranie danych pogodowych...")
             current, forecast = self.downloadData(self.__service_url, self.__id)
             self.__logger.info("::: Przetwarzanie danych...")

@@ -499,7 +499,7 @@ meteostationsq2ips = MeteoStationSq2ips(
 from meteo_yr_sq2ips import MeteoYrSq2ips
 meteoyrsq2ips = MeteoYrSq2ips(
     language=pl_google,
-    service_url="https://www.yr.no/",
+    service_url="https://www.yr.no",
     id="2-3099424", # Gdynia
     current=True,
     intervals=[6, 12]
@@ -516,25 +516,25 @@ timesq2ips = TimeSq2ips(
 
 # WŁĄCZONE MODUŁY
 modules = [
-#    activitymap,            # marker na mapie wx.ostol.pl
+    activitymap,            # marker na mapie wx.ostol.pl
     timesq2ips,             # godzina
-#    meteoalertsq2ips,       # ostrzeżenia meteorologiczne imgw
-#    # meteostationsq2ips,   # dane ze stacji meteo
-    meteoyrsq2ips,
-#    openweathersq9atk,      # prognoza pogody
-#    # meteosq9atk,          # pogoda alternatywa
-#    # imgwpodestsq9atk,     # wodowskazy | NIE DZIAŁA
-#    # airpollutionsq9atk,   # zanieczyszczenia powietrza z GIOŚ
-#    airlysq9atk,            # zanieczyszczenia powietrza z Airly
-#    spaceweathersq2ips,     # pogoda kosmiczna
-#    # propagationsq9atk,    # propagacja KF
-#    propagationsq2ips,      # propagacja KF z hamqsl.com
-#    vhftroposq9atk,         # propagacja tropo
-#    # geomagneticsq9atk,    # zaburzenia geomagnetyczne 
-#    # radioactivesq9atk,    # promieniowanie jonizujące
-#    radioactivesq2ips,      # promieniowanie jonizujące z paa
-#    # calendarsq9atk,       # wschód i zachód słońca
-#    calendarsq2ips,         # wschód i zachód słońca bez internetu
+    meteoalertsq2ips,       # ostrzeżenia meteorologiczne imgw
+    # meteostationsq2ips,   # dane ze stacji meteo
+    meteoyrsq2ips,          # pogoda z yr
+    openweathersq9atk,      # pogoda openweathermap
+    # meteosq9atk,          # pogoda alternatywa
+    # imgwpodestsq9atk,     # wodowskazy | NIE DZIAŁA
+    # airpollutionsq9atk,   # zanieczyszczenia powietrza z GIOŚ
+    airlysq9atk,            # zanieczyszczenia powietrza z Airly
+    spaceweathersq2ips,     # pogoda kosmiczna
+    # propagationsq9atk,    # propagacja KF
+    propagationsq2ips,      # propagacja KF z hamqsl.com
+    vhftroposq9atk,         # propagacja tropo
+    # geomagneticsq9atk,    # zaburzenia geomagnetyczne 
+    # radioactivesq9atk,    # promieniowanie jonizujące
+    radioactivesq2ips,      # promieniowanie jonizujące z paa
+    # calendarsq9atk,       # wschód i zachód słońca
+    calendarsq2ips,         # wschód i zachód słońca bez internetu
 ]
 # MODUŁY OFFLINE
 offline_modules = [
