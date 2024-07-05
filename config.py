@@ -542,6 +542,7 @@ offline_modules = [
 ]
 # MODUŁY AWARYJNE
 aux_modules = {
+    meteoyrsq2ips: openweathersq9atk,
     openweathersq9atk: meteosq9atk,
     airlysq9atk: airpollutionsq9atk,
     spaceweathersq2ips: geomagneticsq9atk,
