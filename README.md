@@ -14,6 +14,7 @@ Program pobiera różne dane z internetu, np. stan pogody, prognozę pogody, ost
 - Dodanie modułu stanu pogody z fizycznej stacji pogodowej przez UDP (meteostation_sq2ips.py)
 - Dodanie modułu alertów pogody kosmicznej (spaceweather_sq2ips)
 - Dodanie modułu pobierającego propagacje oraz poziom zakłuceń z hamqsl.com (propagation_sq2ips.py)
+- Nowy moduł pobierający pogodę z yr.no (meteo_yr_sq2ips.py) (testowy)
 - Przepisanie całej aplikacji z python 2 na 3
 - Dodanie generatora sampli napisanego w pythonie
 - Obsługa wieloprocesowości, wszystkie moduły uruchamiają się jednocześnie
@@ -21,9 +22,6 @@ Program pobiera różne dane z internetu, np. stan pogody, prognozę pogody, ost
 - Zmiana urllib na requests w kilku modułach dla zminimalizowania ilości błędów pobierania.
 - Dodanie trybu testowego, moduły są uruchamiane ale nie są odtwarzane sample
 - Zmiana biblioteki do pobierania danych z urllib na requests, wielokrotne próby pobierania przy błedzie pobierania
-
-## W toku
-- Praca nad modułuem pobierającym pogodę z yr.no
 
 ## Licencja
 LICENSE
