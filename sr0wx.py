@@ -283,7 +283,7 @@ if test_mode:
 # It's time to init ``pygame``'s mixer (and ``pygame``). Possibly defined
 # sound quality is far-too-good (44kHz 16bit, stereo), so you can change it.
 
-pygame.mixer.init(44000, -16, 2, 1024)
+pygame.mixer.init(config.samplerate, -16, 2, 1024)
 
 # Next (as a tiny timesaver & memory eater ;) program loads all necessary
 # samples into memory. I think that this is better approach than reading
@@ -378,7 +378,8 @@ pygame.time.delay(500)
 # aloud" will be less natural.
 
 for el in message:
-    #print(el) # wyświetlanie nazw sampli
+    if config.showSamples:
+        print(el)
     if el == "_":
         pygame.time.wait(500)
     else:
@@ -395,7 +396,8 @@ for el in message:
                     sound)[:len(pygame.sndarray.array(sound))/2])
             voice_channel = sound.play()
         while voice_channel.get_busy():
-            pygame.time.Clock().tick(25)
+            pygame.time.Clock().tick(config.clockTick)
+        pygame.time.delay(config.timeDelay)
 
 # Possibly the argument of ``pygame.time.Clock().tick()`` should be in
 # config file...

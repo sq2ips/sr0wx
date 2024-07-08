@@ -108,7 +108,7 @@ class BaltykSq2ips(SR0WXModule):
             message += "waz_na_od_godziny " + time[0] + " do " + time[1] + " "
             message += "baltyk_alert_"+datap[0]+" _ "
             message += self.say_data(datap[1])
-            message += " _ prognoza_orientacyjna_12 "
+            message += " _ prognoza_orientacyjna_12 _ "
             message += self.say_data(datap[2])
             connection.send({
                             "message": message,

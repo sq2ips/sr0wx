@@ -32,8 +32,17 @@ serial_signal = 'DTR'  # lub 'RTS'
 rpi_pin = 40
 multi_processing = True
 
+
 lang = "pl_google"
 pygame_bug = 0
+
+# ustawienie wartości pygame.time.Clock().tick()
+clockTick = 250
+timeDelay = 250
+# pygame samplerate
+samplerate = 22000
+# wyświetlanie nazw sampli w trakcie odtważania
+showSamples = False
 
 hello_msg = ['_', 'sr2wxg_cw', '_',
              'tu_eksperymentalna_automatyczna_stacja_pogodowa', 'sr2wxg']

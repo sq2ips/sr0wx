@@ -93,6 +93,14 @@ multi_processing = True
 lang = "pl_google" # język
 pygame_bug = 0
 
+# ustawienie wartości pygame.time.Clock().tick()
+clockTick = 250
+timeDelay = 250
+# pygame samplerate
+samplerate = 22000
+# wyświetlanie nazw sampli w trakcie odtważania
+showSamples = False
+
 # wiadomość początkowa i końcowa jest pliku .env
 #hello_msg = ['_', 'test']
 #goodbye_msg = ['_', "beep2"]
@@ -521,7 +529,7 @@ modules = [
     meteoalertsq2ips,       # ostrzeżenia meteorologiczne imgw
     # meteostationsq2ips,   # dane ze stacji meteo
     meteoyrsq2ips,          # pogoda z yr
-    openweathersq9atk,      # pogoda openweathermap
+    # openweathersq9atk,      # pogoda openweathermap
     # meteosq9atk,          # pogoda alternatywa
     # imgwpodestsq9atk,     # wodowskazy | NIE DZIAŁA
     # airpollutionsq9atk,   # zanieczyszczenia powietrza z GIOŚ
