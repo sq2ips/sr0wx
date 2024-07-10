@@ -1,7 +1,7 @@
 import requests
 from urllib.parse import urlparse, parse_qs, quote_plus
 import bs4 as bs
-from multiprocessing import Pool
+#from multiprocessing import Pool
 from tqdm import tqdm
 import os
 import shutil
@@ -61,9 +61,9 @@ def TrimPl(word):
     return (word)
 
 def GetMp3(word, filename, key):
-    url = f'https://texttospeech.responsivevoice.org/v1/text:synthesize?lang={lang}&engine=g1&name=&pitch=0.5&rate=0.6&volume=1&key={key}&gender={gender}&text={quote_plus(word)}'
+    url = f'https://texttospeech.responsivevoice.org/v1/text:synthesize?lang={lang}&engine=g1&name=&pitch=0.5&rate=0.5&volume=1&key={key}&gender={gender}&text={quote_plus(word)}'
     
-    data = requestData(url, 15, 4)
+    data = requestData(url, 15, 5)
     open(f'mp3/{filename}.mp3', 'wb').write(data.content)
 
 def convert(filename):
@@ -80,8 +80,7 @@ def GetOgg(l, key):
     # print(f"word: {word} | filename: {filename}")
     GetMp3(word, filename, key)
     convert(filename)
-
-
+    return(os.path.exists(f"ogg/{filename}.ogg"))
 
 if __name__ == "__main__":
     print("Uruchamianie...")
@@ -115,8 +114,10 @@ if __name__ == "__main__":
     for slowo in tqdm(slownik_list, unit="samples"):
         try:
             if not os.path.exists("".join(["ogg/",slowo[1],".ogg"])):
-                GetOgg(slowo, key)
-                c += 1
+                if GetOgg(slowo, key):
+                    c += 1
+                else:
+                    print("plik nie utwożony!!!")
             else:
                 print(f"Plik {slowo[1]}.ogg istnieje, pomijanie...")
                 c += 0

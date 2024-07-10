@@ -293,6 +293,8 @@ pygame.mixer.init(config.samplerate, -16, 2, 1024)
 
 playlist = []
 
+logger.info("loading sound samples...")
+
 for el in message:
     if "upper" in dir(el):
         playlist.append(el)
@@ -311,8 +313,8 @@ if hasattr(config, 'ctcss_tone'):
 else:
     logger.info(COLOR_WARNING + "CTCSS tone disabled" + COLOR_ENDC)
 
-logger.info("playlist elements: %s", " ".join(playlist)+"\n")
-logger.info("loading sound samples...")
+logger.info(f"playlist elements: {" ".join(playlist)}")
+
 logger.info("playing sound samples\n")
 
 sound_samples = {}
@@ -320,16 +322,14 @@ for el in message:
     if "upper" in dir(el):
         if el[0:7] == 'file://':
             sound_samples[el] = pygame.mixer.Sound(el[7:])
-
+        sample = config.lang + "/samples/" + el + ".ogg"
         if el != "_" and el not in sound_samples:
-            if not os.path.isfile(config.lang + "/" + el + ".ogg"):
-                logger.warning(COLOR_FAIL + "Couldn't find %s" %
-                               (config.lang + "/" + el + ".ogg" + COLOR_ENDC))
+            if not os.path.isfile(sample):
+                logger.warning(COLOR_FAIL + f"Couldn't find {sample}" + COLOR_ENDC)
                 sound_samples[el] = pygame.mixer.Sound(
-                    config.lang + "/beep.ogg")
+                    config.lang + "/samples/beep.ogg")
             else:
-                sound_samples[el] = pygame.mixer.Sound(
-                    config.lang + "/" + el + ".ogg")
+                sound_samples[el] = pygame.mixer.Sound(sample)
 
 nopi = True
 if config.rpi_pin is not None:
