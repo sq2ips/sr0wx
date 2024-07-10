@@ -1,9 +1,10 @@
 import requests
 from urllib.parse import urlparse, parse_qs, quote_plus
 import bs4 as bs
-#from multiprocessing import Pool
 from tqdm import tqdm
 import os
+import sys
+import glob
 import shutil
 import json
 
@@ -105,35 +106,29 @@ if __name__ == "__main__":
     for slowo in slownik_auto:
         slownik_list.append([slowo, TrimPl(slowo)])
 
-    print(f"Liczba sampli: {len(slownik_list)}")
-
+    slownik_list_new = []
+    files = glob.glob("ogg/")
+    for f in slownik_list:
+        if f[1] not in files:
+            slownik_list_new.append(f)
+    
+    print(f"Liczba sampli do wygenerowania: {len(slownik_list)}")
+    print(f"Liczba wszystkich sampli: {len(slownik_list)}")
     print("Uruchamianie generatora...")
+
     c = 0
-    exceptions = []
+    notgenerated = []
     key = GetKey(apikey)
-    for slowo in tqdm(slownik_list, unit="samples"):
+    for slowo in tqdm(slownik_list_new, unit="samples"):
         try:
-            if not os.path.exists("".join(["ogg/",slowo[1],".ogg"])):
-                if GetOgg(slowo, key):
-                    c += 1
-                else:
-                    print("plik nie utwożony!!!")
+            if GetOgg(slowo, key):
+                c+=1
             else:
-                print(f"Plik {slowo[1]}.ogg istnieje, pomijanie...")
-                c += 0
+                raise Exception("Plik nie utwożony.")
         except Exception as e:
-            exceptions.append(e)
-
-
-    #with Pool(processes=len(slownik_list)) as p:
-    #    with tqdm(total=len(slownik_list)) as pbar:
-    #        for _ in p.imap_unordered(GetOgg, slownik_list):
-    #            pbar.update()
-    #
-
+            notgenerated.append(slowo)
+    print(f"Niewygenerowano {len(notgenerated)}")
     print(f"Wygenerowano {c}/{len(slownik_list)}")
-    print(f"Otrzymano {len(exceptions)} błędów:")
-    print(list(dict.fromkeys(exceptions)))
 
     print("usuwanie katalogu mp3/...")
     os.removedirs("mp3/")
