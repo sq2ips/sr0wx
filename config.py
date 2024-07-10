@@ -520,8 +520,8 @@ modules = [
     timesq2ips,             # godzina
     meteoalertsq2ips,       # ostrzeżenia meteorologiczne imgw
     # meteostationsq2ips,   # dane ze stacji meteo
-    meteoyrsq2ips,          # pogoda z yr
-    # openweathersq9atk,    # pogoda openweathermap
+    #meteoyrsq2ips,          # pogoda z yr
+    openweathersq9atk,    # pogoda openweathermap
     # meteosq9atk,          # pogoda alternatywa
     # imgwpodestsq9atk,     # wodowskazy | NIE DZIAŁA
     # airpollutionsq9atk,   # zanieczyszczenia powietrza z GIOŚ
