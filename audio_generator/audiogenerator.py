@@ -71,7 +71,7 @@ def convert(filename):
     if not os.path.exists("ogg/"):
         os.mkdir("ogg")
     os.system(
-        f"ffmpeg -hide_banner -loglevel error -y -i \"mp3/{filename}.mp3\" -af silenceremove=start_periods=1:start_duration=0:start_threshold=-60dB:stop_periods=-1:stop_duration=0:stop_threshold=-60dB -ar 22000 -acodec libvorbis \"ogg/{filename}.ogg\"")
+        f"ffmpeg -hide_banner -loglevel error -y -i \"mp3/{filename}.mp3\" -af silenceremove=start_periods=1:start_duration=0:start_threshold=-60dB:stop_periods=-1:stop_duration=0:stop_threshold=-60dB -ar 22050 -acodec libvorbis \"ogg/{filename}.ogg\"")
     os.remove(f"mp3/{filename}.mp3")
 
 

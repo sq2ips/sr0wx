@@ -194,8 +194,7 @@ if config.multi_processing:
         processes.append(Process(target=module.get_data, args=(conn2,)))
 
     for p in processes:
-        logger.info(COLOR_OKBLUE + "starting %s..." + COLOR_ENDC, str(modules[processes.index(p)]))
-
+        logger.info(COLOR_OKBLUE + f"starting {str(modules[processes.index(p)])}..." + COLOR_ENDC)
         p.start()
 
     for p in processes:
@@ -239,7 +238,7 @@ else:
     func_modules = ""
     any_func_modules = False
     for module in modules:
-        logger.info(COLOR_OKBLUE + "starting %s..." + COLOR_ENDC, module)
+        logger.info(COLOR_OKBLUE + f"starting {module}..." + COLOR_ENDC)
         conn1, conn2 = Pipe()
         module.get_data(conn2)
         module_data = conn1.recv()
@@ -301,33 +300,30 @@ for el in message:
     else:
         playlist.append("[sndarray]")
 
-if hasattr(config, 'ctcss_tone'):
-    volume = 25000
-    arr = numpy.array([volume * numpy.sin(2.0 * numpy.pi * round(config.ctcss_tone)
+if config.ctcss_tone is not None:
+    arr = numpy.array([config.ctcss_volume * numpy.sin(2.0 * numpy.pi * round(config.ctcss_tone)
                       * x / 16000) for x in range(0, 16000)]).astype(numpy.int16)
     arr2 = numpy.c_[arr, arr]
     ctcss = pygame.sndarray.make_sound(arr2)
-    logger.info(COLOR_WARNING + "CTCSS tone %sHz" +
-                COLOR_ENDC + "\n", "%.1f" % config.ctcss_tone)
+    logger.info(COLOR_WARNING + f"CTCSS tone {config.ctcss_tone}Hz" + COLOR_ENDC)
     ctcss.play(-1)
 else:
     logger.info(COLOR_WARNING + "CTCSS tone disabled" + COLOR_ENDC)
 
 logger.info(f"playlist elements: {" ".join(playlist)}")
 
-logger.info("playing sound samples\n")
+logger.info("Checking samples\n")
 
 sound_samples = {}
 for el in message:
     if "upper" in dir(el):
         if el[0:7] == 'file://':
             sound_samples[el] = pygame.mixer.Sound(el[7:])
-        sample = config.lang + "/samples/" + el + ".ogg"
+        sample = "".join([config.lang, "/samples/", el, ".ogg"])
         if el != "_" and el not in sound_samples:
             if not os.path.isfile(sample):
                 logger.warning(COLOR_FAIL + f"Couldn't find {sample}" + COLOR_ENDC)
-                sound_samples[el] = pygame.mixer.Sound(
-                    config.lang + "/samples/beep.ogg")
+                sound_samples[el] = pygame.mixer.Sound(config.lang + "/samples/beep.ogg")
             else:
                 sound_samples[el] = pygame.mixer.Sound(sample)
 
@@ -355,11 +351,11 @@ if config.serial_port is not None:
     try:
         ser = serial.Serial(config.serial_port, config.serial_baud_rate)
         if config.serial_signal == 'DTR':
-            logger.info(COLOR_OKGREEN + "DTR/PTT set to ON\n" + COLOR_ENDC)
+            logger.info(COLOR_OKGREEN + "DTR/PTT set to ON" + COLOR_ENDC)
             ser.setDTR(1)
             ser.setRTS(0)
         else:
-            logger.info(COLOR_OKGREEN + "RTS/PTT set to ON\n" + COLOR_ENDC)
+            logger.info(COLOR_OKGREEN + "RTS/PTT set to ON" + COLOR_ENDC)
             ser.setDTR(0)
             ser.setRTS(1)
     except Exception as e:
@@ -377,11 +373,13 @@ pygame.time.delay(500)
 # Unfortunately, there may be some pauses between samples so "reading
 # aloud" will be less natural.
 
+logger.info("playing sound samples\n")
+
 for el in message:
     if config.showSamples:
         print(el)
     if el == "_":
-        pygame.time.wait(500)
+        pygame.time.wait(config.delayValue)
     else:
         if "upper" in dir(el):
             try:
@@ -399,9 +397,6 @@ for el in message:
             pygame.time.Clock().tick(config.clockTick)
         pygame.time.delay(config.timeDelay)
 
-# Possibly the argument of ``pygame.time.Clock().tick()`` should be in
-# config file...
-#
 # The following four lines give us a one second break (for CTCSS, PTT and
 # other stuff) before closing the ``pygame`` mixer and display some debug
 # informations.
@@ -414,7 +409,7 @@ pygame.time.delay(500)
 try:
     if config.serial_port is not None:
         ser.close()
-        logger.info(COLOR_OKGREEN + "RTS/PTT set to OFF\n" + COLOR_ENDC)
+        logger.info(COLOR_OKGREEN + "RTS/PTT set to OFF" + COLOR_ENDC)
 except NameError:
     # sudo gpasswd --add ${USER} dialout
     logger.exception(COLOR_FAIL + "Couldn't close serial port" + COLOR_ENDC)
@@ -424,6 +419,28 @@ if not nopi:
     logger.info(COLOR_OKGREEN + f"GPIO PTT: OFF, PIN: {config.rpi_pin}" + COLOR_ENDC)
     GPIO.cleanup()
 
+# Save the message to an audio file
+
+if config.saveAudio:
+    from pydub import AudioSegment
+
+    samples = []
+    for el in message:
+        if el == "_":
+            samples.append(AudioSegment.silent(duration=config.delayValue))
+        elif "upper" in dir(el):
+            if el[0:7] == 'file://':
+                sample_full = el[7:]
+            sample = "".join([config.lang, "/samples/", el, ".ogg"])
+            if not os.path.isfile(sample):
+                sample_full = config.lang + "/samples/beep.ogg"
+            else:
+                sample_full = sample
+            samples.append(AudioSegment.from_file(sample_full))
+            samples.append(AudioSegment.silent(duration=config.timeDelay))
+    
+    samples_combined = sum(samples)
+    file_handle = samples_combined.export(config.audioPath, format="wav")
 
 logger.info(COLOR_WARNING + "goodbye" + COLOR_ENDC)
 

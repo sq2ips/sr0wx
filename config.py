@@ -45,11 +45,11 @@ import pl_google.pl_google as pl_google
 # logger
 log_line_format = '%(asctime)s %(name)s %(levelname)s: %(message)s'
 log_handlers = [{
-    'log_level': logging.DEBUG,
+    'log_level': logging.INFO,
     'class': logging.StreamHandler,
     'config': {'stream': None},
 }, {
-    'log_level': logging.DEBUG,
+    'log_level': logging.INFO,
     'class': logging.handlers.TimedRotatingFileHandler,
     'config': {
         'filename': '../logs/pogoda/' + str(datetime.now().strftime("%Y-%m-%d_%H:%M")) + '.log',
@@ -80,7 +80,9 @@ else:
 
 # KONFIGURACJA OGÓLNA
 
-#ctcss_tone = 67.0
+# CTCSS
+ctcss_tone = None
+ctcss_volume = 25000
 # nadawanie przez port szeregowy
 serial_port = None
 serial_baud_rate = 9600
@@ -96,10 +98,17 @@ pygame_bug = 0
 # ustawienie wartości pygame.time.Clock().tick()
 clockTick = 250
 timeDelay = 250
+# długość ciszy dla tekstu "_"
+delayValue = 500
 # pygame samplerate
-samplerate = 22000
+samplerate = 22050
 # wyświetlanie nazw sampli w trakcie odtważania
 showSamples = False
+
+# Usatwiensia zapisu komunikatu do pliku audio
+saveAudio = True
+# Ścieżka zapisu pliku wraz z nazwą i rozszerzeniem
+audioPath = "./sr0wx.wav"
 
 # wiadomość początkowa i końcowa jest pliku .env
 #hello_msg = ['_', 'test']
@@ -528,8 +537,8 @@ modules = [
     timesq2ips,             # godzina
     meteoalertsq2ips,       # ostrzeżenia meteorologiczne imgw
     # meteostationsq2ips,   # dane ze stacji meteo
-    meteoyrsq2ips,          # pogoda z yr
-    # openweathersq9atk,      # pogoda openweathermap
+    # meteoyrsq2ips,          # pogoda z yr
+    openweathersq9atk,      # pogoda openweathermap
     # meteosq9atk,          # pogoda alternatywa
     # imgwpodestsq9atk,     # wodowskazy | NIE DZIAŁA
     # airpollutionsq9atk,   # zanieczyszczenia powietrza z GIOŚ
@@ -550,8 +559,8 @@ offline_modules = [
 ]
 # MODUŁY AWARYJNE
 aux_modules = {
-    meteoyrsq2ips: openweathersq9atk,
     openweathersq9atk: meteosq9atk,
+    meteoyrsq2ips: openweathersq9atk,
     airlysq9atk: airpollutionsq9atk,
     spaceweathersq2ips: geomagneticsq9atk,
     radioactivesq2ips: radioactivesq9atk,
