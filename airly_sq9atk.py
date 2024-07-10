@@ -92,7 +92,7 @@ class AirlySq9atk(SR0WXModule):
 
     def getAirlyData(self, url):
         headers={'Accept': 'application/json', 'apikey': self.__api_key}
-        data = self.requestData(url, self.__logger, 10, 3, headers)
+        data = self.requestData(url, self.__logger, 15, 3, headers)
         return data.json()
 
 

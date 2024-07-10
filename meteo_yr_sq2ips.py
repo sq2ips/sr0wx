@@ -18,7 +18,7 @@ class MeteoYrSq2ips(SR0WXModule):
         self.__id = id
         self.__current = current
         self.__intervals = intervals
-        self.codes = {"lightrain":"lekkie_opady_deszczu", "partlycloudy":"czesciowe_zachmurzenie", "clearsky":"bezchmurnie", "fog":"mgla", "cloudy":"pochmurno", "rain":"opady_deszczu", "fair":"pochmurno", "rainshowers":"ulewa", "lightrainshowers":"lekka_ulewa", "heavyrain":"intensywne_opady_deszczu", "heavyrainshowers":"silna_ulewa", "rainshowersandthunder":"burza", "heavyrainshowersandthunder":"burza_z_silna__ulewa_", "heavyrainandthunder":"burza_z_intensywnymi_opadami_deszczu"}
+        self.codes = {"lightrain":"lekkie_opady_deszczu", "partlycloudy":"czesciowe_zachmurzenie", "clearsky":"bezchmurnie", "fog":"mgla", "cloudy":"pochmurno", "rain":"opady_deszczu", "fair":"lekkie_zachmurzenie", "rainshowers":"ulewa", "lightrainshowers":"lekka_ulewa", "heavyrain":"intensywne_opady_deszczu", "heavyrainshowers":"silna_ulewa", "rainshowersandthunder":"burza", "heavyrainshowersandthunder":"burza_z_silna__ulewa_", "heavyrainandthunder":"burza_z_intensywnymi_opadami_deszczu"}
         self.__logger = logging.getLogger(__name__)
 
     def downloadData(self, service_url, id):
@@ -119,7 +119,7 @@ class MeteoYrSq2ips(SR0WXModule):
         # opady
         rain = round(data["precipitation"]["value"])
         if rain != 0:
-            msg += " ".join([" opady", self.__language.read_precipitation(rain)])
+            msg += " ".join([" _ opady", self.__language.read_precipitation(rain)])
 
         # temperatura
         temp = round(data["temperature"]["value"])
