@@ -312,7 +312,7 @@ else:
 
 logger.info(f"playlist elements: {" ".join(playlist)}")
 
-logger.info("Checking samples\n")
+logger.info("\nChecking samples...")
 
 sound_samples = {}
 for el in message:
@@ -373,7 +373,7 @@ pygame.time.delay(500)
 # Unfortunately, there may be some pauses between samples so "reading
 # aloud" will be less natural.
 
-logger.info("playing sound samples\n")
+logger.info("playing sound samples...\n")
 
 for el in message:
     if config.showSamples:

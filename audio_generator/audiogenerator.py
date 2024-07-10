@@ -107,9 +107,10 @@ if __name__ == "__main__":
         slownik_list.append([slowo, TrimPl(slowo)])
 
     slownik_list_new = []
-    files = glob.glob("ogg/")
+    files = glob.glob("ogg/*")
+    print(files)
     for f in slownik_list:
-        if f[1] not in files:
+        if "".join(["ogg/", f[1], ".ogg"]) not in files:
             slownik_list_new.append(f)
     
     print(f"Liczba sampli do wygenerowania: {len(slownik_list)}")
