@@ -5,7 +5,6 @@ import requests
 import logging.handlers
 import logging
 from multiprocessing import Process, Pipe
-import numpy
 import sys
 import pygame
 import os
@@ -301,6 +300,7 @@ for el in message:
         playlist.append("[sndarray]")
 
 if config.ctcss_tone is not None:
+    import numpy
     arr = numpy.array([config.ctcss_volume * numpy.sin(2.0 * numpy.pi * round(config.ctcss_tone)
                       * x / 16000) for x in range(0, 16000)]).astype(numpy.int16)
     arr2 = numpy.c_[arr, arr]
