@@ -23,6 +23,11 @@ Program pobiera różne dane z internetu, np. stan pogody, prognozę pogody, ost
 - Dodanie trybu testowego, moduły są uruchamiane ale nie są odtwarzane sample
 - Zmiana biblioteki do pobierania danych z urllib na requests, wielokrotne próby pobierania przy błedzie pobierania
 
+## Planowane prace
+- Moduł informujący o pożarach lasów
+- Przepisane modułu wodowskazów
+- Dodanie modułu pobierającego dane ze stacji pogodowych przez APRS
+
 ## Licencja
 LICENSE
 
@@ -82,6 +87,3 @@ Wyszukiwanie id regionu ostrzeżeń hydrologicznych jest analogiczne, trzeba uru
 
 ## TODO
 - Dokumentacja
-
-## Planowanie zmiany
-- Dodanie modułu pobierającego dane ze stacji pogodowych przez APRS
