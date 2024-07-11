@@ -506,7 +506,7 @@ timesq2ips = TimeSq2ips(
 
 # WŁĄCZONE MODUŁY
 modules = [
-#    activitymap,            # marker na mapie wx.ostol.pl
+    activitymap,            # marker na mapie wx.ostol.pl
     timesq2ips,             # godzina
     meteoalertsq2ips,       # ostrzeżenia meteorologiczne imgw
     # meteostationsq2ips,   # dane ze stacji meteo
