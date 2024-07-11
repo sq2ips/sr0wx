@@ -310,7 +310,7 @@ if config.ctcss_tone is not None:
 else:
     logger.info(COLOR_WARNING + "CTCSS tone disabled" + COLOR_ENDC)
 
-logger.info(f"playlist elements: {" ".join(playlist)}")
+logger.info(f"playlist elements: " + " ".join(playlist))
 
 logger.info("Checking samples...")
 
