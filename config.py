@@ -106,7 +106,7 @@ samplerate = 22050
 showSamples = False
 
 # Usatwiensia zapisu komunikatu do pliku audio
-saveAudio = True
+saveAudio = False
 # Ścieżka zapisu pliku wraz z nazwą i rozszerzeniem
 audioPath = "./sr0wx.wav"
 
