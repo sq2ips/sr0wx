@@ -16,12 +16,14 @@ Program pobiera różne dane z internetu, np. stan pogody, prognozę pogody, ost
 - Dodanie modułu pobierającego propagacje oraz poziom zakłuceń z hamqsl.com (propagation_sq2ips.py)
 - Nowy moduł pobierający pogodę z yr.no (meteo_yr_sq2ips.py) (testowy)
 - Przepisanie całej aplikacji z python 2 na 3
-- Dodanie generatora sampli napisanego w pythonie
+- Dodanie generatora sampli napisanego w pythonie i wygenerowanie od nowa wszystkich sampli
 - Obsługa wieloprocesowości, wszystkie moduły uruchamiają się jednocześnie
 - Niejawne parametry konkretnej stacji (klucze api itp.) są przechowywane w pliku .env
 - Zmiana urllib na requests w kilku modułach dla zminimalizowania ilości błędów pobierania.
 - Dodanie trybu testowego, moduły są uruchamiane ale nie są odtwarzane sample
 - Zmiana biblioteki do pobierania danych z urllib na requests, wielokrotne próby pobierania przy błedzie pobierania
+- Dodanie opcji zapisu komunikatu do pliku tekstowego
+- Wiele zmian w głównym skrypcie sr0wx.py
 
 ## Planowane prace
 - Moduł informujący o pożarach lasów
