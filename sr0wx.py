@@ -310,9 +310,9 @@ if config.ctcss_tone is not None:
 else:
     logger.info(COLOR_WARNING + "CTCSS tone disabled" + COLOR_ENDC)
 
-logger.info(f"playlist elements: {" ".join(playlist)}")
+logger.info(f"playlist elements: {" ".join(playlist)}\n")
 
-logger.info("\nChecking samples...")
+logger.info("Checking samples...")
 
 sound_samples = {}
 for el in message:
@@ -422,25 +422,36 @@ if not nopi:
 # Save the message to an audio file
 
 if config.saveAudio:
-    from pydub import AudioSegment
+    try:
+        logger.info(f"Importing pydub...")
+        from pydub import AudioSegment
+        logger.info(f"Creating samples list...")
+        samples = []
+        for el in message:
+            if el == "_":
+                samples.append(AudioSegment.silent(duration=config.delayValue))
+            elif "upper" in dir(el):
+                if el[0:7] == 'file://':
+                    sample_full = el[7:]
+                sample = "".join([config.lang, "/samples/", el, ".ogg"])
+                if not os.path.isfile(sample):
+                    sample_full = config.lang + "/samples/beep.ogg"
+                else:
+                    sample_full = sample
+                samples.append(AudioSegment.from_file(sample_full))
+                samples.append(AudioSegment.silent(duration=config.timeDelay))
 
-    samples = []
-    for el in message:
-        if el == "_":
-            samples.append(AudioSegment.silent(duration=config.delayValue))
-        elif "upper" in dir(el):
-            if el[0:7] == 'file://':
-                sample_full = el[7:]
-            sample = "".join([config.lang, "/samples/", el, ".ogg"])
-            if not os.path.isfile(sample):
-                sample_full = config.lang + "/samples/beep.ogg"
-            else:
-                sample_full = sample
-            samples.append(AudioSegment.from_file(sample_full))
-            samples.append(AudioSegment.silent(duration=config.timeDelay))
-    
-    samples_combined = sum(samples)
-    file_handle = samples_combined.export(config.audioPath, format="wav")
+        logger.info("Combining...")
+        samples_combined = sum(samples)
+
+        logger.info(f"Saving message to audio file {config.audioPath}")
+        file_handle = samples_combined.export(config.audioPath, format="wav")
+        if os.path.exists(config.audioPath):
+            logger.info(COLOR_OKGREEN + "Succesfully saved." + COLOR_ENDC)
+        else:
+            logger.error(COLOR_FAIL + "Saving ended but file is not present." + COLOR_ENDC)
+    except Exception as e:
+        logger.error(f"Couldn't save message, got error {e}")
 
 logger.info(COLOR_WARNING + "goodbye" + COLOR_ENDC)
 
