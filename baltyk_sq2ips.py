@@ -66,7 +66,7 @@ class BaltykSq2ips(SR0WXModule):
                            "przelotny deszcz", "wiatr z kierunków", "deszcz ze śniegiem", "krupa śnieżna",
                            "zatoki gdańskiej", "zatoki pomorskiej", "możliwe burze", "brak danych",
                            "dobra do umiarkowanej", "umiarkowana do słabej", "ryzyko oblodzenia statków", "przelotne opady",
-                           "temperatura powietrza", "w cyrkulacji", "z kierunków", "w deszcz", "deszczu ze śniegiem", "lokalne burze","lokalne mgły","śnieg z deszczem"
+                           "temperatura powietrza", "w cyrkulacji", "z kierunków", "w deszcz", "deszczu ze śniegiem", "lokalne burze","lokalne mgły","śnieg z deszczem", "burzowe porywy wiatru", "z przewagą"
                            ]
 
         for i in frazy:
@@ -108,11 +108,11 @@ class BaltykSq2ips(SR0WXModule):
             message += "waz_na_od_godziny " + time[0] + " do " + time[1] + " "
             message += "baltyk_alert_"+datap[0]+" _ "
             message += self.say_data(datap[1])
-            message += " _ prognoza_orientacyjna_12 "
+            message += " _ prognoza_orientacyjna_12 _ "
             message += self.say_data(datap[2])
             connection.send({
                             "message": message,
-                            "source": "baltyk_pogodynka_pl",
+                            "source": "baltyk_imgw",
                         })
         except Exception as e:
             self.__logger.exception(

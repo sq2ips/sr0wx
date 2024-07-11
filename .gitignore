@@ -4,4 +4,6 @@ imgwpodest_data/*
 propagacja.png
 vhf_map.png
 audio_generator/ogg
+audio_generator/mp3
 .env
+sr0wx.wav

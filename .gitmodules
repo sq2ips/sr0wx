@@ -1,0 +1,3 @@
+[submodule "pyliczba"]
+	path = pyliczba
+	url = https://github.com/sq6jnx/pyliczba.git

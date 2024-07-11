@@ -4,7 +4,8 @@
 import pl_google.pl_google as pl_google
 import logging
 import logging.handlers
-import time
+import os
+from dotenv import load_dotenv
 from datetime import datetime
 
 log_line_format = '%(asctime)s %(name)s %(levelname)s: %(message)s'
@@ -25,19 +26,50 @@ log_handlers = [{
     }
 }]
 
-#ctcss_tone = 67.0
+# dane z pliku .env
+if os.path.exists(".env"):
+    load_dotenv()
+    hello_msg = os.getenv("HELLO_MSG_BALTYK").split(",")
+    goodbye_msg = os.getenv("GOODBYE_MSG_BALTYK").split(",")
+else:
+    raise FileNotFoundError("No .env file present.")
+
+#####################
+
+# KONFIGURACJA OGÓLNA
+
+# CTCSS
+ctcss_tone = None
+ctcss_volume = 25000
+# nadawanie przez port szeregowy
 serial_port = None
 serial_baud_rate = 9600
 serial_signal = 'DTR'  # lub 'RTS'
+# nadawanie przez GPIO w Raspberry Pi
 rpi_pin = 40
+# wieloprocesowość dla modułów
 multi_processing = True
 
-lang = "pl_google"
+lang = "pl_google" # język
 pygame_bug = 0
 
-hello_msg = ['_', 'sr2wxg_cw', '_',
-             'tu_eksperymentalna_automatyczna_stacja_pogodowa', 'sr2wxg']
-goodbye_msg = ['_', 'tu_sr2wxg', "_", "kolejny_komunikat_m", "beep2"]
+# ustawienie wartości pygame.time.Clock().tick()
+clockTick = 250
+timeDelay = 250
+# długość ciszy dla tekstu "_"
+delayValue = 500
+# pygame samplerate
+samplerate = 22050
+# wyświetlanie nazw sampli w trakcie odtważania
+showSamples = False
+
+# Usatwiensia zapisu komunikatu do pliku audio
+saveAudio = False
+# Ścieżka zapisu pliku wraz z nazwą i rozszerzeniem
+audioPath = "./sr0wx.wav"
+
+#hello_msg = ['_', 'tu_eksperymentalna_automatyczna_stacja_pogodowa', 'sr0wx']
+#goodbye_msg = ['_', 'tu_sr2wxg', "_", "kolejny_komunikat_m", "beep2"]
 read_sources_msg = False
 
 
@@ -62,4 +94,5 @@ baltyksq2ips = BaltykSq2ips(
 
 # WŁĄCZONE MODUŁY
 modules = [baltyksq2ips]
+offline_modules = []
 aux_modules = {}

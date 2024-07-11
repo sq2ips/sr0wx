@@ -1,16 +1,18 @@
-#!/usr/bin/python -tt
-# -*- coding: utf-8 -*-
+#!/usr/bin/python3
+
+import os
+from pathlib import Path
+os.chdir("/".join(str(Path(__file__)).split("/")[:-1]))
 
 import requests
 import logging.handlers
 import logging
 from multiprocessing import Process, Pipe
-import numpy
 import sys
 import pygame
-import os
 import getopt
 from colorcodes import *
+
 
 LICENSE = COLOR_OKBLUE + """
 
@@ -146,10 +148,7 @@ for opt, arg in opts:
     if opt in ("-c", "--config"):
         if arg[-3:] == '.py':
             arg = arg[:-3]
-        if arg == "config_baltyk":
-            import config_baltyk as config
-        else:
-            config = __import__(arg)
+        config = __import__(arg)
 
 
 if config is None:
@@ -172,7 +171,7 @@ aux_modules = {**config.aux_modules, **{v: k for k, v in config.aux_modules.item
 
 try:
     logger.info("Checking internet connection...")
-    requests.get('http://google.com', timeout=30)
+    requests.get('http://google.com', timeout=20)
 except requests.ConnectionError:
     logger.error(COLOR_FAIL + "No internet connection, offline mode active" + COLOR_ENDC + "\n")
     modules = config.offline_modules
@@ -194,8 +193,7 @@ if config.multi_processing:
         processes.append(Process(target=module.get_data, args=(conn2,)))
 
     for p in processes:
-        logger.info(COLOR_OKBLUE + "starting %s..." + COLOR_ENDC, str(modules[processes.index(p)]))
-
+        logger.info(COLOR_OKBLUE + f"starting {str(modules[processes.index(p)])}..." + COLOR_ENDC)
         p.start()
 
     for p in processes:
@@ -239,7 +237,7 @@ else:
     func_modules = ""
     any_func_modules = False
     for module in modules:
-        logger.info(COLOR_OKBLUE + "starting %s..." + COLOR_ENDC, module)
+        logger.info(COLOR_OKBLUE + f"starting {module}..." + COLOR_ENDC)
         conn1, conn2 = Pipe()
         module.get_data(conn2)
         module_data = conn1.recv()
@@ -283,7 +281,7 @@ if test_mode:
 # It's time to init ``pygame``'s mixer (and ``pygame``). Possibly defined
 # sound quality is far-too-good (44kHz 16bit, stereo), so you can change it.
 
-pygame.mixer.init(44000, -16, 2, 1024)
+pygame.mixer.init(config.samplerate, -16, 2, 1024)
 
 # Next (as a tiny timesaver & memory eater ;) program loads all necessary
 # samples into memory. I think that this is better approach than reading
@@ -293,43 +291,41 @@ pygame.mixer.init(44000, -16, 2, 1024)
 
 playlist = []
 
+logger.info("loading sound samples...")
+
 for el in message:
     if "upper" in dir(el):
         playlist.append(el)
     else:
         playlist.append("[sndarray]")
 
-if hasattr(config, 'ctcss_tone'):
-    volume = 25000
-    arr = numpy.array([volume * numpy.sin(2.0 * numpy.pi * round(config.ctcss_tone)
+if config.ctcss_tone is not None:
+    import numpy
+    arr = numpy.array([config.ctcss_volume * numpy.sin(2.0 * numpy.pi * round(config.ctcss_tone)
                       * x / 16000) for x in range(0, 16000)]).astype(numpy.int16)
     arr2 = numpy.c_[arr, arr]
     ctcss = pygame.sndarray.make_sound(arr2)
-    logger.info(COLOR_WARNING + "CTCSS tone %sHz" +
-                COLOR_ENDC + "\n", "%.1f" % config.ctcss_tone)
+    logger.info(COLOR_WARNING + f"CTCSS tone {config.ctcss_tone}Hz" + COLOR_ENDC)
     ctcss.play(-1)
 else:
     logger.info(COLOR_WARNING + "CTCSS tone disabled" + COLOR_ENDC)
 
-logger.info("playlist elements: %s", " ".join(playlist)+"\n")
-logger.info("loading sound samples...")
-logger.info("playing sound samples\n")
+logger.info(f"playlist elements: {" ".join(playlist)}\n")
+
+logger.info("Checking samples...")
 
 sound_samples = {}
 for el in message:
     if "upper" in dir(el):
         if el[0:7] == 'file://':
             sound_samples[el] = pygame.mixer.Sound(el[7:])
-
+        sample = "".join([config.lang, "/samples/", el, ".ogg"])
         if el != "_" and el not in sound_samples:
-            if not os.path.isfile(config.lang + "/" + el + ".ogg"):
-                logger.warning(COLOR_FAIL + "Couldn't find %s" %
-                               (config.lang + "/" + el + ".ogg" + COLOR_ENDC))
-                sound_samples[el] = pygame.mixer.Sound(
-                    config.lang + "/beep.ogg")
+            if not os.path.isfile(sample):
+                logger.warning(COLOR_FAIL + f"Couldn't find {sample}" + COLOR_ENDC)
+                sound_samples[el] = pygame.mixer.Sound(config.lang + "/samples/beep.ogg")
             else:
-                sound_samples[el] = pygame.mixer.Sound(
-                    config.lang + "/" + el + ".ogg")
+                sound_samples[el] = pygame.mixer.Sound(sample)
 
 nopi = True
 if config.rpi_pin is not None:
@@ -355,11 +351,11 @@ if config.serial_port is not None:
     try:
         ser = serial.Serial(config.serial_port, config.serial_baud_rate)
         if config.serial_signal == 'DTR':
-            logger.info(COLOR_OKGREEN + "DTR/PTT set to ON\n" + COLOR_ENDC)
+            logger.info(COLOR_OKGREEN + "DTR/PTT set to ON" + COLOR_ENDC)
             ser.setDTR(1)
             ser.setRTS(0)
         else:
-            logger.info(COLOR_OKGREEN + "RTS/PTT set to ON\n" + COLOR_ENDC)
+            logger.info(COLOR_OKGREEN + "RTS/PTT set to ON" + COLOR_ENDC)
             ser.setDTR(0)
             ser.setRTS(1)
     except Exception as e:
@@ -377,10 +373,13 @@ pygame.time.delay(500)
 # Unfortunately, there may be some pauses between samples so "reading
 # aloud" will be less natural.
 
+logger.info("playing sound samples...\n")
+
 for el in message:
-    #print(el) # wyświetlanie nazw sampli
+    if config.showSamples:
+        print(el)
     if el == "_":
-        pygame.time.wait(500)
+        pygame.time.wait(config.delayValue)
     else:
         if "upper" in dir(el):
             try:
@@ -395,11 +394,9 @@ for el in message:
                     sound)[:len(pygame.sndarray.array(sound))/2])
             voice_channel = sound.play()
         while voice_channel.get_busy():
-            pygame.time.Clock().tick(25)
+            pygame.time.Clock().tick(config.clockTick)
+        pygame.time.delay(config.timeDelay)
 
-# Possibly the argument of ``pygame.time.Clock().tick()`` should be in
-# config file...
-#
 # The following four lines give us a one second break (for CTCSS, PTT and
 # other stuff) before closing the ``pygame`` mixer and display some debug
 # informations.
@@ -412,7 +409,7 @@ pygame.time.delay(500)
 try:
     if config.serial_port is not None:
         ser.close()
-        logger.info(COLOR_OKGREEN + "RTS/PTT set to OFF\n" + COLOR_ENDC)
+        logger.info(COLOR_OKGREEN + "RTS/PTT set to OFF" + COLOR_ENDC)
 except NameError:
     # sudo gpasswd --add ${USER} dialout
     logger.exception(COLOR_FAIL + "Couldn't close serial port" + COLOR_ENDC)
@@ -422,6 +419,39 @@ if not nopi:
     logger.info(COLOR_OKGREEN + f"GPIO PTT: OFF, PIN: {config.rpi_pin}" + COLOR_ENDC)
     GPIO.cleanup()
 
+# Save the message to an audio file
+
+if config.saveAudio:
+    try:
+        logger.info(f"Importing pydub...")
+        from pydub import AudioSegment
+        logger.info(f"Creating samples list...")
+        samples = []
+        for el in message:
+            if el == "_":
+                samples.append(AudioSegment.silent(duration=config.delayValue))
+            elif "upper" in dir(el):
+                if el[0:7] == 'file://':
+                    sample_full = el[7:]
+                sample = "".join([config.lang, "/samples/", el, ".ogg"])
+                if not os.path.isfile(sample):
+                    sample_full = config.lang + "/samples/beep.ogg"
+                else:
+                    sample_full = sample
+                samples.append(AudioSegment.from_file(sample_full))
+                samples.append(AudioSegment.silent(duration=config.timeDelay))
+
+        logger.info("Combining...")
+        samples_combined = sum(samples)
+
+        logger.info(f"Saving message to audio file {config.audioPath}")
+        file_handle = samples_combined.export(config.audioPath, format="wav")
+        if os.path.exists(config.audioPath):
+            logger.info(COLOR_OKGREEN + "Succesfully saved." + COLOR_ENDC)
+        else:
+            logger.error(COLOR_FAIL + "Saving ended but file is not present." + COLOR_ENDC)
+    except Exception as e:
+        logger.error(f"Couldn't save message, got error {e}")
 
 logger.info(COLOR_WARNING + "goodbye" + COLOR_ENDC)
 
