@@ -25,24 +25,39 @@ log_handlers = [{
     }
 }]
 
-#ctcss_tone = 67.0
+#####################
+
+# KONFIGURACJA OGÓLNA
+
+# CTCSS
+ctcss_tone = None
+ctcss_volume = 25000
+# nadawanie przez port szeregowy
 serial_port = None
 serial_baud_rate = 9600
 serial_signal = 'DTR'  # lub 'RTS'
+# nadawanie przez GPIO w Raspberry Pi
 rpi_pin = 40
+# wieloprocesowość dla modułów
 multi_processing = True
 
-
-lang = "pl_google"
+lang = "pl_google" # język
 pygame_bug = 0
 
 # ustawienie wartości pygame.time.Clock().tick()
 clockTick = 250
 timeDelay = 250
+# długość ciszy dla tekstu "_"
+delayValue = 500
 # pygame samplerate
-samplerate = 22000
+samplerate = 22050
 # wyświetlanie nazw sampli w trakcie odtważania
 showSamples = False
+
+# Usatwiensia zapisu komunikatu do pliku audio
+saveAudio = False
+# Ścieżka zapisu pliku wraz z nazwą i rozszerzeniem
+audioPath = "./sr0wx.wav"
 
 hello_msg = ['_', 'sr2wxg_cw', '_',
              'tu_eksperymentalna_automatyczna_stacja_pogodowa', 'sr2wxg']

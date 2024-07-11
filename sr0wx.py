@@ -1,5 +1,8 @@
-#!/usr/bin/python -tt
-# -*- coding: utf-8 -*-
+#!/usr/bin/python3
+
+import os
+from pathlib import Path
+os.chdir("/".join(str(Path(__file__)).split("/")[:-1]))
 
 import requests
 import logging.handlers
@@ -7,9 +10,9 @@ import logging
 from multiprocessing import Process, Pipe
 import sys
 import pygame
-import os
 import getopt
 from colorcodes import *
+
 
 LICENSE = COLOR_OKBLUE + """
 
@@ -145,10 +148,7 @@ for opt, arg in opts:
     if opt in ("-c", "--config"):
         if arg[-3:] == '.py':
             arg = arg[:-3]
-        if arg == "config_baltyk":
-            import config_baltyk as config
-        else:
-            config = __import__(arg)
+        config = __import__(arg)
 
 
 if config is None:
@@ -171,7 +171,7 @@ aux_modules = {**config.aux_modules, **{v: k for k, v in config.aux_modules.item
 
 try:
     logger.info("Checking internet connection...")
-    requests.get('http://google.com', timeout=30)
+    requests.get('http://google.com', timeout=20)
 except requests.ConnectionError:
     logger.error(COLOR_FAIL + "No internet connection, offline mode active" + COLOR_ENDC + "\n")
     modules = config.offline_modules

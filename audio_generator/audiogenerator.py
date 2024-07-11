@@ -83,6 +83,29 @@ def GetOgg(l, key):
     convert(filename)
     return(os.path.exists(f"ogg/{filename}.ogg"))
 
+def generate(slownik_list):
+    slownik_list_new = []
+    files = glob.glob("ogg/*")
+    for f in slownik_list:
+        if "".join(["ogg/", f[1], ".ogg"]) not in files:
+            slownik_list_new.append(f)
+    
+    print(f"Liczba sampli do wygenerowania: {len(slownik_list_new)}")
+    print(f"Liczba wszystkich sampli: {len(slownik_list)}")
+    print("Uruchamianie generatora...")
+    c = 0
+    notgenerated = []
+    key = GetKey(apikey)
+    for slowo in tqdm(slownik_list_new, unit="samples"):
+        try:
+            if GetOgg(slowo, key):
+                c+=1
+            else:
+                raise Exception("Plik nie utwożony.")
+        except Exception as e:
+            notgenerated.append(slowo)
+    return notgenerated, c
+
 if __name__ == "__main__":
     print("Uruchamianie...")
     print("Sprawdzanie katalogu mp3/...")
@@ -106,30 +129,11 @@ if __name__ == "__main__":
     for slowo in slownik_auto:
         slownik_list.append([slowo, TrimPl(slowo)])
 
-    slownik_list_new = []
-    files = glob.glob("ogg/*")
-    print(files)
-    for f in slownik_list:
-        if "".join(["ogg/", f[1], ".ogg"]) not in files:
-            slownik_list_new.append(f)
+    for i in range(3):
+        if i > 1:
+            print("Generowanie brakujących sampli...")
+        notgenerated, c = generate(slownik_list)
+        print(f"Wygenerowano {c}/{len(slownik_list)}")
     
-    print(f"Liczba sampli do wygenerowania: {len(slownik_list)}")
-    print(f"Liczba wszystkich sampli: {len(slownik_list)}")
-    print("Uruchamianie generatora...")
-
-    c = 0
-    notgenerated = []
-    key = GetKey(apikey)
-    for slowo in tqdm(slownik_list_new, unit="samples"):
-        try:
-            if GetOgg(slowo, key):
-                c+=1
-            else:
-                raise Exception("Plik nie utwożony.")
-        except Exception as e:
-            notgenerated.append(slowo)
-    print(f"Niewygenerowano {len(notgenerated)}")
-    print(f"Wygenerowano {c}/{len(slownik_list)}")
-
     print("usuwanie katalogu mp3/...")
     os.removedirs("mp3/")
