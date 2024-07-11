@@ -24,6 +24,7 @@ Program pobiera różne dane z internetu, np. stan pogody, prognozę pogody, ost
 - Zmiana biblioteki do pobierania danych z urllib na requests, wielokrotne próby pobierania przy błedzie pobierania
 - Dodanie opcji zapisu komunikatu do pliku tekstowego
 - Wiele zmian w głównym skrypcie sr0wx.py
+- Inicjalizacja pygame jako podmodułu
 
 ## Planowane prace
 - Moduł informujący o pożarach lasów
@@ -60,8 +61,7 @@ Jeżeli nie:
 - Instalujemy potrzebne biblioteki z pliku za pomocą pip: `pip3 install -r requirements.txt`
 - Lub jeżeli jesteśmy na Raspberry Pi i chcemy korzystać z PTT przez GPIO: `pip3 install -r requirements-rpi.txt`
 
-Wchodzimy do podkatalogu pyliczba i instalujemy moduł\
-`cd pyliczba; sudo python3 setup.py install; cd ..`
+Pobieramy podmoduł: `git submodule update --init --recursive`
 
 Teraz kopiujemy przykładowy plik .env:
 `cp .env.example .env`
