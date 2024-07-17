@@ -11,6 +11,7 @@ from multiprocessing import Process, Pipe
 import sys
 import pygame
 import getopt
+import glob
 from colorcodes import *
 
 
@@ -162,6 +163,8 @@ logger.info(COLOR_WARNING + "sr0wx.py started" + COLOR_ENDC)
 if test_mode:
     logger.info(COLOR_WARNING + "Test mode active" + COLOR_ENDC)
 
+logger.info("Loading modules...")
+
 if len(args) > 0:
     modules = args[0].split(",")
 else:
@@ -179,6 +182,11 @@ except requests.ConnectionError:
 else:
     logger.info("Connection OK")
 
+cache_dir = glob.glob("cache/*")
+if len(cache_dir) > 0:
+    logger.info("Clearing cache...")
+    for f in cache_dir:
+        os.remove(f)
 
 lang = my_import('.'.join((config.lang, config.lang)))
 sources = [lang.source, ]

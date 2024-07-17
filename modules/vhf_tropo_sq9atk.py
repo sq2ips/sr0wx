@@ -13,7 +13,7 @@ from sr0wx_module import SR0WXModule
 
 
 class VhfTropoSq9atk(SR0WXModule):
-    """Klasa pobierająca dane kalendarzowe"""
+    """Moduł pobierający dane o propagacji troposferycznej"""
 
     def __init__(self, language, service_url, qthLon, qthLat):
         self.__service_url = service_url
@@ -232,9 +232,9 @@ class VhfTropoSq9atk(SR0WXModule):
             html = self.getHtmlFromUrl(self.__service_url)
             mapUrl = self.findMapUrlInHtml(html, "imgClickAndChange")
 
-            self.downloadMapFile(mapUrl, 'vhf_map.png')
+            self.downloadMapFile(mapUrl, 'cache/vhf_map.png')
 
-            mapImg = self.readMapImageFile('vhf_map.png')
+            mapImg = self.readMapImageFile('cache/vhf_map.png')
 
             mapWidth, mapHeight = mapImg.size
 

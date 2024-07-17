@@ -15,7 +15,7 @@ from sr0wx_module import SR0WXModule
 
 
 class AirPollutionSq9atk(SR0WXModule):
-    """Klasa pobierająca info o zanieczyszczeniach powietrza"""
+    """Moduł pobierający info o zanieczyszczeniach powietrza"""
 
     def __init__(self, language, service_url, city_id, station_id):
         self.__language = language

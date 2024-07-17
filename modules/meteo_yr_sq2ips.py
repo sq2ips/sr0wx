@@ -10,7 +10,7 @@ from sr0wx_module import SR0WXModule
 from datetime import datetime, timedelta
 
 class MeteoYrSq2ips(SR0WXModule):
-    """Klasa pobierająca informacje o pogodzie"""
+    """Klasa pobierająca informacje o pogodzie z yr.no"""
 
     def __init__(self, language, service_url, id, current, intervals):
         self.__service_url = service_url

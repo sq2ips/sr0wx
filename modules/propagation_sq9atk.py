@@ -41,8 +41,8 @@ class PropagationSq9atk(SR0WXModule):
     def downloadImage(self, url):
         self.__logger.info("::: Odpytuję adres: " + url)
         webFile = urllib.request.URLopener()
-        webFile.retrieve(url, "propagacja.png")
-        return Image.open("propagacja.png", 'r')
+        webFile.retrieve(url, "cache/propagacja.png")
+        return Image.open("cache/propagacja.png", 'r')
 
     def collectBandConditionsFromImage(self, image, dayTime):
         try:

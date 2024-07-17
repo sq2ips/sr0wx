@@ -8,6 +8,7 @@ from colorcodes import *
 
 
 class MeteoStationSq2ips(SR0WXModule):
+    """Moduł pobierający dane o pogodzie ze stacji przez UDP"""
     def __init__(self, language, ip, port):
         self.__logger = logging.getLogger(__name__)
         self.__language = language

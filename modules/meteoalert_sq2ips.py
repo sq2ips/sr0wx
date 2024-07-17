@@ -6,6 +6,7 @@ from sr0wx_module import SR0WXModule
 
 
 class MeteoAlertSq2ips(SR0WXModule):
+    """Moduł pobierający dane o zagrożeniach meteorolologicznych i hydrologicznych z meteo.imgw.pl"""
     def __init__(self, language, city_id, start_message, hydronames, short_validity, service_url):
         self.__language = language
         self.__short_validity = short_validity

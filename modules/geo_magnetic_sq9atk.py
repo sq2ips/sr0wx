@@ -11,7 +11,7 @@ from sr0wx_module import SR0WXModule
 
 
 class GeoMagneticSq9atk(SR0WXModule):
-    """Klasa pobierająca info o sytuacji geomagnetycznej"""
+    """Moduł pobierająca info o sytuacji geomagnetycznej"""
 
     def __init__(self, language, service_url):
         self.__language = language

@@ -8,6 +8,7 @@ from datetime import datetime
 from colorcodes import *
 
 class BaltykSq2ips(SR0WXModule):
+    """Moduł pobierający komunikat o stanie i prognizie na obszar bałtyku"""
     def __init__(self, service_url, language, region_id):
         self.__service_url = service_url
         self.__language = language

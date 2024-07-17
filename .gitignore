@@ -1,8 +1,10 @@
+*/__pycache__
+__pycache__
 *.pyc
 
-imgwpodest_data/*
-propagacja.png
-vhf_map.png
+.ruff_cache
+
+cache/*
 audio_generator/ogg
 audio_generator/mp3
 .env

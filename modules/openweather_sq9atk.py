@@ -10,7 +10,7 @@ from sr0wx_module import SR0WXModule
 
 
 class OpenWeatherSq9atk(SR0WXModule):
-    """Klasa pobierająca dane o pogodzie"""
+    """Klasa pobierająca dane o pogodzie z openweathermap"""
 
     def __init__(self, language, api_key, lat, lon, service_url, current, saytime, start_message):
 

@@ -6,6 +6,7 @@ from colorcodes import *
 from datetime import datetime
 
 class SpaceWeatherSq2ips(SR0WXModule):
+    """Moduł pobierający informacje o alertach pogody kosmicznej"""
     def __init__(self, language, urlG, urlR, urlS, geomagneticShort, radioNoise):
         self.__language = language
         self.__urlG = urlG

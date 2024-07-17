@@ -72,6 +72,14 @@ audioPath = "./sr0wx.wav"
 #goodbye_msg = ['_', 'tu_sr2wxg', "_", "kolejny_komunikat_m", "beep2"]
 read_sources_msg = False
 
+#####################
+
+# INICJALIZACJA I KONFIGURACJA MODUŁÓW
+
+import sys
+sys.path.append("modules/")
+
+#####################
 
 # ---------------
 # baltyk_sq2ips

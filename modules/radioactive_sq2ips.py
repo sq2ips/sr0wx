@@ -8,7 +8,7 @@ from sr0wx_module import SR0WXModule
 
 
 class RadioactiveSq2ips(SR0WXModule):
-    """Klasa pobierająca dane o promieniowaniu"""
+    """Klasa pobierająca dane o promieniowaniu z PAA"""
 
     def __init__(self, language, service_url, sensor_id, service_url_sr):
         self.__service_url = service_url

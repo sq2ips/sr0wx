@@ -16,7 +16,7 @@ from sr0wx_module import SR0WXModule
 
 
 class CalendarSq9atk(SR0WXModule):
-    """Klasa pobierająca dane kalendarzowe"""
+    """Moduł pobierający dane o wschodzie i zachodzie słońca"""
 
     def __init__(self, language, service_url, city_id):
         self.__service_url = service_url

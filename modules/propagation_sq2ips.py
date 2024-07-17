@@ -6,7 +6,7 @@ from colorcodes import *
 from sr0wx_module import SR0WXModule
 
 class PropagationSq2ips(SR0WXModule):
-    """Klasa pobierająca informacje o propagacji"""
+    """Klasa pobierająca informacje o propagacji z hamqsl.org"""
     def __init__(self, language, service_url, radioNoise):
         self.__service_url = service_url
         self.__language = language

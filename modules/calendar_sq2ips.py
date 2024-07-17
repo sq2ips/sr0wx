@@ -8,7 +8,7 @@ from sr0wx_module import SR0WXModule
 
 
 class CalendarSq2ips(SR0WXModule):
-    """Klasa wyliczajaca wschody i zachody slonca"""
+    """Moduł wyliczajacy wschody i zachody słońca"""
 
     def __init__(self, language, lat, lon, ele, pre, temp, hori):
         self.__language = language

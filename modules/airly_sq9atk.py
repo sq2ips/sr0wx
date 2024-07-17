@@ -10,7 +10,7 @@ from sr0wx_module import SR0WXModule
 
 
 class AirlySq9atk(SR0WXModule):
-    """Klasa pobierająca dane o zanieszczyszczeniach"""
+    """Moduł pobierający dane o zanieszczyszczeniach powietrza"""
 
     def __init__(self, language, api_key, lat, lon, service_url, mode, maxDistanceKM, installationId):
         self.__language = language
