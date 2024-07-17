@@ -182,11 +182,17 @@ except requests.ConnectionError:
 else:
     logger.info("Connection OK")
 
-cache_dir = glob.glob("cache/*")
-if len(cache_dir) > 0:
-    logger.info("Clearing cache...")
-    for f in cache_dir:
-        os.remove(f)
+logger.info("Checking cache...")
+if os.path.exists("cache/"):
+    cache_dir = glob.glob("cache/*")
+    if len(cache_dir) > 0:
+        logger.info("Clearing cache...")
+        for f in cache_dir:
+            os.remove(f)
+else:
+    logger.info("Cache dir does not exists, creating...")
+    os.mkdir("cache/")
+
 
 lang = my_import('.'.join((config.lang, config.lang)))
 sources = [lang.source, ]
