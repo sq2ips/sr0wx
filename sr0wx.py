@@ -11,11 +11,8 @@ from multiprocessing import Process, Pipe
 import sys
 import pygame
 import getopt
-<<<<<<< Updated upstream
-=======
 import glob
 import inspect
->>>>>>> Stashed changes
 from colorcodes import *
 
 
