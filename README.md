@@ -31,7 +31,8 @@ Program pobiera różne dane z internetu, np. stan pogody, prognozę pogody, ost
 
 ## Planowane prace
 - Przepisane modułu wodowskazów
-- Dodanie modułu pobierającego dane ze stacji pogodowych przez APRS
+- Napisanie modułu pobierającego dane o burzach z antistorm.eu
+- Napisanie modułu pobierającego dane ze stacji pogodowych przez APRS
 
 ## Licencja
 LICENSE
