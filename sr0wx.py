@@ -169,16 +169,11 @@ logger.info(COLOR_WARNING + "sr0wx.py started" + COLOR_ENDC)
 if test_mode:
     logger.info(COLOR_WARNING + "Test mode active" + COLOR_ENDC)
 
-<<<<<<< Updated upstream
-if len(args) > 0:
-    modules = args[0].split(",")
-=======
 if modules_text is not None:
     modules = []
     for m in config.modules_all:
         if inspect.getfile(m.__class__).split("/")[-1][:-3] in modules_text:
             modules.append(m)
->>>>>>> Stashed changes
 else:
     modules = config.modules
 
