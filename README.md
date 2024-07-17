@@ -30,7 +30,6 @@ Program pobiera różne dane z internetu, np. stan pogody, prognozę pogody, ost
 - przeniesienie wszystkich modułów do katalogu modules/
 
 ## Planowane prace
-- Moduł informujący o pożarach lasów
 - Przepisane modułu wodowskazów
 - Dodanie modułu pobierającego dane ze stacji pogodowych przez APRS
 
