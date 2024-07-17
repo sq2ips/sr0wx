@@ -37,6 +37,12 @@ class BaltykSq2ips(SR0WXModule):
             11: " listopada ", 12: " grudnia "}
         
         val = validity.split()
+        
+        if val[2] == "24:00":
+            val[2] = "00:00"
+        if val[6] == "24:00":
+            val[6] = "00:00"
+        
         od_date = datetime.strptime("".join([val[2], val[4]]), "%H:%M%d.%m.%Y")
         do_date = datetime.strptime("".join([val[6], val[8]]), "%H:%M%d.%m.%Y")
         
