@@ -26,6 +26,8 @@ Program pobiera różne dane z internetu, np. stan pogody, prognozę pogody, ost
 - Dodanie opcji zapisu komunikatu do pliku tekstowego
 - Wiele zmian w głównym skrypcie sr0wx.py
 - Inicjalizacja pygame jako podmodułu
+- Dodanie katalogu cache
+- przeniesienie wszystkich modułów do katalogu modules/
 
 ## Planowane prace
 - Moduł informujący o pożarach lasów
