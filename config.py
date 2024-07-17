@@ -522,7 +522,7 @@ modules = [
     # imgwpodestsq9atk,     # wodowskazy | NIE DZIAŁA
     # airpollutionsq9atk,   # zanieczyszczenia powietrza z GIOŚ
     airlysq9atk,            # zanieczyszczenia powietrza z Airly
-    # firessq2ips,            # informacja o stopniu zagrożenia pożarowego lasów
+    # firessq2ips,          # informacja o stopniu zagrożenia pożarowego lasów
     spaceweathersq2ips,     # pogoda kosmiczna
     # propagationsq9atk,    # propagacja KF
     propagationsq2ips,      # propagacja KF z hamqsl.com
