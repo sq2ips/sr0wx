@@ -363,7 +363,28 @@ timesq2ips = TimeSq2ips(
     language=pl_google,
     start_message=[" _ ", "raport_meteorologiczny", "z_godziny"]
 )
-
+# WSZYSTKIE MODUŁY
+modules_all = [
+    activitymap,            # marker na mapie wx.ostol.pl
+    timesq2ips,             # godzina
+    meteoalertsq2ips,       # ostrzeżenia meteorologiczne imgw
+    meteostationsq2ips,     # dane ze stacji meteo
+    meteoyrsq2ips,          # pogoda z yr
+    openweathersq9atk,      # pogoda openweathermap
+    meteosq9atk,            # pogoda alternatywa
+    airpollutionsq9atk,     # zanieczyszczenia powietrza z GIOŚ
+    airlysq9atk,            # zanieczyszczenia powietrza z Airly
+    firessq2ips,            # informacja o stopniu zagrożenia pożarowego lasów
+    spaceweathersq2ips,     # pogoda kosmiczna
+    propagationsq9atk,      # propagacja KF
+    propagationsq2ips,      # propagacja KF z hamqsl.com
+    vhftroposq9atk,         # propagacja tropo
+    geomagneticsq9atk,      # zaburzenia geomagnetyczne 
+    radioactivesq9atk,      # promieniowanie jonizujące
+    radioactivesq2ips,      # promieniowanie jonizujące z paa
+    calendarsq9atk,         # wschód i zachód słońca
+    calendarsq2ips,         # wschód i zachód słońca bez internetu
+]
 # WŁĄCZONE MODUŁY
 modules = [
     activitymap,            # marker na mapie wx.ostol.pl

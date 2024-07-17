@@ -11,7 +11,11 @@ from multiprocessing import Process, Pipe
 import sys
 import pygame
 import getopt
+<<<<<<< Updated upstream
+=======
 import glob
+import inspect
+>>>>>>> Stashed changes
 from colorcodes import *
 
 
@@ -135,22 +139,24 @@ message = " "
 # Modules may be also given in commandline, separated by a comma.
 
 config = None
+test_mode = False
+modules_text = None
 
 try:
-    if len(sys.argv)>1 and sys.argv[1] == "-t":
-        test_mode = True
-        opts, args = getopt.getopt(sys.argv[2:], "c:", ["config="])
-    else:
-        test_mode = False
-        opts, args = getopt.getopt(sys.argv[1:], "c:", ["config="])
+    argv = sys.argv[1:]
+    opts, args = getopt.getopt(argv, "c:m:t")
 except getopt.GetoptError:
     pass
+
 for opt, arg in opts:
-    if opt in ("-c", "--config"):
+    if opt in ["-c", "--config"]:
         if arg[-3:] == '.py':
             arg = arg[:-3]
         config = __import__(arg)
-
+    elif opt in ["-m", "--modules"]:
+        modules_text = arg.split(",")
+    elif opt == "-t":
+        test_mode = True
 
 if config is None:
     import config as config
@@ -163,10 +169,16 @@ logger.info(COLOR_WARNING + "sr0wx.py started" + COLOR_ENDC)
 if test_mode:
     logger.info(COLOR_WARNING + "Test mode active" + COLOR_ENDC)
 
-logger.info("Loading modules...")
-
+<<<<<<< Updated upstream
 if len(args) > 0:
     modules = args[0].split(",")
+=======
+if modules_text is not None:
+    modules = []
+    for m in config.modules_all:
+        if inspect.getfile(m.__class__).split("/")[-1][:-3] in modules_text:
+            modules.append(m)
+>>>>>>> Stashed changes
 else:
     modules = config.modules
 
