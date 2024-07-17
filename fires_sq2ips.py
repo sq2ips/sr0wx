@@ -91,11 +91,12 @@ class FiresSq2ips(SR0WXModule):
 
                     dictmsg = {}
                     for warn, date in zip(warnings, dates):
-                        if date in dictmsg:
-                            if warn > dictmsg[date]:
+                        if warn is not None:
+                            if date in dictmsg:
+                                if warn > dictmsg[date]:
+                                    dictmsg[date] = warn
+                            else:
                                 dictmsg[date] = warn
-                        else:
-                            dictmsg[date] = warn
 
                     message = "zagroz_enie_poz_arowe_laso_w _ "
                     for msg in dictmsg:
