@@ -87,6 +87,7 @@ class GeoMagneticSq9atk(SR0WXModule):
             if row > maxValue['value']:
                 maxValue['value'] = row
                 maxValue['at'] = key
+
         return maxValue
 
     def getDailyFluctuation(self, data):
@@ -109,13 +110,12 @@ class GeoMagneticSq9atk(SR0WXModule):
 
                     message += self.__seasons[condition['at']] + " "
                     message += self.__conditions[int(condition['value'])] + " "
-                    message += self.__fluctuations[self.getDailyFluctuation(
-                        day)] + " wahania_dobowe "
+                    message += self.__fluctuations[self.getDailyFluctuation(day)] + " wahania_dobowe "
 
-                connection.send({
-                    "message": message + "_",
-                    "source": "gis_meteo",
-                })
+            connection.send({
+                "message": message + "_",
+                "source": "gis_meteo",
+            })
         except Exception as e:
             self.__logger.exception(
                 COLOR_FAIL + "Exception when running %s: %s" + COLOR_ENDC, str(self), e)
