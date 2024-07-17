@@ -31,6 +31,10 @@ if os.path.exists(".env"):
     load_dotenv()
     hello_msg = os.getenv("HELLO_MSG_BALTYK").split(",")
     goodbye_msg = os.getenv("GOODBYE_MSG_BALTYK").split(",")
+    map_call = os.getenv("MAP_CALL")
+    map_lat = os.getenv("MAP_LAT")
+    map_lon = os.getenv("MAP_LON")
+    map_info_baltyk = os.getenv("MAP_INFO_BALTYK")
 else:
     raise FileNotFoundError("No .env file present.")
 
@@ -82,6 +86,22 @@ sys.path.append("modules/")
 #####################
 
 # ---------------
+# activity_map
+# ---------------
+from activity_map import ActivityMap
+activitymap = ActivityMap(
+    service_url="http://wx.vhf.com.pl/map_requests?base=",
+    callsign=map_call,
+    latitude=map_lat,
+    longitude=map_lon,
+    hour_quarter=10,
+    above_sea_level=35,
+    above_ground_level=20,
+    station_range=25,
+    additional_info=map_info_baltyk,
+)
+
+# ---------------
 # baltyk_sq2ips
 # ---------------
 from baltyk_sq2ips import BaltykSq2ips
@@ -101,6 +121,9 @@ baltyksq2ips = BaltykSq2ips(
 )
 
 # WŁĄCZONE MODUŁY
-modules = [baltyksq2ips]
+modules = [
+    activitymap,
+    baltyksq2ips
+]
 offline_modules = []
 aux_modules = {}
