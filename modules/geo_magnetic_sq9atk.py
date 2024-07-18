@@ -102,15 +102,13 @@ class GeoMagneticSq9atk(SR0WXModule):
 
             self.__logger.info("::: Przetwarzam dane...\n")
             for d, day in daysValues.items():
-
                 if len(day) > 0:
-                    a = 1
-                    message += " _ "+self.__days[d-1] + " "
+                    message += " ".join([" _",self.__days[d-1],""])
                     condition = self.getStrongestConditionOfDay(day)
 
-                    message += self.__seasons[condition['at']] + " "
-                    message += self.__conditions[int(condition['value'])] + " "
-                    message += self.__fluctuations[self.getDailyFluctuation(day)] + " wahania_dobowe "
+                    message += " ".join([self.__seasons[condition['at']],""])
+                    message += " ".join([self.__conditions[int(condition['value'])],""])
+                    message += " ".join([self.__fluctuations[self.getDailyFluctuation(day)],"wahania_dobowe "])
 
             connection.send({
                 "message": message + "_",
