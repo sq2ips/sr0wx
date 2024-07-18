@@ -119,8 +119,8 @@ class MeteoAlertSq2ips(SR0WXModule):
                             "kod: "+kod+" stopień: " + stopien + " ważne do: "+wazne_do)
 
                         message += " ".join(["ostrzezenie_przed", self.codes[kod], ""])
-                        if stopien in self.stopnie:
-                            message += " ".join([self.stopnie[stopien], "stopnia "])
+                        #if stopien in self.stopnie:
+                        #    message += " ".join([self.stopnie[stopien], "stopnia "]) # ostrzerzenia hydro nie potrzebują stopni
                         message += " ".join([wazne_do_text, "_ "])
         return message
 
