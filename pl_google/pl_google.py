@@ -40,6 +40,23 @@ def ra(value):
         .replace(u("ż"), "z").replace(u("Ż"), "z")\
         .lower()
 
+def trim_pl(word):
+    word = word\
+        .lower()\
+        .replace(("ą"), "a_")\
+        .replace(("ć"), "c_")\
+        .replace(("ę"), "e_")\
+        .replace(("ł"), "l_")\
+        .replace(("ń"), "n_")\
+        .replace(("ó"), "o_")\
+        .replace(("ś"), "s_")\
+        .replace(("ź"), "z_")\
+        .replace(("ż"), "z_")\
+        .replace(":", "")\
+        .replace(",", "")\
+        .replace(".", " _ ")
+    return (word)
+
 
 def remove_accents(function):
     """unicodedata.normalize() doesn't work with ł and Ł"""
