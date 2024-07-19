@@ -54,7 +54,7 @@ def trim_pl(word):
         .replace(("ż"), "z_")\
         .replace(":", "")\
         .replace(",", "")\
-        .replace(".", " _ ")
+        .replace(" ", "_")
     return (word)
 
 

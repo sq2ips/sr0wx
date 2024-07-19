@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import logging
+from operator import itemgetter
 
 from colorcodes import *
 
@@ -19,7 +20,7 @@ class ImgwPodestSq2ips(SR0WXModule):
         self.__custom_rivers = custom_rivers
         self.__use_outdated = use_outdated
         self.__codes_all = ['below', 'low', 'medium', 'high', 'warning', 'alarm']
-        self.__codes = {'below': "przekroczenia_absolutnych_stanow_minimalnych", 'warning': "przekroczenia_stanow_ostrzegawczych", 'alarm': "przekroczenia_stanow_alarmowych"}
+        self.__codes = {'alarm': "przekroczenia_stanow_alarmowych", 'warning': "przekroczenia_stanow_ostrzegawczych", 'below': "przekroczenia_absolutnych_stanow_minimalnych"}
         self.__logger = logging.getLogger(__name__)
 
     def toDict(self, data):
@@ -75,17 +76,26 @@ class ImgwPodestSq2ips(SR0WXModule):
             if station["statusCode"] not in stations_grouped:
                 stations_grouped[station["statusCode"]] = []
             stations_grouped[station["statusCode"]] = stations_grouped[station["statusCode"]] + [station]
-        return stations_grouped
+        
+        stations_grouped_sorted = {}
+
+        for code in self.__codes:
+            print(stations_grouped[code])
+            stations_grouped_sorted[code] = sorted(stations_grouped[code], key = itemgetter("river"))
+
+        return stations_grouped_sorted
 
     def getText(self, station):
+        # odczytywanie danych jako tekstu z jedenego wodowskazu
         if station["isSeaStation"]:
             msg = " akwen "
         msg = " rzeka "
 
-        if station["river"].split()[0] in self.__custom_rivers:
-            msg += self.__custom_rivers[station["river"].split()[0]]
+        river = " ".join(station["river"].split()[:-1])
+        if river in self.__custom_rivers:
+            msg += self.__custom_rivers[river]
         else:
-            msg += self.__language.trim_pl(station["river"].split()[0])
+            msg += self.__language.trim_pl(river)
         
         msg += " wodowskaz "
         if station["name"] in self.__custom_names:
@@ -145,7 +155,7 @@ class ImgwPodestSq2ips(SR0WXModule):
                     "source": "hydro_imgw",
                 })
             else:
-                logger.warning(COLOR_WARNING + "Brak przekroczeń wybranych stanów wody" + COLOR_ENDC)
+                self.__logger.warning(COLOR_WARNING + "Brak przekroczeń wybranych stanów wody" + COLOR_ENDC)
                 connection.send({
                     "message": None,
                     "source": "",

@@ -151,8 +151,8 @@ from imgw_podest_sq2ips import ImgwPodestSq2ips
 imgwpodestsq2ips = ImgwPodestSq2ips(
     language=pl_google,
     service_url="https://hydro-back.imgw.pl/list/hydrologic",
-    wodowskazy=[],
-    zlewnie=[47],
+    wodowskazy=[], # id poszczegulnych wodowskazów
+    zlewnie=[184, 14, 292, 48, 183, 268, 174, 2149, 16], # id całej zlewni
     use_outdated=False,
     custom_names = {},
     custom_rivers = {"Morze Bałtyckie": "baltyk"}

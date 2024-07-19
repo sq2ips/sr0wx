@@ -1,7 +1,7 @@
 import requests
 import sys
 
-parameters = "Program szukający id zlewni i wodowskazów do modułu imgw_podest_sq2ips.py:\n\nParametry:\n-h wyświetlenie listy parametrów\n-z wyszukiwanie id zlewni na podstawie nazwy miasta\n-s wyszukiwanie id zlewni i wodowskazu na podstawie nazwy wodowskazu\n-r wyszukiwanie id zlewni i wodowskazów na podstawie nazwy rzeki/akwenu"
+parameters = "Program szukający id zlewni i wodowskazów do modułu imgw_podest_sq2ips.py:\n\nParametry:\n-h wyświetlenie listy parametrów\n-z wyszukiwanie id zlewni na podstawie nazwy miasta\n-s wyszukiwanie id zlewni i wodowskazu na podstawie nazwy wodowskazu\n-r wyszukiwanie id zlewni i wodowskazów na podstawie nazwy rzeki/akwenu\n-w wyszukiwanie id zlewni na podstawie id wodowskazu"
 
 if len(sys.argv) == 1 or sys.argv[1] == "-h":
     print(parameters)
@@ -34,5 +34,15 @@ elif sys.argv[1] == "-r":
     print("rzeka/akwen, wodowskaz: id zlewni, id wodowskazu\n")
 
     for s in data:
-        if sys.argv[2].lower() in s["r"].lower():
+        if sys.argv[2].lower() in s["river"].lower():
             print(f"{s["river"]}, {s["name"]}: {s["catchment"]}, {s["code"]}")
+elif sys.argv[1] == "-w":
+    url = "https://hydro-back.imgw.pl/list/hydrologic"
+    print("Wyszukiwanie id zlewni na podstawie id wodowskazu do modułu imgw_podest_sq2ips.py")
+    print("Pobieranie danych..")
+    data = requests.get(url).json()
+    print("rzeka/akwen, wodowskaz: id zlewni\n")
+
+    for s in data:
+        if sys.argv[2] == s["code"]:
+            print(f"{s["river"]}, {s["name"]}: {s["catchment"]}")
