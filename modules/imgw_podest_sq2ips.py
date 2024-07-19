@@ -55,19 +55,19 @@ class ImgwPodestSq2ips(SR0WXModule):
             station = stations[id]
             if "Outdated" in station["statusCode"]:
                 if not self.__use_outdated:
-                    self.__logger.warning(COLOR_WARNING + f"Zdezaktualizowany stan wody z wodowskazu {station["code"]}, kod {station["statusCode"]}, pomijanie..." + COLOR_ENDC)
+                    self.__logger.warning(COLOR_WARNING + f"Zdezaktualizowany stan wody z wodowskazu {station['code']}, kod {station['statusCode']}, pomijanie..." + COLOR_ENDC)
                     continue
                 else:
-                    self.__logger.warning(COLOR_WARNING + f"Zdezaktualizowany stan wody z wodowskazu {station["code"]}, kod {station["statusCode"]}, używanie mimo to..." + COLOR_ENDC)
+                    self.__logger.warning(COLOR_WARNING + f"Zdezaktualizowany stan wody z wodowskazu {station['code']}, kod {station['statusCode']}, używanie mimo to..." + COLOR_ENDC)
             elif station["statusCode"] in ['no-water-state-data', None]:
-                self.__logger.warning(COLOR_WARNING + f"Nieznany stan wody z wodowskazu {station["code"]}, kod {station["statusCode"]}" + COLOR_ENDC)
+                self.__logger.warning(COLOR_WARNING + f"Nieznany stan wody z wodowskazu {station['code']}, kod {station['statusCode']}" + COLOR_ENDC)
             elif station["statusCode"] == "unknown":
-                self.__logger.warning(COLOR_WARNING + f"Brak stanów charakterystycznych z wodowskazu {station["code"]}" + COLOR_ENDC)
+                self.__logger.warning(COLOR_WARNING + f"Brak stanów charakterystycznych z wodowskazu {station['code']}" + COLOR_ENDC)
             else:
                 if station["statusCode"] in self.__codes_all:
                     stations_checked.append(station)
                 else:
-                    self.__logger.warning(COLOR_WARNING + f"Nieprawidłowy kod, otrzymano {station["statusCode"]}" + COLOR_ENDC)
+                    self.__logger.warning(COLOR_WARNING + f"Nieprawidłowy kod, otrzymano {station['statusCode']}" + COLOR_ENDC)
         return stations_checked
 
     def groupStations(self, stations):
