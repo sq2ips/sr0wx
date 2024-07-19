@@ -80,8 +80,8 @@ class ImgwPodestSq2ips(SR0WXModule):
         stations_grouped_sorted = {}
 
         for code in self.__codes:
-            print(stations_grouped[code])
             stations_grouped_sorted[code] = sorted(stations_grouped[code], key = itemgetter("river"))
+            self.__logger.info(f"Kod: {code}, liczba wodowskazów: {len(stations_grouped_sorted[code])}")
 
         return stations_grouped_sorted
 
