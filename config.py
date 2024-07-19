@@ -145,6 +145,20 @@ meteosq9atk = MeteoSq9atk(
 )
 
 # ---------------
+# imgw_podest_sq2ips
+# ---------------
+from imgw_podest_sq2ips import ImgwPodestSq2ips
+imgwpodestsq2ips = ImgwPodestSq2ips(
+    language=pl_google,
+    service_url="https://hydro-back.imgw.pl/list/hydrologic",
+    wodowskazy=[], # id poszczegulnych wodowskazów
+    zlewnie=[184, 14, 292, 48, 183, 268, 174, 2149, 16], # id całej zlewni
+    use_outdated=False,
+    custom_names = {},
+    custom_rivers = {"Morze Bałtyckie": "baltyk"}
+)
+
+# ---------------
 # airly_sq9atk
 # ---------------
 # https://developer.airly.org/ pod tym adresem można uzyskac klucz API
@@ -372,6 +386,7 @@ modules_all = [
     meteoyrsq2ips,          # pogoda z yr
     openweathersq9atk,      # pogoda openweathermap
     meteosq9atk,            # pogoda alternatywa
+    imgwpodestsq2ips,        # wodowskazy z hydro.imgw.pl
     airpollutionsq9atk,     # zanieczyszczenia powietrza z GIOŚ
     airlysq9atk,            # zanieczyszczenia powietrza z Airly
     firessq2ips,            # informacja o stopniu zagrożenia pożarowego lasów
@@ -394,6 +409,7 @@ modules = [
     # meteoyrsq2ips,        # pogoda z yr
     openweathersq9atk,      # pogoda openweathermap
     # meteosq9atk,          # pogoda alternatywa
+    # imgwpodestsq2ips,     # wodowskazy z hydro.imgw.pl
     # airpollutionsq9atk,   # zanieczyszczenia powietrza z GIOŚ
     airlysq9atk,            # zanieczyszczenia powietrza z Airly
     # firessq2ips,          # informacja o stopniu zagrożenia pożarowego lasów

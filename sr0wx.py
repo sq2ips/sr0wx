@@ -138,10 +138,11 @@ message = " "
 config = None
 test_mode = False
 modules_text = None
+saveAudioOverwrite = False
 
 try:
     argv = sys.argv[1:]
-    opts, args = getopt.getopt(argv, "c:m:t")
+    opts, args = getopt.getopt(argv, "c:m:ts")
 except getopt.GetoptError:
     pass
 
@@ -154,6 +155,8 @@ for opt, arg in opts:
         modules_text = arg.split(",")
     elif opt == "-t":
         test_mode = True
+    elif opt == "-s":
+        saveAudioOverwrite = True
 
 if config is None:
     import config as config
@@ -171,6 +174,9 @@ if modules_text is not None:
     for m in config.modules_all:
         if inspect.getfile(m.__class__).split("/")[-1][:-3] in modules_text:
             modules.append(m)
+    if len(modules) == 0:
+        logger.error(COLOR_FAIL + "No functioning modules given in commandline, exiting..." + COLOR_ENDC)
+        exit(1)
 else:
     modules = config.modules
 
@@ -439,11 +445,11 @@ if not nopi:
 
 # Save the message to an audio file
 
-if config.saveAudio:
+if config.saveAudio or saveAudioOverwrite:
     try:
-        logger.info(f"Importing pydub...")
+        logger.info("Importing pydub...")
         from pydub import AudioSegment
-        logger.info(f"Creating samples list...")
+        logger.info("Creating samples list...")
         samples = []
         for el in message:
             if el == "_":
