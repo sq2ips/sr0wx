@@ -447,9 +447,9 @@ if not nopi:
 
 if config.saveAudio or saveAudioOverwrite:
     try:
-        logger.info(f"Importing pydub...")
+        logger.info("Importing pydub...")
         from pydub import AudioSegment
-        logger.info(f"Creating samples list...")
+        logger.info("Creating samples list...")
         samples = []
         for el in message:
             if el == "_":

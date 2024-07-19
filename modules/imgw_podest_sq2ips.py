@@ -137,6 +137,9 @@ class ImgwPodestSq2ips(SR0WXModule):
             stations_checked = self.checkStations(stations, stations_id)
             if len(stations_checked) == 0:
                 raise Exception("Brak funkcjonujących wodowskazów na liście")
+            self.__logger.info(f"Liczba wszystkich wodowskazów: {len(stations)}")
+            self.__logger.info(f"Liczba wybranych wodowskazów: {len(stations_id)}")
+            self.__logger.info(f"Liczba poprawnych wybranych wodowskazów: {len(stations_checked)}")
 
             self.__logger.info("::: Grupowanie danych z wodowskazów...")
             # grupowanie wodowskazów na podstawie kodów
