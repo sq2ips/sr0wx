@@ -6,6 +6,8 @@ Program ten jest wykorzystywany przez Koło Naukowe UMG o nazwie Morski Klub Ł�
 ## Działanie
 Program pobiera różne dane z internetu, np. stan pogody, prognozę pogody, ostrzeżenia imgw, poziom promieniowania i inne, konwertuje je na poszczególne słowa które są samplami audio a następnie odtwarza je. Do komputera podłączone jest radio, które odtwarza komunikat na paśmie amatorskim na częstotliwości 144.950 MHz.
 
+## Trwa pisanie [dokumentacji](../../wiki)
+
 ## Lista zmian
 - Dodanie modułu wyliczającego wschody i zachody słońca bez połączenia z internetem (calendar_sq2ips.py)
 - Dodanie modułu pobierającego poziom promieniowania ze strony PAA (radioactive_sq2ips.py)
@@ -89,6 +91,3 @@ Gdynia: 2262\
 Id trzeba ustawić w sekcji modułu meteoalert_sq2ips.py w pliku config.py w zmiennej city_id, jest to tablica aby można było ustawić więcej regionów na raz np. city_id = \["2262", "2202"].
 
 Wyszukiwanie id regionu ostrzeżeń hydrologicznych jest analogiczne, trzeba uruchomić skrypt `meteoalert_hydro_getid.py`. Id trzeba ustawić w zmiennej `hydronames`, jest to tablica aby możba było ustawić kilka regionów na raz.
-
-## TODO
-- Dokumentacja
