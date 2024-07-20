@@ -27,6 +27,7 @@ Program pobiera różne dane z internetu, np. stan pogody, prognozę pogody, ost
 - Dodanie trybu testowego, moduły są uruchamiane ale nie są odtwarzane sample
 - Zmiana biblioteki do pobierania danych z urllib na requests, wielokrotne próby pobierania przy błedzie pobierania
 - Dodanie opcji zapisu komunikatu do pliku tekstowego
+- Dodanie opcji modułów awaryjnych, gdy jakiś moduł nie działa na jego miejsce zostaje uruchomiony moduł awaryjny
 - Wiele zmian w głównym skrypcie sr0wx.py
 - Inicjalizacja pygame jako podmodułu
 - Dodanie katalogu cache
