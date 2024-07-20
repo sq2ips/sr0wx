@@ -91,6 +91,3 @@ Gdynia: 2262\
 Id trzeba ustawić w sekcji modułu meteoalert_sq2ips.py w pliku config.py w zmiennej city_id, jest to tablica aby można było ustawić więcej regionów na raz np. city_id = \["2262", "2202"].
 
 Wyszukiwanie id regionu ostrzeżeń hydrologicznych jest analogiczne, trzeba uruchomić skrypt `meteoalert_hydro_getid.py`. Id trzeba ustawić w zmiennej `hydronames`, jest to tablica aby możba było ustawić kilka regionów na raz.
-
-## TODO
-- Dokumentacja
