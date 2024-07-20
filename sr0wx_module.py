@@ -21,7 +21,7 @@ import warnings
 import requests
 from colorcodes import *
 
-class SR0WXModule(object):
+class SR0WXModule:
     """Base class for SR0WX modules."""
 
     def __init__(self):
@@ -34,8 +34,7 @@ class SR0WXModule(object):
         return self.get_data(None)
 
     def get_data(self, connection):
-        """Returns message to be played back by core of sr0wx.py. Not
-implemented here.
+        """Returns message to be played back by core of sr0wx.py. Not implemented here.
 
 Modules are expected to return a `dict` with the following keys:
     - `message` -- message text, filled template, etc (currently list of

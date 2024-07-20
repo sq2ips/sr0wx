@@ -391,10 +391,10 @@ modules_all = [
     airlysq9atk,            # zanieczyszczenia powietrza z Airly
     firessq2ips,            # informacja o stopniu zagrożenia pożarowego lasów
     spaceweathersq2ips,     # pogoda kosmiczna
+    geomagneticsq9atk,      # zaburzenia geomagnetyczne 
     propagationsq9atk,      # propagacja KF
     propagationsq2ips,      # propagacja KF z hamqsl.com
     vhftroposq9atk,         # propagacja tropo
-    geomagneticsq9atk,      # zaburzenia geomagnetyczne 
     radioactivesq9atk,      # promieniowanie jonizujące
     radioactivesq2ips,      # promieniowanie jonizujące z paa
     calendarsq9atk,         # wschód i zachód słońca
@@ -414,10 +414,10 @@ modules = [
     airlysq9atk,            # zanieczyszczenia powietrza z Airly
     # firessq2ips,          # informacja o stopniu zagrożenia pożarowego lasów
     spaceweathersq2ips,     # pogoda kosmiczna
+    # geomagneticsq9atk,    # zaburzenia geomagnetyczne 
     # propagationsq9atk,    # propagacja KF
     propagationsq2ips,      # propagacja KF z hamqsl.com
     vhftroposq9atk,         # propagacja tropo
-    # geomagneticsq9atk,    # zaburzenia geomagnetyczne 
     # radioactivesq9atk,    # promieniowanie jonizujące
     radioactivesq2ips,      # promieniowanie jonizujące z paa
     # calendarsq9atk,       # wschód i zachód słońca
