@@ -12,8 +12,8 @@ class CalendarSq2ips(SR0WXModule):
 
     def __init__(self, language, lat, lon, ele, pre, temp, hori):
         self.__language = language
-        self.__lat = lat
-        self.__lon = lon
+        self.__lat = str(lat)
+        self.__lon = str(lon)
         self.__ele = ele
         self.__pre = pre
         self.__temp = temp

@@ -222,8 +222,8 @@ class VhfTropoSq9atk(SR0WXModule):
         if mainConditionValue > 3:
             message = ' vhf_uwaga vhf_warunki_podwyzszone _ ' + message
         if mainConditionValue > 0.5:
-            message += ' vhf_najlepsze_warunki_w_kierunku '
-            message += " _ ".join(self.getTopDirectionsValues(directionalConditionsValues))
+            message += ' _ vhf_najlepsze_warunki_w_kierunku '
+            message += " ".join(self.getTopDirectionsValues(directionalConditionsValues))
 
         return message
 

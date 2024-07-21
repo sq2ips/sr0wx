@@ -125,8 +125,8 @@ from openweather_sq9atk import OpenWeatherSq9atk
 openweathersq9atk = OpenWeatherSq9atk(
     language=pl_google,
     api_key=openweather_key,
-    lat=54.5237904,
-    lon=18.5129878,
+    lat=54.523833,
+    lon=18.5135,
     service_url='http://api.openweathermap.org/data/2.5/',
     current = True,
     saytime = False,
@@ -169,8 +169,8 @@ airlysq9atk = AirlySq9atk(
     api_key=airly_key,
     service_url='https://airapi.airly.eu/v2/measurements',  # location
     mode='nearest',  # point|nearest|installationId
-    lat=54.519813,
-    lon=18.537679,
+    lat=54.523833,
+    lon=18.5135,
     maxDistanceKM=5,
     installationId=3476,  # Gdynia
 )
@@ -270,14 +270,14 @@ propagationsq2ips = PropagationSq2ips(
     radioNoise = True
 )
 # ---------------
-# vhf_propagation_sq9atk
+# vhf_tropo_sq9atk
 # ---------------
 from vhf_tropo_sq9atk import VhfTropoSq9atk
 vhftroposq9atk = VhfTropoSq9atk(
     language=pl_google,
     service_url="https://www.dxinfocentre.com/tropo_eur.html",
-    qthLon=18.537679,
-    qthLat=54.519813
+    qthLon=18.5135,
+    qthLat=54.523833
 )
 # ---------------
 # calendar_sq9atk
@@ -311,8 +311,8 @@ calendarsq9atk = CalendarSq9atk(
 from calendar_sq2ips import CalendarSq2ips
 calendarsq2ips = CalendarSq2ips(
     language=pl_google,
-    lat='54.52379',
-    lon='18.51298',
+    lat=54.523833,
+    lon=18.5135,
     ele=15,
     pre=1010,
     temp=20,
