@@ -199,7 +199,18 @@ class PLGoogle(SR0WXLanguage):
             _(u("milimetrów"))
         ]
         return read_number(value, units)
-        
+    
+    @remove_accents
+    def read_power(self, value, prefix):
+        units = [
+            _(u("wat")),
+            _(u("waty")),
+            _(u("watow"))
+        ]
+        for i, unit in enumerate(units):
+            units[i] = "_".join([prefix, unit])
+        return read_number(value, units)
+
 
     @remove_accents
     def read_degrees(self, value):
@@ -479,3 +490,4 @@ read_direction = pl.read_direction
 read_validity_hour = pl.read_validity_hour
 read_datetime = pl.read_datetime
 read_callsign = pl.read_callsign
+read_power = pl.read_power

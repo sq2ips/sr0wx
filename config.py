@@ -360,6 +360,9 @@ meteostationsq2ips = MeteoStationSq2ips(
     port=4210,
 )
 
+# ---------------
+# meteo_yr_sq2ips
+# ---------------
 from meteo_yr_sq2ips import MeteoYrSq2ips
 meteoyrsq2ips = MeteoYrSq2ips(
     language=pl_google,
@@ -367,6 +370,14 @@ meteoyrsq2ips = MeteoYrSq2ips(
     id="2-3099424", # Gdynia
     current=True,
     intervals=[6, 12]
+)
+# ---------------
+# kse_sq2ips
+# ---------------
+from kse_sq2ips import KseSq2ips
+ksesq2ips = KseSq2ips(
+    language=pl_google,
+    service_url="https://www.pse.pl/transmissionMapService"
 )
 
 # ---------------
@@ -386,10 +397,11 @@ modules_all = [
     meteoyrsq2ips,          # pogoda z yr
     openweathersq9atk,      # pogoda openweathermap
     meteosq9atk,            # pogoda alternatywa
-    imgwpodestsq2ips,        # wodowskazy z hydro.imgw.pl
+    imgwpodestsq2ips,       # wodowskazy z hydro.imgw.pl
     airpollutionsq9atk,     # zanieczyszczenia powietrza z GIOŚ
     airlysq9atk,            # zanieczyszczenia powietrza z Airly
     firessq2ips,            # informacja o stopniu zagrożenia pożarowego lasów
+    ksesq2ips        ,       # dane systemowe z pse.pl
     spaceweathersq2ips,     # pogoda kosmiczna
     geomagneticsq9atk,      # zaburzenia geomagnetyczne 
     propagationsq9atk,      # propagacja KF
@@ -413,6 +425,7 @@ modules = [
     # airpollutionsq9atk,   # zanieczyszczenia powietrza z GIOŚ
     airlysq9atk,            # zanieczyszczenia powietrza z Airly
     # firessq2ips,          # informacja o stopniu zagrożenia pożarowego lasów
+    # ksesq2ips,            # dane systemowe z pse.pl
     spaceweathersq2ips,     # pogoda kosmiczna
     # geomagneticsq9atk,    # zaburzenia geomagnetyczne 
     # propagationsq9atk,    # propagacja KF
