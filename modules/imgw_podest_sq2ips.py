@@ -11,7 +11,7 @@ from sr0wx_module import SR0WXModule
 class ImgwPodestSq2ips(SR0WXModule):
     """Klasa pobierająca informacje stanie wody"""
     
-    def __init__(self, language, service_url, wodowskazy, zlewnie, custom_names, custom_rivers, use_outdated):
+    def __init__(self, language, service_url, wodowskazy, zlewnie, custom_names, custom_rivers, use_outdated, read_level, read_diff_level):
         self.__language = language
         self.__service_url = service_url
         self.__wodowskazy = wodowskazy
@@ -19,8 +19,12 @@ class ImgwPodestSq2ips(SR0WXModule):
         self.__custom_names = custom_names
         self.__custom_rivers = custom_rivers
         self.__use_outdated = use_outdated
+        self.__read_level = read_level
+        self.__read_diff_level = read_diff_level
         self.__codes_all = ['below', 'low', 'medium', 'high', 'warning', 'alarm']
         self.__codes = {'alarm': "przekroczenia_stanow_alarmowych", 'warning': "przekroczenia_stanow_ostrzegawczych", 'below': "przekroczenia_absolutnych_stanow_minimalnych"}
+        self.__codes_diff = {"alarm":"diffToAlarm", "warning":"diffToWarn", "below": "diffToAbsoluteMin"}
+        self.__cm_units = ["centymetr", "centymetry", "centymetrow"]
         self.__logger = logging.getLogger(__name__)
 
     def toDict(self, data):
@@ -80,8 +84,9 @@ class ImgwPodestSq2ips(SR0WXModule):
         stations_grouped_sorted = {}
 
         for code in self.__codes:
-            stations_grouped_sorted[code] = sorted(stations_grouped[code], key = itemgetter("river"))
-            self.__logger.info(f"Kod: {code}, liczba wodowskazów: {len(stations_grouped_sorted[code])}")
+            if code in stations_grouped:
+                stations_grouped_sorted[code] = sorted(stations_grouped[code], key = itemgetter("river"))
+                self.__logger.info(f"Kod: {code}, liczba wodowskazów: {len(stations_grouped_sorted[code])}")
 
         return stations_grouped_sorted
 
@@ -103,6 +108,14 @@ class ImgwPodestSq2ips(SR0WXModule):
         else:
             msg += self.__language.trim_pl(station["name"])
         
+        if station["currentState"] is not None and self.__read_level:
+            msg += " poziom "
+            msg += self.__language.read_number(int(station["currentState"]["value"]), units=self.__cm_units)
+
+        if None not in [station[x] for x in self.__codes_diff.values()] and self.__read_diff_level:
+            msg += " przekroczenie_o "
+            msg += self.__language.read_number(abs(int(station[self.__codes_diff[station["statusCode"]]])), units=self.__cm_units)
+
         msg += " "
         
         if station["trend"] < 0:

@@ -152,8 +152,10 @@ imgwpodestsq2ips = ImgwPodestSq2ips(
     language=pl_google,
     service_url="https://hydro-back.imgw.pl/list/hydrologic",
     wodowskazy=[], # id poszczegulnych wodowskazów
-    zlewnie=[184, 14, 292, 48, 183, 268, 174, 2149, 16], # id całej zlewni
+    zlewnie=[47, 48], # id całej zlewni
     use_outdated=False,
+    read_level=False,
+    read_diff_level = True,
     custom_names = {},
     custom_rivers = {"Morze Bałtyckie": "baltyk"}
 )
@@ -371,6 +373,7 @@ meteoyrsq2ips = MeteoYrSq2ips(
     current=True,
     intervals=[6, 12]
 )
+
 # ---------------
 # kse_sq2ips
 # ---------------
