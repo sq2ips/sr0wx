@@ -157,7 +157,7 @@ imgwpodestsq2ips = ImgwPodestSq2ips(
     read_level=False,
     read_diff_level = True,
     custom_names = {},
-    custom_rivers = {"Morze Bałtyckie": "baltyk"}
+    custom_rivers = {}
 )
 
 # ---------------

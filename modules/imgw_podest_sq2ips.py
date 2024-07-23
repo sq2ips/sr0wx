@@ -90,13 +90,33 @@ class ImgwPodestSq2ips(SR0WXModule):
 
         return stations_grouped_sorted
 
+    def parseRiverName(self, name):
+        na = ["(", ")", "jez.", "morze"]
+        river = []
+        for r in name.lower().split():
+            dne = True
+            for n in na:
+                if n in r:
+                    dne = False
+                    break
+            if dne:
+                river.append(r)
+
+        river = "_".join(river)
+        return river
+
     def getText(self, station):
         # odczytywanie danych jako tekstu z jedenego wodowskazu
-        if station["isSeaStation"]:
-            msg = " akwen "
-        msg = " rzeka "
 
-        river = " ".join(station["river"].split()[:-1])
+        if station["isSeaStation"]:
+            msg = " morze "
+        elif "jez." in station["river"].lower():
+            msg = " jezioro "
+        else:
+            msg = " rzeka "
+
+        river = self.parseRiverName(station["river"])
+
         if river in self.__custom_rivers:
             msg += self.__custom_rivers[river]
         else:
@@ -104,9 +124,9 @@ class ImgwPodestSq2ips(SR0WXModule):
         
         msg += " wodowskaz "
         if station["name"] in self.__custom_names:
-            msg += self.__custom_names[station["name"]]
+            msg += self.__custom_names["".join(station["name"].lower().split())]
         else:
-            msg += self.__language.trim_pl(station["name"])
+            msg += self.__language.trim_pl("".join(station["name"].lower().split()))
         
         if station["currentState"] is not None and self.__read_level:
             msg += " poziom "
