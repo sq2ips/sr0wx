@@ -87,7 +87,7 @@ audioPath = "./sr0wx.wav"
 #hello_msg = ['_', 'test']
 #goodbye_msg = ['_', "beep2"]
 # informacja gdy nie ma internetu
-data_sources_error_msg = ['_', 'zrodlo_danych_niedostepne']
+data_sources_error_msg = ['_', 'internetowe_zrodlo_danych_niedostepne']
 # czytanie informacji o źródłach danych
 read_sources_msg = False
 

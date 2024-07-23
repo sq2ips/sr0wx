@@ -128,12 +128,13 @@ if __name__ == "__main__":
         slownik_list.append([slownik[slowo], slowo])
     for slowo in slownik_auto:
         slownik_list.append([slowo, TrimPl(slowo)])
-
+    notgenerated = [None]
     for i in range(3):
-        if i > 1:
-            print("Generowanie brakujących sampli...")
-        notgenerated, c = generate(slownik_list)
-        print(f"Wygenerowano {c}/{len(slownik_list)}")
+        if len(notgenerated) > 0:
+            if i > 1:
+                print("Generowanie brakujących sampli...")
+            notgenerated, c = generate(slownik_list)
+            print(f"Wygenerowano {c}/{len(slownik_list)}")
     
     print("usuwanie katalogu mp3/...")
     os.removedirs("mp3/")

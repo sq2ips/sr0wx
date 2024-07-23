@@ -175,7 +175,7 @@ if modules_text is not None:
         if inspect.getfile(m.__class__).split("/")[-1][:-3] in modules_text:
             modules.append(m)
     if len(modules) == 0:
-        logger.error(COLOR_FAIL + "No functioning modules given in commandline, exiting..." + COLOR_ENDC)
+        logger.error(COLOR_FAIL + "No valid modules given in commandline, exiting..." + COLOR_ENDC)
         exit(1)
 else:
     modules = config.modules
