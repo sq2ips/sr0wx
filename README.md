@@ -6,6 +6,8 @@ Program ten jest wykorzystywany przez Koło Naukowe UMG o nazwie Morski Klub Ł�
 ## Działanie
 Program pobiera różne dane z internetu, np. stan pogody, prognozę pogody, ostrzeżenia imgw, poziom promieniowania i inne, konwertuje je na poszczególne słowa które są samplami audio a następnie odtwarza je. Do komputera podłączone jest radio, które odtwarza komunikat na paśmie amatorskim na częstotliwości 144.950 MHz.
 
+Nagranie komunikatu stacji SR2WXG: https://github.com/user-attachments/assets/8082e14b-d6fa-4f6d-9ed3-4c9bdd58bf27
+
 ## Trwa pisanie [dokumentacji](../../wiki)
 
 ## Lista zmian
