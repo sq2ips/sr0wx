@@ -40,8 +40,8 @@ def ra(value):
         .replace(u("ż"), "z").replace(u("Ż"), "z")\
         .lower()
 
-def trim_pl(word):
-    word = word\
+def TrimPl(text):
+    text = text\
         .lower()\
         .replace(("ą"), "a_")\
         .replace(("ć"), "c_")\
@@ -54,8 +54,13 @@ def trim_pl(word):
         .replace(("ż"), "z_")\
         .replace(":", "")\
         .replace(",", "")\
-        .replace(" ", "_")
-    return (word)
+        .replace(".", " _ ")\
+        .replace(" - ", "_")
+    return text
+
+def trim_pl(word):
+    word = TrimPl(word).replace(" ", "_")
+    return word
 
 
 def remove_accents(function):

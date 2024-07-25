@@ -81,20 +81,9 @@ class BaltykSq2ips(SR0WXModule):
                 text = text.replace(i.lower(), fraza)
             except KeyError:
                 pass
+        
+        text = self.__language.TrimPl(text)
 
-        text = text\
-            .replace(("ą"), "a_")\
-            .replace(("ć"), "c_")\
-            .replace(("ę"), "e_")\
-            .replace(("ł"), "l_")\
-            .replace(("ń"), "n_")\
-            .replace(("ó"), "o_")\
-            .replace(("ś"), "s_")\
-            .replace(("ź"), "z_")\
-            .replace(("ż"), "z_")\
-            .replace(":", "")\
-            .replace(",", "")\
-            .replace(".", " _ ")
         return (text)
 
     def get_data(self, connection):

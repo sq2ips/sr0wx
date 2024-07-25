@@ -8,6 +8,10 @@ import glob
 import shutil
 import json
 
+sys.path.append('../')
+
+from pl_google import trim_pl
+
 gender = "female"
 lang = "pl"
 
@@ -43,23 +47,6 @@ def GetKey(apikey):
     key = query_elements['key'][0]
 
     return key
-
-def TrimPl(word):
-    word = word\
-        .lower()\
-        .replace(("ą"), "a_")\
-        .replace(("ć"), "c_")\
-        .replace(("ę"), "e_")\
-        .replace(("ł"), "l_")\
-        .replace(("ń"), "n_")\
-        .replace(("ó"), "o_")\
-        .replace(("ś"), "s_")\
-        .replace(("ź"), "z_")\
-        .replace(("ż"), "z_")\
-        .replace(":", "")\
-        .replace(",", "")\
-        .replace(" ", "_")
-    return (word)
 
 def GetMp3(word, filename, key):
     url = f'https://texttospeech.responsivevoice.org/v1/text:synthesize?lang={lang}&engine=g1&name=&pitch=0.5&rate=0.5&volume=1&key={key}&gender={gender}&text={quote_plus(word)}'
@@ -127,7 +114,7 @@ if __name__ == "__main__":
     for slowo in list(slownik.keys()):
         slownik_list.append([slownik[slowo], slowo])
     for slowo in slownik_auto:
-        slownik_list.append([slowo, TrimPl(slowo)])
+        slownik_list.append([slowo, trim_pl(slowo)])
     notgenerated = [None]
     for i in range(3):
         if len(notgenerated) > 0:
