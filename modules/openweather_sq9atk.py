@@ -107,22 +107,22 @@ class OpenWeatherSq9atk(SR0WXModule):
         msg = ' '
         if json['all'] > 0:
             msg += ' _ pokrywa_chmur ' + \
-                self.__language.read_percent(int(json['all']))
+                self.__language.read_percent(round(json['all']))
         return msg
 
     def getMainConditions(self, json):
         msg = ' _ '
         msg += ' temperatura ' + \
-            self.__language.read_temperature(int(json['temp']))
+            self.__language.read_temperature(round(json['temp']))
         msg += ' cisnienie ' + \
-            self.__language.read_pressure(int(json['pressure']))
+            self.__language.read_pressure(round(json['pressure']))
         msg += ' wilgotnosc ' + \
-            self.__language.read_percent(int(json['humidity']))
+            self.__language.read_percent(round(json['humidity']))
         return msg
 
     def getVisibility(self, json):
         msg = ' _ '
-        msg += ' widocznosc ' + self.__language.read_distance(int(json/1000))
+        msg += ' widocznosc ' + self.__language.read_distance(round(json/1000))
         return msg
 
     def getWind(self, json):
@@ -150,7 +150,7 @@ class OpenWeatherSq9atk(SR0WXModule):
             # msg += self.__language.read_degrees( int(json['deg']) )
         # msg += ' ' + self.__language.read_speed( int(json['speed']) )
         msg += ' ' + \
-            self.__language.read_speed(int(json['speed']/1000*3600), 'kmph')
+            self.__language.read_speed(round(json['speed']/1000*3600), 'kmph')
         return msg
 
     def get_data(self, connection):
