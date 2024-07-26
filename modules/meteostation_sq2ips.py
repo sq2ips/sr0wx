@@ -24,8 +24,7 @@ class MeteoStationSq2ips(SR0WXModule):
             try:
                 data = []
                 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # UDP
-
-                sock.settimeout(5)
+                sock.settimeout(30)
                 for i in self.__coms:
                     sock.sendto(i.encode("UTF-8"), (ip, port))
                     d = sock.recvfrom(1024)[0].decode("UTF-8")
@@ -120,69 +119,6 @@ class MeteoStationSq2ips(SR0WXModule):
         elif ang >= 292.5 and ang < 337.5:
             return "po_l_nocno zachodni"
 
-    def odm(self, f):
-        f = str(f)
-        d = {"1": "jeden",
-             "2": "dwoch",
-             "3": "trzech",
-             "4": "czterech",
-             "5": "pieciu",
-             "6": "szesciu",
-             "7": "siedmiu",
-             "8": "osmiu",
-             "9": "dziewieciu",
-             "10": "dziesieciu",
-             "11": "jedenastu",
-             "12": "dwunastu",
-             "13": "trzynastu",
-             "14": "czternastu",
-             "15": "pietnastu",
-             "16": "szesnastu",
-             "17": "siedemnastu",
-             "18": "osiemnastu",
-             "19": "dziewietnastu",
-             "20": "dwudziestu",
-             "30": "trzydziestu",
-             "40": "czterdziestu",
-             "50": "piecdziesieciu",
-             "60": "szejscdziesieciu",
-             "70": "siedemdziesieciu",
-             "80": "osiemdziesieciu",
-             "90": "dziewiecdziesieciu",
-             "100": "stu",
-             "200": "dwustu",
-             "300": "trzystu",
-             "400": "czterystu",
-             "500": "pieciuset",
-             "600": "szesciuset",
-             "700": "siedmiuset",
-             "800": "osmiuset",
-             "900": "dziewieciuset"}
-        if len(f) == 1:
-            if f == "1":
-                return ("jednego kilometra_na_godzine")
-            else:
-                return (d[f]+" kilometrow_na_godzine")
-        elif len(f) == 2:
-            if f[1] == "0" or f[0] == "1":
-                return (d[f]+" kilometrow_na_godzine")
-            else:
-                return (d[f[0]+"0"]+" "+d[f[1]]+" kilometrow_na_godzine")
-        elif len(f) == 3:
-            if f[1] == "0" and f[2] == "0":
-                return (d[f]+" kilometrow_na_godzine")
-            else:
-                if f[2] != "0":
-                    if f[1] == "0":
-                        return (d[f[0]+"00"]+" "+d[f[2]]+" kilometrow_na_godzine")
-                    else:
-                        return (d[f[0]+"00"]+" "+d[f[1]+"0"]+" "+d[f[2]]+" kilometrow_na_godzine")
-                else:
-                    if f[1] == "0":
-                        return (d[f[0]+"00"]+" kilometrow_na_godzine")
-                    else:
-                        return (d[f[0]+"00"]+" "+d[f[1]+"0"]+" kilometrow_na_godzine")
-
     def get_data(self, connection):
         try:
             data = self.compare()
@@ -204,7 +140,7 @@ class MeteoStationSq2ips(SR0WXModule):
                     message += f"wiatr zmienny {self.angleProcess(data[2])} "
                 if data[4]-data[3] > 2.0:
                     message += self.__language.read_speed(round(data[3]*3.6), 'kmph').split()[
-                        :-1][0]+" w_porywach do " + self.odm(round(data[4]*3.6)) + " "
+                        :-1][0]+" w_porywach do " + self.__language.read_gust(round(data[4]*3.6)) + " "
                 else:
                     message += self.__language.read_speed(
                         round(data[3]*3.6), 'kmph') + " "
