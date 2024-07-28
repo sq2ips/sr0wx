@@ -125,7 +125,7 @@ from openweather_sq9atk import OpenWeatherSq9atk
 openweathersq9atk = OpenWeatherSq9atk(
     language=pl_google,
     api_key=openweather_key,
-    lat=54.523833,
+    lat=54.5238,
     lon=18.5135,
     service_url='http://api.openweathermap.org/data/2.5/',
     current = True,
@@ -404,9 +404,9 @@ modules_all = [
     airpollutionsq9atk,     # zanieczyszczenia powietrza z GIOŚ
     airlysq9atk,            # zanieczyszczenia powietrza z Airly
     firessq2ips,            # informacja o stopniu zagrożenia pożarowego lasów
-    ksesq2ips        ,       # dane systemowe z pse.pl
+    ksesq2ips,              # dane systemowe z pse.pl
     spaceweathersq2ips,     # pogoda kosmiczna
-    geomagneticsq9atk,      # zaburzenia geomagnetyczne 
+    geomagneticsq9atk,      # zaburzenia geomagnetyczne
     propagationsq9atk,      # propagacja KF
     propagationsq2ips,      # propagacja KF z hamqsl.com
     vhftroposq9atk,         # propagacja tropo
