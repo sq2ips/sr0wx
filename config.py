@@ -334,7 +334,12 @@ meteoalertsq2ips = MeteoAlertSq2ips(
     hydronames=["W_G_6_PM", "Z_G_22_PM"],  # Gdynia i bałtyk
     short_validity=True,
 )
-
+from antistorm_sq2ips import AntistormSq2ips
+antistormsq2ips = AntistormSq2ips(
+    language=pl_google,
+    service_url="http://antistorm.eu/webservice.php",
+    city_id=73 # Gdynia
+)
 # ---------------
 # spaceweather_sq2ips
 # ---------------
@@ -396,6 +401,7 @@ modules_all = [
     activitymap,            # marker na mapie wx.ostol.pl
     timesq2ips,             # godzina
     meteoalertsq2ips,       # ostrzeżenia meteorologiczne imgw
+    antistormsq2ips,        # radar pogodowy
     meteostationsq2ips,     # dane ze stacji meteo
     meteoyrsq2ips,          # pogoda z yr
     openweathersq9atk,      # pogoda openweathermap
@@ -404,7 +410,7 @@ modules_all = [
     airpollutionsq9atk,     # zanieczyszczenia powietrza z GIOŚ
     airlysq9atk,            # zanieczyszczenia powietrza z Airly
     firessq2ips,            # informacja o stopniu zagrożenia pożarowego lasów
-    ksesq2ips        ,       # dane systemowe z pse.pl
+    ksesq2ips,              # dane systemowe z pse.pl
     spaceweathersq2ips,     # pogoda kosmiczna
     geomagneticsq9atk,      # zaburzenia geomagnetyczne 
     propagationsq9atk,      # propagacja KF
@@ -420,6 +426,7 @@ modules = [
     activitymap,            # marker na mapie wx.ostol.pl
     timesq2ips,             # godzina
     meteoalertsq2ips,       # ostrzeżenia meteorologiczne imgw
+    # antistormsq2ips,      # radar pogodowy
     # meteostationsq2ips,   # dane ze stacji meteo
     # meteoyrsq2ips,        # pogoda z yr
     openweathersq9atk,      # pogoda openweathermap
