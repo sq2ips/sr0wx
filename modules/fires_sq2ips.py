@@ -13,9 +13,8 @@ class FiresSq2ips(SR0WXModule):
         self.__zone = zone
         self.__logger = logging.getLogger(__name__)
         self.__codes = {"0": "brak_zagroz_enia", "1": "mal_e_zagroz_enie", "2": "s_rednie_zagroz_enie", "3": "duz_e_zagroz_enie"}
+
     def parseTable(self, table):
-
-
         rows = []
         for i, row in enumerate(table.find_all('tr')):
             if i > 0:
@@ -27,6 +26,7 @@ class FiresSq2ips(SR0WXModule):
         for row in rows:
             if len(row) > 1 and self.__zone in row[0]:
                 return(row[1:])
+
     def parseLabel(self, label, l):
         rows = []
         for i, row in enumerate(label.find_all('tr')):
@@ -35,6 +35,7 @@ class FiresSq2ips(SR0WXModule):
                 els.append(el.text)
             rows.append(els)
         return(rows[-1][-l:])
+
     def processDate(self, text):
         date = datetime.strptime(text[-15:], "%Y-%m-%d%H:%M")
         if date.date() == datetime.now().date():
@@ -47,7 +48,6 @@ class FiresSq2ips(SR0WXModule):
             raise Exception("Invalid date")
 
     def processData(self, row):
-
         if row == "brak danych":
             return None
             self.__logger.warning(COLOR_WARNING + "Brak danych z obszaru" + COLOR_ENDC)
@@ -100,8 +100,26 @@ class FiresSq2ips(SR0WXModule):
                                 dictmsg[date] = warn
 
                     message = "zagroz_enie_poz_arowe_laso_w _ "
-                    for msg in dictmsg:
-                        message += " ".join([msg, self.__codes[dictmsg[msg]], "_ "])
+                    sk = 0
+                    for i in range(len(dictmsg)):
+                        if sk>0:
+                            sk-=0
+                            continue
+
+                        ind = []
+                        for j in range(i, len(dictmsg)):
+                            if list(dictmsg.values())[i] == list(dictmsg.values())[j]:
+                                ind.append(j)
+
+                        sk = len(ind)-1
+                        msglist = []
+
+                        for i in ind:
+                            msglist.append(list(dictmsg.keys())[i])
+
+                        msglist.insert(len(msglist)-1, "i")
+
+                        message += " ".join(msglist + [self.__codes[list(dictmsg.values())[i]], "_ "])
 
                     connection.send({
                         "message": message,

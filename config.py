@@ -251,7 +251,7 @@ from fires_sq2ips import FiresSq2ips
 firessq2ips = FiresSq2ips(
     language=pl_google,
     service_url="https://www.traxelektronik.pl/pogoda/las/zbiorcza.php",
-    zone="15_B", # tutaj należy znaleźć strefę https://www.traxelektronik.pl/pogoda/las/ zaznaczając granice i numery stref oraz zagrożenie pożarowe
+    zone="15_A", # tutaj należy znaleźć strefę https://www.traxelektronik.pl/pogoda/las/ zaznaczając granice i numery stref oraz zagrożenie pożarowe
 )
 
 # ---------------
