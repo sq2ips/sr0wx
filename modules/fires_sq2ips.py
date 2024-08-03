@@ -126,7 +126,7 @@ class FiresSq2ips(SR0WXModule):
 
                     connection.send({
                         "message": message,
-                        "source": "swpc",
+                        "source": "traxelektronik",
                     })
         except Exception as e:
             self.__logger.exception(
