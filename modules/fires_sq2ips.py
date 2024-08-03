@@ -1,5 +1,4 @@
 import logging
-from colorcodes import *
 from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
 
@@ -50,11 +49,11 @@ class FiresSq2ips(SR0WXModule):
     def processData(self, row):
         if row == "brak danych":
             return None
-            self.__logger.warning(COLOR_WARNING + "Brak danych z obszaru" + COLOR_ENDC)
+            self.__logger.warning( "Brak danych z obszaru")
         elif " - " in row and len(row.split()) == 3:
             return(row.split()[0])
         else:
-            self.__logger.warning(COLOR_WARNING + "Nieprawidłowe dane" + COLOR_ENDC)
+            self.__logger.warning( "Nieprawidłowe dane")
             return None
     
     def get_data(self, connection):
@@ -68,7 +67,7 @@ class FiresSq2ips(SR0WXModule):
             table = soup.find_all('table')[0]
             warnings_raw = self.parseTable(table)
             if warnings_raw is None:
-                self.__logger.error(COLOR_FAIL + "Brak danych ze źródła" + COLOR_ENDC)
+                self.__logger.error("Brak danych ze źródła")
                 connection.send({
                     "message": None,
                     "source": "",
@@ -79,7 +78,7 @@ class FiresSq2ips(SR0WXModule):
                     warnings.append(self.processData(c))
                 
                 if set(warnings) == {None}:
-                    self.__logger.error(COLOR_FAIL + "Brak żadnych danych z czujników" + COLOR_ENDC)
+                    self.__logger.error("Brak żadnych danych z czujników")
                     connection.send({
                         "message": None,
                         "source": "",
@@ -129,6 +128,5 @@ class FiresSq2ips(SR0WXModule):
                         "source": "traxelektronik",
                     })
         except Exception as e:
-            self.__logger.exception(
-                COLOR_FAIL + "Exception when running %s: %s" + COLOR_ENDC, str(self), e)
+            self.__logger.exception(f"Exception when running {self}: {e}")
             connection.send(dict())

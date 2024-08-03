@@ -1,10 +1,5 @@
-#!/usr/bin/python -tt
-# -*- coding: utf-8 -*-
-
 import logging
 from operator import itemgetter
-
-from colorcodes import *
 
 from sr0wx_module import SR0WXModule
 
@@ -41,16 +36,16 @@ class ImgwPodestSq2ips(SR0WXModule):
                 if int(stations[id]["catchment"]) in self.__zlewnie:
                     stations_id.append(id)
         if len(stations_id) == 0:
-            self.__logger.warning(COLOR_WARNING + f"Brak wodowskazów w zlewni {self.__zlewnia}" + COLOR_ENDC)
+            self.__logger.warning(f"Brak wodowskazów w zlewni {self.__zlewnia}")
         # wodowskazy z id
         for w in self.__wodowskazy:
             if w in stations:
                 if w in stations_id:
-                    self.__logger.warning(COLOR_WARNING + f"Wodowskaz o id {w} już na liście" + COLOR_ENDC)
+                    self.__logger.warning(f"Wodowskaz o id {w} już na liście")
                 else:
                     stations_id.append(w)
             else:
-                self.__logger.warning(COLOR_WARNING + f"wodowskaz o kodzie {w} nie istnieje" + COLOR_ENDC)
+                self.__logger.warning(f"wodowskaz o kodzie {w} nie istnieje")
         return stations_id
     
     def checkStations(self, stations, stations_id):
@@ -59,19 +54,19 @@ class ImgwPodestSq2ips(SR0WXModule):
             station = stations[id]
             if "Outdated" in station["statusCode"]:
                 if not self.__use_outdated:
-                    self.__logger.warning(COLOR_WARNING + f"Zdezaktualizowany stan wody z wodowskazu {station['code']}, kod {station['statusCode']}, pomijanie..." + COLOR_ENDC)
+                    self.__logger.warning(f"Zdezaktualizowany stan wody z wodowskazu {station['code']}, kod {station['statusCode']}, pomijanie...")
                     continue
                 else:
-                    self.__logger.warning(COLOR_WARNING + f"Zdezaktualizowany stan wody z wodowskazu {station['code']}, kod {station['statusCode']}, używanie mimo to..." + COLOR_ENDC)
+                    self.__logger.warning(f"Zdezaktualizowany stan wody z wodowskazu {station['code']}, kod {station['statusCode']}, używanie mimo to...")
             elif station["statusCode"] in ['no-water-state-data', None]:
-                self.__logger.warning(COLOR_WARNING + f"Nieznany stan wody z wodowskazu {station['code']}, kod {station['statusCode']}" + COLOR_ENDC)
+                self.__logger.warning(f"Nieznany stan wody z wodowskazu {station['code']}, kod {station['statusCode']}")
             elif station["statusCode"] == "unknown":
-                self.__logger.warning(COLOR_WARNING + f"Brak stanów charakterystycznych z wodowskazu {station['code']}" + COLOR_ENDC)
+                self.__logger.warning(f"Brak stanów charakterystycznych z wodowskazu {station['code']}")
             else:
                 if station["statusCode"] in self.__codes_all:
                     stations_checked.append(station)
                 else:
-                    self.__logger.warning(COLOR_WARNING + f"Nieprawidłowy kod, otrzymano {station['statusCode']}" + COLOR_ENDC)
+                    self.__logger.warning(f"Nieprawidłowy kod, otrzymano {station['statusCode']}")
         return stations_checked
 
     def groupStations(self, stations):
@@ -191,12 +186,11 @@ class ImgwPodestSq2ips(SR0WXModule):
                     "source": "hydro_imgw",
                 })
             else:
-                self.__logger.warning(COLOR_WARNING + "Brak przekroczeń wybranych stanów wody" + COLOR_ENDC)
+                self.__logger.warning("Brak przekroczeń wybranych stanów wody")
                 connection.send({
                     "message": None,
                     "source": "",
                 })
         except Exception as e:
-            self.__logger.exception(
-                COLOR_FAIL + "Exception when running %s: %s" + COLOR_ENDC, str(self), e)
+            self.__logger.exception(f"Exception when running {self}: {e}")
             connection.send(dict())

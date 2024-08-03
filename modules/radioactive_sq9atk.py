@@ -1,9 +1,4 @@
-#!/usr/bin/python -tt
-# -*- coding: utf-8 -*-
-
 import logging
-
-from colorcodes import *
 
 from sr0wx_module import SR0WXModule
 
@@ -67,7 +62,7 @@ class RadioactiveSq9atk(SR0WXModule):
             self.__logger.info("::: Pobieram dane...")
             html = self.downloadFile(self.__service_url)
 
-            self.__logger.info("::: Przetwarzam dane...\n")
+            self.__logger.info("::: Przetwarzam dane...")
             data = self.getSensorData(html)
 
             msvCurrent = int(float(data['current'])*100)
@@ -86,6 +81,5 @@ class RadioactiveSq9atk(SR0WXModule):
                 "source": "radioactiveathome_org",
             })
         except Exception as e:
-            self.__logger.exception(
-                COLOR_FAIL + "Exception when running %s: %s" + COLOR_ENDC, str(self), e)
+            self.__logger.exception(f"Exception when running {self}: {e}")
             connection.send(dict())

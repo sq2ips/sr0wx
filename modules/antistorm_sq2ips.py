@@ -1,5 +1,4 @@
 import logging
-from colorcodes import *
 import requests
 
 from sr0wx_module import SR0WXModule
@@ -39,8 +38,11 @@ class AntistormSq2ips(SR0WXModule):
 
     def get_data(self, connection):
         try:
+            self.__logger.info("::: Pobieranie danych radaru pogodowego...")
             url = "".join([self.__service_url, "?id=", self.__city_id])
             data = self.requestData(url, self.__logger, 15, 3)
+
+            self.__logger.info("::: Przetwarzanie danych...")
             data = self.checkData(data)
 
             data_dict = self.parseData(data)
@@ -57,6 +59,5 @@ class AntistormSq2ips(SR0WXModule):
                 "source": "antistorm_eu",
             })
         except Exception as e:
-            self.__logger.exception(
-                COLOR_FAIL + "Exception when running %s: %s" + COLOR_ENDC, str(self), e)
+            self.__logger.exception(f"Exception when running {self}: {e}")
             connection.send(dict())

@@ -1,12 +1,4 @@
-#!/usr/bin/python -tt
-# -*- coding: utf-8 -*-
-
-
 import logging
-
-from colorcodes import *
-
-from pprint import pprint
 
 # LISTA STACJI Z NUMERAMI
 # http://api.gios.gov.pl/pjp-api/rest/station/findAll
@@ -104,7 +96,7 @@ class AirPollutionSq9atk(SR0WXModule):
         try:
             self.__logger.info("::: Pobieram informacje o skażeniu powietrza...")
             sensorsData = self.getSensorsData()
-            self.__logger.info("::: Przetwarzam dane...\n")
+            self.__logger.info("::: Przetwarzam dane...")
             valuesMessage = self.prepareMessage(sensorsData)
 
             message = " "
@@ -117,8 +109,7 @@ class AirPollutionSq9atk(SR0WXModule):
                 "source": "gios",
             })
         except Exception as e:
-            self.__logger.exception(
-                COLOR_FAIL + "Exception when running %s: %s" + COLOR_ENDC, str(self), e)
+            self.__logger.exception(f"Exception when running {self}: {e}")
             connection.send(dict())
 
     def mbstr2asci(self, string):

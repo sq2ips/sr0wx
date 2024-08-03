@@ -162,7 +162,7 @@ elif modules_text is not None:
         if inspect.getfile(m.__class__).split("/")[-1][:-3] in modules_text:
             modules.append(m)
     if len(modules) == 0:
-        logger.error(COLOR_FAIL + "No valid modules given in commandline, exiting..." + COLOR_ENDC)
+        logger.error("No valid modules given in commandline, exiting...")
         exit(1)
 else:
     modules = config.modules
@@ -177,7 +177,7 @@ except requests.ConnectionError:
     modules = config.offline_modules
     message += " ".join(config.data_sources_error_msg)
 else:
-    logger.info("Connection OK")
+    logger.info(COLOR_OKGREEN + "Connection OK" + COLOR_ENDC)
 
 logger.info("Checking cache...")
 if os.path.exists("cache/"):
@@ -190,7 +190,6 @@ else:
     logger.info("Cache dir does not exists, creating...")
     os.mkdir("cache/")
 
-logger.info("Loading lang module...")
 lang = config.lang
 config.pl_google=lang
 sources = [lang.source, ]
@@ -271,8 +270,7 @@ logger.info(COLOR_BOLD + "modules (" + COLOR_ENDC + COLOR_OKGREEN + "functioning
             COLOR_ENDC + COLOR_FAIL + "not functioning" + COLOR_ENDC + COLOR_BOLD + "):\n" + COLOR_ENDC + func_modules)
 
 if not any_func_modules:
-    logger.critical(
-        COLOR_FAIL + "ERROR: No functioning modules, exiting..." + COLOR_ENDC)
+    logger.critical("ERROR: No functioning modules, exiting...")
     exit(1)
 # When all the modules finished its' work it's time to ``.split()`` returned
 # data. Every element of returned list is actually a filename of a sample.
@@ -287,7 +285,7 @@ else:
 message += config.goodbye_msg
 
 if test_mode:
-    logger.info(COLOR_WARNING + "Test mode active, exiting..." + COLOR_ENDC)
+    logger.warning("Test mode active, exiting...")
     exit(0)
 
 # It's time to init ``pygame``'s mixer (and ``pygame``). Possibly defined
@@ -349,9 +347,9 @@ if config.rpi_pin is not None:
         logger.info(COLOR_OKGREEN + f"GPIO PTT: ON, PIN: {config.rpi_pin}" + COLOR_ENDC)
         nopi = False
     except ImportError:
-        logger.warning(COLOR_WARNING + "No Raspberry Pi GPIO module found, skipping..." + COLOR_ENDC)
+        logger.warning("No Raspberry Pi GPIO module found, skipping...")
     except Exception as e:
-        logger.error(COLOR_FAIL + f"Unable to turn GPIO ptt on, got error: {e}, skipping...")
+        logger.error(f"Unable to turn GPIO ptt on, got error: {e}, skipping...")
 
 
 # Program should be able to "press PTT" via RSS232. See ``config`` for
@@ -371,7 +369,7 @@ if config.serial_port is not None:
             ser.setDTR(0)
             ser.setRTS(1)
     except Exception as e:
-        logger.error(COLOR_FAIL + f"Failed to open serial port {config.serial_port}@{config.serial_baud_rate}: {e}" + COLOR_ENDC)
+        logger.error(f"Failed to open serial port {config.serial_port}@{config.serial_baud_rate}: {e}")
 
 
 pygame.time.delay(500)
@@ -424,7 +422,7 @@ try:
         logger.info(COLOR_OKGREEN + "RTS/PTT set to OFF" + COLOR_ENDC)
 except NameError:
     # sudo gpasswd --add ${USER} dialout
-    logger.exception(COLOR_FAIL + "Couldn't close serial port" + COLOR_ENDC)
+    logger.exception("Couldn't close serial port")
 
 if not nopi:
     GPIO.output(config.rpi_pin, GPIO.LOW)
@@ -461,7 +459,7 @@ if config.saveAudio or saveAudioOverwrite:
         if os.path.exists(config.audioPath):
             logger.info(COLOR_OKGREEN + "Succesfully saved." + COLOR_ENDC)
         else:
-            logger.error(COLOR_FAIL + "Saving ended but file is not present." + COLOR_ENDC)
+            logger.error("Saving ended but file is not present.")
     except Exception as e:
         logger.error(f"Couldn't save message, got error {e}")
 

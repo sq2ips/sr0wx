@@ -1,10 +1,5 @@
-#!/usr/bin/python -tt
-# -*- coding: utf-8 -*-
-
 import logging
 from datetime import datetime
-
-from colorcodes import *
 
 from sr0wx_module import SR0WXModule
 
@@ -173,7 +168,7 @@ class OpenWeatherSq9atk(SR0WXModule):
             #    self.downloadFile(forecast_service_url))
             forecastJsonAll = self.downloadFile(forecast_service_url)
 
-            self.__logger.info("::: Przetwarzam dane prognozy pogody...\n")
+            self.__logger.info("::: Przetwarzam dane prognozy pogody...")
             message = self.__start_message
             if self.__current:
                 if self.__saytime:
@@ -212,6 +207,5 @@ class OpenWeatherSq9atk(SR0WXModule):
                 "source": "open_weather_map",
             })
         except Exception as e:
-            self.__logger.exception(
-                COLOR_FAIL + "Exception when running %s: %s" + COLOR_ENDC, str(self), e)
+            self.__logger.exception(f"Exception when running {self}: {e}")
             connection.send(dict())

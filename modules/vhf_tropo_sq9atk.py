@@ -1,13 +1,8 @@
-#!/usr/bin/python -tt
-# -*- coding: utf-8 -*-
 
 import re
 import logging
 
 from PIL import Image
-from pprint import pprint
-
-from colorcodes import *
 
 from sr0wx_module import SR0WXModule
 
@@ -32,10 +27,6 @@ class VhfTropoSq9atk(SR0WXModule):
         self.__mapLatStart = float(56)
         self.__mapLatEnd = float(27)
 
-    def getHtmlFromUrl(self, url):
-        data = self.requestData(url, self.__logger, 10, 3)
-        return data.text
-
     def findMapUrlInHtml(self, html, target_id):
         pattern = r'<img\s+(?:[^>]*\s+)?id="' + \
             re.escape(target_id) + r'"(?:[^>]*)\s+src="([^"]+)"'
@@ -47,7 +38,6 @@ class VhfTropoSq9atk(SR0WXModule):
             return None
 
     def downloadMapFile(self, mapUrl, targetFileName):
-        self.__logger.info("::: Pobieram mapę...")
         response = self.requestData(mapUrl, self.__logger, 20, 3)
 
         with open(targetFileName, "wb") as mapFile:
@@ -229,9 +219,12 @@ class VhfTropoSq9atk(SR0WXModule):
 
     def get_data(self, connection):
         try:
-            html = self.getHtmlFromUrl(self.__service_url)
+            self.__logger.info("::: Pobieranie kodu html...")
+            html = self.requestData(self.__service_url, self.__logger, 10, 3).text
+            self.__logger.info("::: Wyszukiwanie obrazu mapy...")
             mapUrl = self.findMapUrlInHtml(html, "imgClickAndChange")
 
+            self.__logger.info("::: Pobieranie obrazu mapy...")
             self.downloadMapFile(mapUrl, 'cache/vhf_map.png')
 
             mapImg = self.readMapImageFile('cache/vhf_map.png')
@@ -241,9 +234,12 @@ class VhfTropoSq9atk(SR0WXModule):
             x, y = self.lonLatToMapXY(
                 self.__qthLon, self.__qthLat, mapWidth, mapHeight)
 
+            self.__logger.info("::: Przetwarzanie warunków lokalizacji...")
             mainConditionValue = self.getLocationCondition(mapImg, x, y)
+            self.__logger.info("::: Przetwarzanie warunków kierunkowych...")
             directionalConditionsValues = self.getDirectionalConditions(
                 mapImg, x, y)
+            self.__logger.info("::: Przygotowywanie komunikatu...")
 
             message = " ".join([
                 " _ vhf_propagacja_w_pasmie_vhf _ ",
@@ -257,6 +253,5 @@ class VhfTropoSq9atk(SR0WXModule):
                 "source": "vhf_dx_info_center",
             })
         except Exception as e:
-            self.__logger.exception(
-                COLOR_FAIL + "Exception when running %s: %s" + COLOR_ENDC, str(self), e)
+            self.__logger.exception(f"Exception when running {self}: {e}")
             connection.send(dict())

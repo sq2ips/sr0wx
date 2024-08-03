@@ -1,11 +1,6 @@
-#!/usr/bin/python -tt
-# -*- coding: utf-8 -*-
-
 import logging
 import re
 import time
-
-from colorcodes import *
 
 from sr0wx_module import SR0WXModule
 
@@ -100,7 +95,7 @@ class GeoMagneticSq9atk(SR0WXModule):
             daysValues = self.groupValuesByDays(values)
             message = ' _ sytuacja_geomagnetyczna_w_regionie '
 
-            self.__logger.info("::: Przetwarzam dane...\n")
+            self.__logger.info("::: Przetwarzam dane...")
             for d, day in daysValues.items():
                 if len(day) > 0:
                     message += " ".join([" _",self.__days[d-1],""])
@@ -115,6 +110,5 @@ class GeoMagneticSq9atk(SR0WXModule):
                 "source": "gis_meteo",
             })
         except Exception as e:
-            self.__logger.exception(
-                COLOR_FAIL + "Exception when running %s: %s" + COLOR_ENDC, str(self), e)
+            self.__logger.exception(f"Exception when running {self}: {e}")
             connection.send(dict())

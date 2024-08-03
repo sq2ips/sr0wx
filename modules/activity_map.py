@@ -1,5 +1,3 @@
-#!/usr/env/python -tt
-
 #
 #   Copyright 2009-2014 Michal Sadowski (sq6jnx at hamradio dot pl)
 #
@@ -19,8 +17,6 @@
 import base64
 import logging
 import json
-
-from colorcodes import *
 
 import requests
 
@@ -91,7 +87,7 @@ Parameters:
                     break
                 except Exception as e:
                     if i < 3:
-                        self.__logger.warning(COLOR_WARNING + f"Exception sending data:\n{e}\ntrying again..." + COLOR_ENDC)
+                        self.__logger.warning(f"Exception sending data:\n{e}\ntrying again...")
                     else:
                         raise e
             self.__logger.info("::: Dane wysłano, status OK\n")
@@ -100,6 +96,5 @@ Parameters:
                 "message": None,
                 "source": ""})
         except Exception as e:
-            self.__logger.exception(
-                COLOR_FAIL + "Exception when running %s: %s" + COLOR_ENDC, str(self), e)
+            self.__logger.exception(f"Exception when running {self}: {e}")
             connection.send(dict())

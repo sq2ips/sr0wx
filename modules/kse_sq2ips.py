@@ -1,13 +1,9 @@
-#!/usr/bin/python -tt
-# -*- coding: utf-8 -*-
-
 import logging
-
-from colorcodes import *
 
 from sr0wx_module import SR0WXModule
 
 class KseSq2ips(SR0WXModule):
+    """moduł pobierający dane o stanie sieci energetycznej"""
     def __init__(self, language, service_url):
         self.__language = language
         self.__service_url = service_url
@@ -15,7 +11,7 @@ class KseSq2ips(SR0WXModule):
 
     def get_data(self, connection):
         try:
-            self.__logger.info("::: Pobieranie danych stanu sieci energetycznych...")
+            self.__logger.info("::: Pobieranie danych stanu sieci energetycznej...")
             data = self.requestData(self.__service_url, self.__logger, 15, 3).json()["data"]
 
             self.__logger.info("::: Przetwarazznie dancyh...")
@@ -35,6 +31,5 @@ class KseSq2ips(SR0WXModule):
                 "source": "pse",
             })
         except Exception as e:
-            self.__logger.exception(
-                COLOR_FAIL + "Exception when running %s: %s" + COLOR_ENDC, str(self), e)
+            self.__logger.exception(f"Exception when running {self}: {e}")
             connection.send(dict())

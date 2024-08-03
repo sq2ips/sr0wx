@@ -1,9 +1,4 @@
-#!/usr/bin/python -tt
-# -*- coding: utf-8 -*-
-
 import logging
-
-from colorcodes import *
 
 from sr0wx_module import SR0WXModule
 
@@ -183,6 +178,5 @@ class MeteoYrSq2ips(SR0WXModule):
                 "source": "yr",
             })
         except Exception as e:
-            self.__logger.exception(
-                COLOR_FAIL + "Exception when running %s: %s" + COLOR_ENDC, str(self), e)
+            self.__logger.exception(f"Exception when running {self}: {e}")
             connection.send(dict())

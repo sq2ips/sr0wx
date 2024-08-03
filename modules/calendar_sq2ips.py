@@ -2,8 +2,6 @@ import ephem
 import datetime
 import logging
 
-from colorcodes import *
-
 from sr0wx_module import SR0WXModule
 
 
@@ -27,7 +25,7 @@ class CalendarSq2ips(SR0WXModule):
 
     def get_data(self, connection):
         try:
-            self.__logger.info("::: Przeliczam dane...\n")
+            self.__logger.info("::: Przeliczam dane...")
             Gdynia = ephem.Observer()
             Gdynia.lat = self.__lat
             Gdynia.lon = self.__lon
@@ -43,8 +41,7 @@ class CalendarSq2ips(SR0WXModule):
                 Gdynia.next_setting(sun)).hour) + ":" + str(ephem.localtime(Gdynia.next_setting(sun)).minute)), " "])
             message = " ".join(
                 [" _ kalendarium _ ", sunrise, " _ ", sunset, " _ "])
-            self.__logger.info(str(ephem.localtime(Gdynia.next_rising(
-                sun)).hour) + ":" + str(ephem.localtime(Gdynia.next_rising(sun)).minute))
+            self.__logger.info(f"{ephem.localtime(Gdynia.next_rising(sun))}")
             self.__logger.info(str(ephem.localtime(Gdynia.next_setting(
                 sun)).hour) + ":" + str(ephem.localtime(Gdynia.next_setting(sun)).minute))
             connection.send({
@@ -52,6 +49,5 @@ class CalendarSq2ips(SR0WXModule):
                 "source": "",
             })
         except Exception as e:
-            self.__logger.exception(
-                COLOR_FAIL + "Exception when running %s: %s" + COLOR_ENDC, str(self), e)
+            self.__logger.exception(f"Exception when running {self}: {e}")
             connection.send(dict())

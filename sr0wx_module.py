@@ -1,5 +1,3 @@
-#!/usr/bin/python -tt
-# -*- coding: utf-8 -*-
 #
 #   Copyright 2014 Michal Sadowski (sq6jnx at hamradio dot pl)
 #
@@ -54,8 +52,8 @@ Modules are expected to return a `dict` with the following keys:
                     break
             except Exception as e:
                 if i < repeat-1:
-                    logger.warning(COLOR_WARNING + f"Error: {e}, trying again..." + COLOR_ENDC)
+                    logger.exception(f"Exception getting data: {e}, trying again...")
                 else:
                     raise e
-        logger.info("::: Dane pobrano, status OK\n")
+        logger.info("::: Dane pobrano, status OK")
         return data

@@ -1,10 +1,5 @@
-#!/usr/bin/python -tt
-# -*- coding: utf-8 -*-
-
 import logging
 from datetime import datetime
-
-from colorcodes import *
 
 from sr0wx_module import SR0WXModule
 
@@ -38,7 +33,7 @@ class AirlySq9atk(SR0WXModule):
 
             jsonData = self.getAirlyData(api_service_url)
 
-            self.__logger.info("::: Przetwarzam dane...\n")
+            self.__logger.info("::: Przetwarzam dane...")
 
             message = "".join([
                 " _ ",
@@ -58,8 +53,7 @@ class AirlySq9atk(SR0WXModule):
                 "source": "airly",
             })
         except Exception as e:
-            self.__logger.exception(
-                COLOR_FAIL + "Exception when running %s: %s" + COLOR_ENDC, str(self), e)
+            self.__logger.exception(f"Exception when running {self}: {e}")
             connection.send(dict())
 
     def getPollutionLevel(self, json):

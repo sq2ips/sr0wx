@@ -1,12 +1,7 @@
-#!/usr/bin/python -tt
-# -*- coding: utf-8 -*-
-
 import urllib.request
 import logging
 
 from PIL import Image
-
-from colorcodes import *
 
 from sr0wx_module import SR0WXModule
 
@@ -82,7 +77,7 @@ class PropagationSq9atk(SR0WXModule):
         try:
             image = self.downloadImage(self.__service_url)
 
-            self.__logger.info("::: Przetwarzam dane...\n")
+            self.__logger.info("::: Przetwarzam dane...")
 
             message = " ".join([
                 " _ informacje_o_propagacji ",
@@ -101,6 +96,5 @@ class PropagationSq9atk(SR0WXModule):
                 "source": "noaa",
             })
         except Exception as e:
-            self.__logger.exception(
-                COLOR_FAIL + "Exception when running %s: %s" + COLOR_ENDC, str(self), e)
+            self.__logger.exception(f"Exception when running {self}: {e}")
             connection.send(dict())

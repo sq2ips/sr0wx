@@ -1,6 +1,5 @@
 from sr0wx_module import SR0WXModule
 import logging
-from colorcodes import *
 
 from datetime import datetime
 
@@ -20,6 +19,5 @@ class TimeSq2ips(SR0WXModule):
                 "source": "",
             })
         except Exception as e:
-            self.__logger.exception(COLOR_FAIL + "Exception when running %s: %s" + COLOR_ENDC, str(self), e)
+            self.__logger.exception(f"Exception when running {self}: {e}")
             connection.send(dict())
-    

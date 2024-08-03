@@ -1,7 +1,6 @@
 from xml.etree import ElementTree
 
 import logging
-from colorcodes import *
 
 from sr0wx_module import SR0WXModule
 
@@ -74,7 +73,7 @@ class PropagationSq2ips(SR0WXModule):
                     noise_level = self.getNoise(noise)
                 except Exception as e:
                     if e == KeyError:
-                        self.__logger.warning(COLOR_WARNING + "Nieprawidłowa odczytana wartość poziomu zakłuceń, pomijane..." + COLOR_ENDC)
+                        self.__logger.warning("Nieprawidłowa odczytana wartość poziomu zakłuceń, pomijane...")
             message = " ".join([
                 " _ informacje_o_propagacji ",
                 " _ dzien _ ",
@@ -84,7 +83,7 @@ class PropagationSq2ips(SR0WXModule):
             ])
             if self.__radioNoise:
                 if noise_level is None:
-                    self.__logger.warning(COLOR_WARNING + "Brak danych o poziomie zakłuceń" + COLOR_ENDC)
+                    self.__logger.warning("Brak danych o poziomie zakłuceń")
                 else:
                     message += " _ poziom_zakl_ucen_ " + noise_level
             connection.send({
@@ -92,6 +91,5 @@ class PropagationSq2ips(SR0WXModule):
                 "source": "hamqsl",
             })
         except Exception as e:
-            self.__logger.exception(
-                COLOR_FAIL + "Exception when running %s: %s" + COLOR_ENDC, str(self), e)
+            self.__logger.exception(f"Exception when running {self}: {e}")
             connection.send(dict())

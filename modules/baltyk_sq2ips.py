@@ -1,11 +1,7 @@
-# -*- coding: UTF-8 -*-
-
 import logging
 from sr0wx_module import SR0WXModule
 
 from datetime import datetime
-
-from colorcodes import *
 
 class BaltykSq2ips(SR0WXModule):
     """Moduł pobierający komunikat o stanie i prognizie na obszar bałtyku"""
@@ -107,6 +103,5 @@ class BaltykSq2ips(SR0WXModule):
                             "source": "baltyk_imgw",
                         })
         except Exception as e:
-            self.__logger.exception(
-                COLOR_FAIL + "Exception when running %s: %s" + COLOR_ENDC, str(self), e)
+            self.__logger.exception(f"Exception when running {self}: {e}")
             connection.send(dict())

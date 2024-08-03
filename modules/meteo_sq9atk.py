@@ -1,14 +1,9 @@
-#!/usr/bin/python -tt
-# -*- coding: utf-8 -*-
-
 import re
 import logging
 
 from datetime import datetime
 
 from bs4 import BeautifulSoup
-
-from colorcodes import *
 
 from sr0wx_module import SR0WXModule
 
@@ -71,7 +66,7 @@ class MeteoSq9atk(SR0WXModule):
             rawHtml = self.downloadFile(self.__service_url)
             soup = BeautifulSoup(rawHtml, "lxml")
             
-            self.__logger.info("::: Przetwarzam dane...\n")
+            self.__logger.info("::: Przetwarzam dane...")
 
             now = soup.find_all("li", {"id": "wts_p0"})[0]
             after = soup.find_all("li", {"id": "wts_p3"})[0]
@@ -116,6 +111,5 @@ class MeteoSq9atk(SR0WXModule):
                 "source": "pogoda_onet",
             })
         except Exception as e:
-            self.__logger.exception(
-                COLOR_FAIL + "Exception when running %s: %s" + COLOR_ENDC, str(self), e)
+            self.__logger.exception(f"Exception when running {self}: {e}")
             connection.send(dict())

@@ -4,8 +4,6 @@ from multiprocessing import Process, Pipe
 from sr0wx_module import SR0WXModule
 
 import logging
-from colorcodes import *
-
 
 class MeteoStationSq2ips(SR0WXModule):
     """Moduł pobierający dane o pogodzie ze stacji przez UDP"""
@@ -38,11 +36,11 @@ class MeteoStationSq2ips(SR0WXModule):
             except Exception as e:
                 if counter < 3:
                     self.__logger.warning(
-                        COLOR_WARNING + "Exception when getting data from %s: %s. Trying again..." + COLOR_ENDC, ip, e)
+                        "Exception when getting data from %s: %s. Trying again...", ip, e)
                     counter += 1
                 else:
                     self.__logger.error(
-                        COLOR_FAIL + "Exception when getting data from %s: %s" + COLOR_ENDC, ip, e)
+                        "Exception when getting data from %s: %s", ip, e)
                     con.send(None)
                     con.close()
 
@@ -74,7 +72,7 @@ class MeteoStationSq2ips(SR0WXModule):
         for i in range(len(data)):
             if data[i][self.__coms.index("atemp\n")] == 0 and data[i][self.__coms.index("ahum\n")] == 0 and data[i][self.__coms.index("awin_dir\n")] == 0 and data[i][self.__coms.index("awin_gus\n")] == 0 and data[i][self.__coms.index("rain\n")] == 0:
                 self.__logger.warning(
-                    COLOR_WARNING + f"Station {self.__ip[i]} reported only zeros, skipping..." + COLOR_ENDC)
+                    f"Station {self.__ip[i]} reported only zeros, skipping...")
             else:
                 dataf.append(data[i])
 
@@ -150,6 +148,5 @@ class MeteoStationSq2ips(SR0WXModule):
                 "source": "",
             })
         except Exception as e:
-            self.__logger.exception(
-                COLOR_FAIL + "Exception when running %s: %s" + COLOR_ENDC, str(self), e)
+            self.__logger.exception(f"Exception when running {self}: {e}")
             connection.send(dict())
