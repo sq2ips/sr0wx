@@ -1,35 +1,66 @@
 #!/usr/bin/python -tt
 # -*- coding: utf-8 -*-
 
-import pl_google.pl_google as pl_google
+# Main config file for sr0wx.py
+
+# biblioteki
+from dotenv import load_dotenv
+import os
 import logging
 import logging.handlers
-import os
-from dotenv import load_dotenv
 from datetime import datetime
 
-log_line_format = "%(asctime)s %(name)s %(levelname)s: %(message)s"
-log_handlers = [
-    {
-        "log_level": logging.INFO,
-        "class": logging.StreamHandler,
-        "config": {"stream": None},
-    },
-    {
-        "log_level": logging.DEBUG,
-        "class": logging.handlers.TimedRotatingFileHandler,
-        "config": {
-            "filename": "../logs/baltyk/"
-            + str(datetime.now().strftime("%Y-%m-%d_%H:%M"))
-            + ".log",
-            "when": "D",
-            "interval": 1,
-            "backupCount": 30,
-            "delay": True,
-            "utc": True,
+from colorcodes import *
+
+
+def my_import(name):
+    mod = __import__(name)
+    components = name.split(".")
+    for comp in components[1:]:
+        mod = getattr(mod, comp)
+    return mod
+
+
+# logger
+dict_log_config = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "loggers": {
+        "": {
+            "level": "DEBUG",
+            "handlers": ["console", "file"],
         },
     },
-]
+    "formatters": {
+        "colored_console": {
+            "()": "coloredlogs.ColoredFormatter",
+            "format": "%(asctime)s %(name)s %(levelname)s: %(message)s",
+            "datefmt": "%H:%M:%S",
+        },
+        "format_for_file": {
+            "format": "%(asctime)s %(name)s %(levelname)s: %(message)s",
+            "datefmt": "%Y-%m-%d %H:%M:%S",
+        },
+    },
+    "handlers": {
+        "console": {
+            "level": "INFO",
+            "class": "logging.StreamHandler",
+            "formatter": "colored_console",
+            "stream": "ext://sys.stdout",
+        },
+        "file": {
+            "level": "INFO",
+            "class": "logging.handlers.RotatingFileHandler",
+            "formatter": "format_for_file",
+            "filename": "../logs/pogoda/"
+            + str(datetime.now().strftime("%Y-%m-%d_%H:%M"))
+            + ".log",
+            "maxBytes": 500000,
+            "backupCount": 30,
+        },
+    },
+}
 
 # dane z pliku .env
 if os.path.exists(".env"):
@@ -80,6 +111,11 @@ audioPath = "./sr0wx.wav"
 # hello_msg = ['_', 'tu_eksperymentalna_automatyczna_stacja_pogodowa', 'sr0wx']
 # goodbye_msg = ['_', 'tu_sr2wxg', "_", "kolejny_komunikat_m", "beep2"]
 read_sources_msg = False
+
+#####################
+
+# INICJALIZACJA JĘZYKA
+lang = my_import(".".join((lang_name, lang_name)))
 
 #####################
 
