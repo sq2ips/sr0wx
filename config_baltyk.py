@@ -90,7 +90,7 @@ rpi_pin = 40
 # wieloprocesowość dla modułów
 multi_processing = True
 
-lang = "pl_google"  # język
+lang_name = "pl_google"  # język
 pygame_bug = 0
 
 # ustawienie wartości pygame.time.Clock().tick()
