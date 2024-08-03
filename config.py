@@ -20,23 +20,43 @@ def my_import(name):
     return mod
 
 # logger
-log_line_format = '%(asctime)s %(name)s %(levelname)s: %(message)s'
-log_handlers = [{
-    'log_level': logging.INFO,
-    'class': logging.StreamHandler,
-    'config': {'stream': None},
-}, {
-    'log_level': logging.INFO,
-    'class': logging.handlers.TimedRotatingFileHandler,
-    'config': {
-        'filename': '../logs/pogoda/' + str(datetime.now().strftime("%Y-%m-%d_%H:%M")) + '.log',
-        'when': 'D',
-        'interval': 1,
-        'backupCount': 30,
-        'delay': True,
-        'utc': True,
-    }
-}]
+dict_log_config = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'loggers': {
+        '': {
+           'level': 'DEBUG',
+           'handlers': ['console', 'file'],
+        },
+    },
+    'formatters': {
+        'colored_console': {
+           '()': 'coloredlogs.ColoredFormatter', 
+           'format': "%(asctime)s %(name)s %(levelname)s: %(message)s", 
+           'datefmt': '%H:%M:%S'
+        },
+        'format_for_file': {
+           'format': "%(asctime)s %(name)s %(levelname)s: %(message)s", 
+           'datefmt': '%Y-%m-%d %H:%M:%S'
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'colored_console',
+            'stream': 'ext://sys.stdout'
+        },
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'formatter': 'format_for_file',
+            'filename': '../logs/pogoda/' + str(datetime.now().strftime("%Y-%m-%d_%H:%M")) + '.log',
+            'maxBytes': 500000,
+            'backupCount': 30
+        }
+    },
+}
 
 # dane z pliku .env
 if os.path.exists(".env"):

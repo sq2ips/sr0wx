@@ -5,8 +5,9 @@ from pathlib import Path
 os.chdir("/".join(str(Path(__file__)).split("/")[:-1]))
 
 import requests
-import logging.handlers
+import logging.config
 import logging
+import coloredlogs
 from multiprocessing import Process, Pipe
 import sys
 import pygame
@@ -95,20 +96,8 @@ You can find full list of contributors on github.com/sq6jnx/sr0wx.py
 
 
 def setup_logging(config):
-    # create formatter and add it to the handlers
-    formatter = logging.Formatter(config.log_line_format)
-
-    # Creating logger with the lowest log level in config handlers
-    min_log_level = min([h['log_level'] for h in config.log_handlers])
-    logger = logging.getLogger()
-    logger.setLevel('DEBUG')
-
-    # create logging handlers according to its definitions
-    for handler_definition in config.log_handlers:
-        handler = handler_definition['class'](**handler_definition['config'])
-        handler.setLevel(handler_definition['log_level'])
-        handler.setFormatter(formatter)
-        logger.addHandler(handler)
+    logging.config.dictConfig(config.dict_log_config)
+    logger = logging.getLogger(__name__)
 
     return logger
 
