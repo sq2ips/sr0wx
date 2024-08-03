@@ -100,7 +100,6 @@ read_sources_msg = False
 # INICJALIZACJA JĘZYKA
 lang = my_import('.'.join((lang_name, lang_name)))
 
-pl_google = lang
 #####################
 
 # INICJALIZACJA I KONFIGURACJA MODUŁÓW
@@ -133,7 +132,7 @@ activitymap = ActivityMap(
 # wystarczy sie zarejestrować
 from openweather_sq9atk import OpenWeatherSq9atk
 openweathersq9atk = OpenWeatherSq9atk(
-    language=pl_google,
+    language=lang,
     api_key=openweather_key,
     lat=54.5238,
     lon=18.5135,
@@ -148,7 +147,7 @@ openweathersq9atk = OpenWeatherSq9atk(
 # ---------------
 from meteo_sq9atk import MeteoSq9atk
 meteosq9atk = MeteoSq9atk(
-    language=pl_google,
+    language=lang,
     service_url="https://pogoda.onet.pl/prognoza-pogody/gdynia-287798",
     current=True,
     saytime = False
@@ -159,7 +158,7 @@ meteosq9atk = MeteoSq9atk(
 # ---------------
 from imgw_podest_sq2ips import ImgwPodestSq2ips
 imgwpodestsq2ips = ImgwPodestSq2ips(
-    language=pl_google,
+    language=lang,
     service_url="https://hydro-back.imgw.pl/list/hydrologic",
     wodowskazy=[], # id poszczegulnych wodowskazów
     zlewnie=[47, 48], # id całej zlewni
@@ -177,7 +176,7 @@ imgwpodestsq2ips = ImgwPodestSq2ips(
 # wystarczy sie zarejestrować
 from airly_sq9atk import AirlySq9atk
 airlysq9atk = AirlySq9atk(
-    language=pl_google,
+    language=lang,
     api_key=airly_key,
     service_url='https://airapi.airly.eu/v2/measurements',  # location
     mode='nearest',  # point|nearest|installationId
@@ -192,7 +191,7 @@ airlysq9atk = AirlySq9atk(
 # ---------------
 from air_pollution_sq9atk import AirPollutionSq9atk
 airpollutionsq9atk = AirPollutionSq9atk(
-    language=pl_google,
+    language=lang,
     service_url="http://api.gios.gov.pl/pjp-api/rest/",
     station_id=732,
     city_id=219,
@@ -218,7 +217,7 @@ airpollutionsq9atk = AirPollutionSq9atk(
 # ---------------
 from geo_magnetic_sq9atk import GeoMagneticSq9atk
 geomagneticsq9atk = GeoMagneticSq9atk(
-    language=pl_google,
+    language=lang,
     service_url="https://www.gismeteo.pl/weather-gdynia-3041/gm/",
 )
 # https://www.gismeteo.pl/weather-warsaw-3196/gm/
@@ -240,7 +239,7 @@ geomagneticsq9atk = GeoMagneticSq9atk(
 # ---------------
 from radioactive_sq9atk import RadioactiveSq9atk
 radioactivesq9atk = RadioactiveSq9atk(
-    language=pl_google,
+    language=lang,
     service_url="http://radioactiveathome.org/map/",
     sensor_id=39306  # czujnik w centrum Gdyni
     # więcej czujników na stronie http://radioactiveathome.org/map/
@@ -251,7 +250,7 @@ radioactivesq9atk = RadioactiveSq9atk(
 # ---------------
 from radioactive_sq2ips import RadioactiveSq2ips
 radioactivesq2ips = RadioactiveSq2ips(
-    language=pl_google,
+    language=lang,
     service_url='https://monitoring.paa.gov.pl/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=paa:kcad_siec_pms_moc_dawki_mapa&outputFormat=application/json',
     sensor_id='d2e87d20-28e2-47ea-860d-98a4e98d8726',
     service_url_sr="https://monitoring.paa.gov.pl/_api/maps/MapLayer/15d20873-f8a7-8899-5d69-960cc9ebbbb6/DetailsTable/f5af6ec4-d759-3163-344e-cbf147d28e28/Data/"
@@ -259,7 +258,7 @@ radioactivesq2ips = RadioactiveSq2ips(
 
 from fires_sq2ips import FiresSq2ips
 firessq2ips = FiresSq2ips(
-    language=pl_google,
+    language=lang,
     service_url="https://www.traxelektronik.pl/pogoda/las/zbiorcza.php",
     zone="15_A", # tutaj należy znaleźć strefę https://www.traxelektronik.pl/pogoda/las/ zaznaczając granice i numery stref oraz zagrożenie pożarowe
 )
@@ -269,7 +268,7 @@ firessq2ips = FiresSq2ips(
 # ---------------
 from propagation_sq9atk import PropagationSq9atk
 propagationsq9atk = PropagationSq9atk(
-    language=pl_google,
+    language=lang,
     service_url="https://rigreference.com/solar/img/tall",
 )
 # ---------------
@@ -277,7 +276,7 @@ propagationsq9atk = PropagationSq9atk(
 # ---------------
 from propagation_sq2ips import PropagationSq2ips
 propagationsq2ips = PropagationSq2ips(
-    language=pl_google,
+    language=lang,
     service_url="https://www.hamqsl.com/solarxml.php",
     radioNoise = True
 )
@@ -286,7 +285,7 @@ propagationsq2ips = PropagationSq2ips(
 # ---------------
 from vhf_tropo_sq9atk import VhfTropoSq9atk
 vhftroposq9atk = VhfTropoSq9atk(
-    language=pl_google,
+    language=lang,
     service_url="https://www.dxinfocentre.com/tropo_eur.html",
     qthLon=18.5135,
     qthLat=54.523833
@@ -296,7 +295,7 @@ vhftroposq9atk = VhfTropoSq9atk(
 # ---------------
 from calendar_sq9atk import CalendarSq9atk
 calendarsq9atk = CalendarSq9atk(
-    language=pl_google,
+    language=lang,
     service_url="http://calendar.zoznam.sk/sunset-pl.php?city=",
     city_id=3099424,  # Gdyna
 )
@@ -322,7 +321,7 @@ calendarsq9atk = CalendarSq9atk(
 # ----------------
 from calendar_sq2ips import CalendarSq2ips
 calendarsq2ips = CalendarSq2ips(
-    language=pl_google,
+    language=lang,
     lat=54.523833,
     lon=18.5135,
     ele=15,
@@ -336,7 +335,7 @@ calendarsq2ips = CalendarSq2ips(
 # ----------------
 from meteoalert_sq2ips import MeteoAlertSq2ips
 meteoalertsq2ips = MeteoAlertSq2ips(
-    language=pl_google,
+    language=lang,
     service_url="https://meteo.imgw.pl/api/meteo/messages/v1/",
     city_id=["2262"],  # Gdynia
     #start_message="ostrzezenia_meteorologiczne_i_hydrologiczne_imgw",
@@ -346,7 +345,7 @@ meteoalertsq2ips = MeteoAlertSq2ips(
 )
 from antistorm_sq2ips import AntistormSq2ips
 antistormsq2ips = AntistormSq2ips(
-    language=pl_google,
+    language=lang,
     service_url="http://antistorm.eu/webservice.php",
     city_id=73 # Gdynia
 )
@@ -355,7 +354,7 @@ antistormsq2ips = AntistormSq2ips(
 # ---------------
 from spaceweather_sq2ips import SpaceWeatherSq2ips
 spaceweathersq2ips = SpaceWeatherSq2ips(
-    language=pl_google,
+    language=lang,
     # burze geomagnetyczne
     urlG="https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json",
     # zakłucenia radiowe
@@ -372,7 +371,7 @@ spaceweathersq2ips = SpaceWeatherSq2ips(
 # ---------------
 from meteostation_sq2ips import MeteoStationSq2ips
 meteostationsq2ips = MeteoStationSq2ips(
-    language=pl_google,
+    language=lang,
     ip=meteostation_ip,
     port=4210,
 )
@@ -382,7 +381,7 @@ meteostationsq2ips = MeteoStationSq2ips(
 # ---------------
 from meteo_yr_sq2ips import MeteoYrSq2ips
 meteoyrsq2ips = MeteoYrSq2ips(
-    language=pl_google,
+    language=lang,
     service_url="https://www.yr.no",
     id="2-3099424", # Gdynia
     current=True,
@@ -394,7 +393,7 @@ meteoyrsq2ips = MeteoYrSq2ips(
 # ---------------
 from kse_sq2ips import KseSq2ips
 ksesq2ips = KseSq2ips(
-    language=pl_google,
+    language=lang,
     service_url="https://www.pse.pl/transmissionMapService"
 )
 
@@ -403,7 +402,7 @@ ksesq2ips = KseSq2ips(
 # ---------------
 from time_sq2ips import TimeSq2ips
 timesq2ips = TimeSq2ips(
-    language=pl_google,
+    language=lang,
     start_message=[" _ ", "raport_meteorologiczny", "z_godziny"]
 )
 # WSZYSTKIE MODUŁY
