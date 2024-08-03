@@ -8,16 +8,22 @@ if len(sys.argv) == 1 or sys.argv[1] == "-h":
     exit(0)
 elif sys.argv[1] == "-z":
     url = "https://meteo.imgw.pl/api/geo/v3/search/"
-    print("Wyszukiwanie id zlewni na podstawie nazwy miasta do modułu imgw_podest_sq2ips.py")
+    print(
+        "Wyszukiwanie id zlewni na podstawie nazwy miasta do modułu imgw_podest_sq2ips.py"
+    )
     print("Pobieranie danych..")
     data = requests.get(url + sys.argv[2]).json()
     print("miasto, powiat, zlewnia: id\n")
     for z in data:
-        print(f"{z["identifier"]}, pow. {z['district']}, {z["base_catchment"]["name"]}: {z["base_catchment"]["ID"]}")
+        print(
+            f"{z["identifier"]}, pow. {z['district']}, {z["base_catchment"]["name"]}: {z["base_catchment"]["ID"]}"
+        )
 
 elif sys.argv[1] == "-s":
     url = "https://hydro-back.imgw.pl/list/hydrologic"
-    print("Wyszukiwanie id zlewni i wodowskazu na podstawie nazwy wodowskazu do modułu imgw_podest_sq2ips.py")
+    print(
+        "Wyszukiwanie id zlewni i wodowskazu na podstawie nazwy wodowskazu do modułu imgw_podest_sq2ips.py"
+    )
     print("Pobieranie danych..")
     data = requests.get(url).json()
     print("rzeka/akwen, wodowskaz: id zlewni, id wodowskazu\n")
@@ -28,7 +34,9 @@ elif sys.argv[1] == "-s":
 
 elif sys.argv[1] == "-r":
     url = "https://hydro-back.imgw.pl/list/hydrologic"
-    print("wyszukiwanie id zlewni i wodowskazów na podstawie nazwy rzeki/akwenu do modułu imgw_podest_sq2ips.py")
+    print(
+        "wyszukiwanie id zlewni i wodowskazów na podstawie nazwy rzeki/akwenu do modułu imgw_podest_sq2ips.py"
+    )
     print("Pobieranie danych..")
     data = requests.get(url).json()
     print("rzeka/akwen, wodowskaz: id zlewni, id wodowskazu\n")
@@ -38,7 +46,9 @@ elif sys.argv[1] == "-r":
             print(f"{s["river"]}, {s["name"]}: {s["catchment"]}, {s["code"]}")
 elif sys.argv[1] == "-w":
     url = "https://hydro-back.imgw.pl/list/hydrologic"
-    print("Wyszukiwanie id zlewni na podstawie id wodowskazu do modułu imgw_podest_sq2ips.py")
+    print(
+        "Wyszukiwanie id zlewni na podstawie id wodowskazu do modułu imgw_podest_sq2ips.py"
+    )
     print("Pobieranie danych..")
     data = requests.get(url).json()
     print("rzeka/akwen, wodowskaz: id zlewni\n")

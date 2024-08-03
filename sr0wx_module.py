@@ -19,6 +19,7 @@ import warnings
 import requests
 from colorcodes import *
 
+
 class SR0WXModule:
     """Base class for SR0WX modules."""
 
@@ -34,13 +35,14 @@ class SR0WXModule:
     def get_data(self, connection):
         """Returns message to be played back by core of sr0wx.py. Not implemented here.
 
-Modules are expected to return a `dict` with the following keys:
-    - `message` -- message text, filled template, etc (currently list of
-    samples)
-    - `need_ctcss` -- hint for core module whether or not to playback CTCSS tone
-"""
+        Modules are expected to return a `dict` with the following keys:
+            - `message` -- message text, filled template, etc (currently list of
+            samples)
+            - `need_ctcss` -- hint for core module whether or not to playback CTCSS tone
+        """
         msg = "This method should be implemented in child class"
         raise NotImplementedError(msg)
+
     def requestData(self, url, logger, timeout, repeat, headers=None):
         for i in range(repeat):
             try:
@@ -51,7 +53,7 @@ Modules are expected to return a `dict` with the following keys:
                 else:
                     break
             except Exception as e:
-                if i < repeat-1:
+                if i < repeat - 1:
                     logger.exception(f"Exception getting data: {e}, trying again...")
                 else:
                     raise e

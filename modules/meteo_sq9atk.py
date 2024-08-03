@@ -21,15 +21,18 @@ class MeteoSq9atk(SR0WXModule):
     def downloadFile(self, url):
         data = self.requestData(url, self.__logger, 10, 3)
         return data.text
+
     def getHour(self):
         time = ":".join([str(datetime.now().hour), str(datetime.now().minute)])
-        datetime_object = datetime.strptime(time, '%H:%M')
-        time_words = self.__language.read_datetime(datetime_object, '%H %M')
+        datetime_object = datetime.strptime(time, "%H:%M")
+        time_words = self.__language.read_datetime(datetime_object, "%H %M")
         return time_words
 
     def parseForecastDesc(self, html):
         match = html.find_all("div", {"class": "forecastDesc"})[0].text
-        return self.__language.rmv_pl_chars(match.strip().replace(" ", "_").replace(",", "_"))
+        return self.__language.rmv_pl_chars(
+            match.strip().replace(" ", "_").replace(",", "_")
+        )
 
     def parseTemperature(self, html):
         match = html.find_all("li")[0].find_all("span")[1]
@@ -65,7 +68,7 @@ class MeteoSq9atk(SR0WXModule):
         try:
             rawHtml = self.downloadFile(self.__service_url)
             soup = BeautifulSoup(rawHtml, "lxml")
-            
+
             self.__logger.info("::: Przetwarzam dane...")
 
             now = soup.find_all("li", {"id": "wts_p0"})[0]
@@ -75,41 +78,67 @@ class MeteoSq9atk(SR0WXModule):
             message = ""
 
             if self.__saytime:
-                message += " ".join([
-                    "stan_pogody_z_godziny", self.getHour(), " _ "
-                ])
+                message += " ".join(["stan_pogody_z_godziny", self.getHour(), " _ "])
             if self.__current:
-                message += " ".join([
-                    self.parseForecastDesc(now), " _ "
-                    "pokrywa_chmur", self.parseClouds(now), " _ "
-                    "temperatura", self.parseTemperature(now),
-                    "predkosc_wiatru", self.parseWind(now), " _ "
-                    "cisnienie", self.parsePressure(now),
-                    "wilgotnosc", self.parseHumidity(now),
-                ])
-            message += " ".join([
+                message += " ".join(
+                    [
+                        self.parseForecastDesc(now),
+                        " _ " "pokrywa_chmur",
+                        self.parseClouds(now),
+                        " _ " "temperatura",
+                        self.parseTemperature(now),
+                        "predkosc_wiatru",
+                        self.parseWind(now),
+                        " _ " "cisnienie",
+                        self.parsePressure(now),
+                        "wilgotnosc",
+                        self.parseHumidity(now),
+                    ]
+                )
+            message += " ".join(
+                [
+                    " _ ",
+                    "prognoza_na_nastepne",
+                    "cztery",
+                    "godziny",
+                    " _ ",
+                    self.parseForecastDesc(after),
+                    " _ " "pokrywa_chmur",
+                    self.parseClouds(after),
+                    " _ " "temperatura",
+                    self.parseTemperature(after),
+                    "predkosc_wiatru",
+                    self.parseWind(after),
+                    " _ " "cisnienie",
+                    self.parsePressure(after),
+                    "wilgotnosc",
+                    self.parseHumidity(after),
+                    " _ ",
+                    "prognoza_na_nastepne",
+                    "dwanascie",
+                    "godzin",
+                    " _ ",
+                    self.parseForecastDesc(forecast),
+                    " _ " "pokrywa_chmur",
+                    self.parseClouds(forecast),
+                    " _ " "temperatura",
+                    self.parseTemperature(forecast),
+                    "predkosc_wiatru",
+                    self.parseWind(forecast),
+                    " _ " "cisnienie",
+                    self.parsePressure(forecast),
+                    "wilgotnosc",
+                    self.parseHumidity(forecast),
+                    " _ ",
+                ]
+            )
 
-                " _ ", "prognoza_na_nastepne", "cztery", "godziny",
-                " _ ", self.parseForecastDesc(after), " _ "
-                "pokrywa_chmur", self.parseClouds(after), " _ "
-                "temperatura", self.parseTemperature(after),
-                "predkosc_wiatru", self.parseWind(after), " _ "
-                "cisnienie", self.parsePressure(after),
-                "wilgotnosc", self.parseHumidity(after),
-
-                " _ ", "prognoza_na_nastepne", "dwanascie", "godzin",
-                " _ ", self.parseForecastDesc(forecast), " _ "
-                "pokrywa_chmur", self.parseClouds(forecast),  " _ "
-                "temperatura", self.parseTemperature(forecast),
-                "predkosc_wiatru", self.parseWind(forecast), " _ "
-                "cisnienie", self.parsePressure(forecast),
-                "wilgotnosc", self.parseHumidity(forecast), " _ "
-            ])
-
-            connection.send({
-                "message": message,
-                "source": "pogoda_onet",
-            })
+            connection.send(
+                {
+                    "message": message,
+                    "source": "pogoda_onet",
+                }
+            )
         except Exception as e:
             self.__logger.exception(f"Exception when running {self}: {e}")
             connection.send(dict())

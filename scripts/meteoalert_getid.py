@@ -5,7 +5,7 @@ parameters = "Program szukający id regionu do modułu meteoalert_sq2ips.py:\n\n
 
 url = "https://meteo.imgw.pl/dyn/data/out1proc.json?v=1.2"
 
-if  len(sys.argv) == 1 or sys.argv[1] == "-h":
+if len(sys.argv) == 1 or sys.argv[1] == "-h":
     print(parameters)
     exit(0)
 elif sys.argv[1] == "-a":
@@ -28,8 +28,7 @@ elif sys.argv[1] == "-f":
     any = True
     for i in names["features"]:
         if i["properties"]["jpt_nazwa_"].lower().find(sys.argv[2].lower()) != -1:
-            print(
-                f'{i["properties"]["jpt_nazwa_"]}: {i["properties"]["jpt_kod_je"]}')
+            print(f'{i["properties"]["jpt_nazwa_"]}: {i["properties"]["jpt_kod_je"]}')
     if any == False:
         print("Nic nie znaleziono")
 else:

@@ -12,49 +12,53 @@ from datetime import datetime
 
 from colorcodes import *
 
+
 def my_import(name):
     mod = __import__(name)
-    components = name.split('.')
+    components = name.split(".")
     for comp in components[1:]:
         mod = getattr(mod, comp)
     return mod
 
+
 # logger
 dict_log_config = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'loggers': {
-        '': {
-           'level': 'DEBUG',
-           'handlers': ['console', 'file'],
+    "version": 1,
+    "disable_existing_loggers": False,
+    "loggers": {
+        "": {
+            "level": "DEBUG",
+            "handlers": ["console", "file"],
         },
     },
-    'formatters': {
-        'colored_console': {
-           '()': 'coloredlogs.ColoredFormatter', 
-           'format': "%(asctime)s %(name)s %(levelname)s: %(message)s", 
-           'datefmt': '%H:%M:%S'
+    "formatters": {
+        "colored_console": {
+            "()": "coloredlogs.ColoredFormatter",
+            "format": "%(asctime)s %(name)s %(levelname)s: %(message)s",
+            "datefmt": "%H:%M:%S",
         },
-        'format_for_file': {
-           'format': "%(asctime)s %(name)s %(levelname)s: %(message)s", 
-           'datefmt': '%Y-%m-%d %H:%M:%S'
+        "format_for_file": {
+            "format": "%(asctime)s %(name)s %(levelname)s: %(message)s",
+            "datefmt": "%Y-%m-%d %H:%M:%S",
         },
     },
-    'handlers': {
-        'console': {
-            'level': 'INFO',
-            'class': 'logging.StreamHandler',
-            'formatter': 'colored_console',
-            'stream': 'ext://sys.stdout'
+    "handlers": {
+        "console": {
+            "level": "INFO",
+            "class": "logging.StreamHandler",
+            "formatter": "colored_console",
+            "stream": "ext://sys.stdout",
         },
-        'file': {
-            'level': 'INFO',
-            'class': 'logging.handlers.RotatingFileHandler',
-            'formatter': 'format_for_file',
-            'filename': '../logs/pogoda/' + str(datetime.now().strftime("%Y-%m-%d_%H:%M")) + '.log',
-            'maxBytes': 500000,
-            'backupCount': 30
-        }
+        "file": {
+            "level": "INFO",
+            "class": "logging.handlers.RotatingFileHandler",
+            "formatter": "format_for_file",
+            "filename": "../logs/pogoda/"
+            + str(datetime.now().strftime("%Y-%m-%d_%H:%M"))
+            + ".log",
+            "maxBytes": 500000,
+            "backupCount": 30,
+        },
     },
 }
 
@@ -83,13 +87,13 @@ ctcss_volume = 25000
 # nadawanie przez port szeregowy
 serial_port = None
 serial_baud_rate = 9600
-serial_signal = 'DTR'  # lub 'RTS'
+serial_signal = "DTR"  # lub 'RTS'
 # nadawanie przez GPIO w Raspberry Pi
 rpi_pin = 40
 # wieloprocesowość dla modułów
 multi_processing = True
 
-lang_name = "pl_google" # język
+lang_name = "pl_google"  # język
 pygame_bug = 0
 
 # ustawienie wartości pygame.time.Clock().tick()
@@ -108,23 +112,24 @@ saveAudio = False
 audioPath = "./sr0wx.wav"
 
 # wiadomość początkowa i końcowa jest pliku .env
-#hello_msg = ['_', 'test']
-#goodbye_msg = ['_', "beep2"]
+# hello_msg = ['_', 'test']
+# goodbye_msg = ['_', "beep2"]
 # informacja gdy nie ma internetu
-data_sources_error_msg = ['_', 'internetowe_zrodlo_danych_niedostepne']
+data_sources_error_msg = ["_", "internetowe_zrodlo_danych_niedostepne"]
 # czytanie informacji o źródłach danych
 read_sources_msg = False
 
 #####################
 
 # INICJALIZACJA JĘZYKA
-lang = my_import('.'.join((lang_name, lang_name)))
+lang = my_import(".".join((lang_name, lang_name)))
 
 #####################
 
 # INICJALIZACJA I KONFIGURACJA MODUŁÓW
 
 import sys
+
 sys.path.append("modules/")
 
 #####################
@@ -133,6 +138,7 @@ sys.path.append("modules/")
 # activity_map
 # ---------------
 from activity_map import ActivityMap
+
 activitymap = ActivityMap(
     service_url="http://wx.vhf.com.pl/map_requests?base=",
     callsign=map_call,
@@ -151,42 +157,45 @@ activitymap = ActivityMap(
 # https://openweathermap.org/api pod tym adresem można uzyskac klucz API
 # wystarczy sie zarejestrować
 from openweather_sq9atk import OpenWeatherSq9atk
+
 openweathersq9atk = OpenWeatherSq9atk(
     language=lang,
     api_key=openweather_key,
     lat=54.5238,
     lon=18.5135,
-    service_url='http://api.openweathermap.org/data/2.5/',
-    current = True,
-    saytime = False,
-    start_message="aktualny_stan_pogody"
+    service_url="http://api.openweathermap.org/data/2.5/",
+    current=True,
+    saytime=False,
+    start_message="aktualny_stan_pogody",
 )
 
 # ---------------
 # meteo_sq9atk
 # ---------------
 from meteo_sq9atk import MeteoSq9atk
+
 meteosq9atk = MeteoSq9atk(
     language=lang,
     service_url="https://pogoda.onet.pl/prognoza-pogody/gdynia-287798",
     current=True,
-    saytime = False
+    saytime=False,
 )
 
 # ---------------
 # imgw_podest_sq2ips
 # ---------------
 from imgw_podest_sq2ips import ImgwPodestSq2ips
+
 imgwpodestsq2ips = ImgwPodestSq2ips(
     language=lang,
     service_url="https://hydro-back.imgw.pl/list/hydrologic",
-    wodowskazy=[], # id poszczegulnych wodowskazów
-    zlewnie=[47, 48], # id całej zlewni
+    wodowskazy=[],  # id poszczegulnych wodowskazów
+    zlewnie=[47, 48],  # id całej zlewni
     use_outdated=False,
     read_level=False,
-    read_diff_level = True,
-    custom_names = {},
-    custom_rivers = {}
+    read_diff_level=True,
+    custom_names={},
+    custom_rivers={},
 )
 
 # ---------------
@@ -195,11 +204,12 @@ imgwpodestsq2ips = ImgwPodestSq2ips(
 # https://developer.airly.org/ pod tym adresem można uzyskac klucz API
 # wystarczy sie zarejestrować
 from airly_sq9atk import AirlySq9atk
+
 airlysq9atk = AirlySq9atk(
     language=lang,
     api_key=airly_key,
-    service_url='https://airapi.airly.eu/v2/measurements',  # location
-    mode='nearest',  # point|nearest|installationId
+    service_url="https://airapi.airly.eu/v2/measurements",  # location
+    mode="nearest",  # point|nearest|installationId
     lat=54.523833,
     lon=18.5135,
     maxDistanceKM=5,
@@ -210,6 +220,7 @@ airlysq9atk = AirlySq9atk(
 # air_pollution_sq9atk
 # ---------------
 from air_pollution_sq9atk import AirPollutionSq9atk
+
 airpollutionsq9atk = AirPollutionSq9atk(
     language=lang,
     service_url="http://api.gios.gov.pl/pjp-api/rest/",
@@ -217,7 +228,6 @@ airpollutionsq9atk = AirPollutionSq9atk(
     city_id=219,
     # LISTA STACJI Z NUMERAMI Z CAŁEJ POLSKI
     # http://api.gios.gov.pl/pjp-api/rest/station/findAll
-
     # poniższe TYLKO DLA KRAKOWA!!!!!
     # do station_id wpada co 20 minut inna cyfra z przedziału 0,1,2
     # dzięki czemu za każdym razem wybieramy inną stację pomiarową
@@ -236,6 +246,7 @@ airpollutionsq9atk = AirPollutionSq9atk(
 # geomagnetic_sq9atk
 # ---------------
 from geo_magnetic_sq9atk import GeoMagneticSq9atk
+
 geomagneticsq9atk = GeoMagneticSq9atk(
     language=lang,
     service_url="https://www.gismeteo.pl/weather-gdynia-3041/gm/",
@@ -258,10 +269,11 @@ geomagneticsq9atk = GeoMagneticSq9atk(
 # radioactive_sq9atk
 # ---------------
 from radioactive_sq9atk import RadioactiveSq9atk
+
 radioactivesq9atk = RadioactiveSq9atk(
     language=lang,
     service_url="http://radioactiveathome.org/map/",
-    sensor_id=39306  # czujnik w centrum Gdyni
+    sensor_id=39306,  # czujnik w centrum Gdyni
     # więcej czujników na stronie http://radioactiveathome.org/map/
 )
 
@@ -269,24 +281,27 @@ radioactivesq9atk = RadioactiveSq9atk(
 # radioactive_sq2ips
 # ---------------
 from radioactive_sq2ips import RadioactiveSq2ips
+
 radioactivesq2ips = RadioactiveSq2ips(
     language=lang,
-    service_url='https://monitoring.paa.gov.pl/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=paa:kcad_siec_pms_moc_dawki_mapa&outputFormat=application/json',
-    sensor_id='d2e87d20-28e2-47ea-860d-98a4e98d8726',
-    service_url_sr="https://monitoring.paa.gov.pl/_api/maps/MapLayer/15d20873-f8a7-8899-5d69-960cc9ebbbb6/DetailsTable/f5af6ec4-d759-3163-344e-cbf147d28e28/Data/"
+    service_url="https://monitoring.paa.gov.pl/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=paa:kcad_siec_pms_moc_dawki_mapa&outputFormat=application/json",
+    sensor_id="d2e87d20-28e2-47ea-860d-98a4e98d8726",
+    service_url_sr="https://monitoring.paa.gov.pl/_api/maps/MapLayer/15d20873-f8a7-8899-5d69-960cc9ebbbb6/DetailsTable/f5af6ec4-d759-3163-344e-cbf147d28e28/Data/",
 )
 
 from fires_sq2ips import FiresSq2ips
+
 firessq2ips = FiresSq2ips(
     language=lang,
     service_url="https://www.traxelektronik.pl/pogoda/las/zbiorcza.php",
-    zone="15_A", # tutaj należy znaleźć strefę https://www.traxelektronik.pl/pogoda/las/ zaznaczając granice i numery stref oraz zagrożenie pożarowe
+    zone="15_A",  # tutaj należy znaleźć strefę https://www.traxelektronik.pl/pogoda/las/ zaznaczając granice i numery stref oraz zagrożenie pożarowe
 )
 
 # ---------------
 # propagation_sq9atk
 # ---------------
 from propagation_sq9atk import PropagationSq9atk
+
 propagationsq9atk = PropagationSq9atk(
     language=lang,
     service_url="https://rigreference.com/solar/img/tall",
@@ -295,25 +310,26 @@ propagationsq9atk = PropagationSq9atk(
 # propagation_sq2ips
 # ---------------
 from propagation_sq2ips import PropagationSq2ips
+
 propagationsq2ips = PropagationSq2ips(
-    language=lang,
-    service_url="https://www.hamqsl.com/solarxml.php",
-    radioNoise = True
+    language=lang, service_url="https://www.hamqsl.com/solarxml.php", radioNoise=True
 )
 # ---------------
 # vhf_tropo_sq9atk
 # ---------------
 from vhf_tropo_sq9atk import VhfTropoSq9atk
+
 vhftroposq9atk = VhfTropoSq9atk(
     language=lang,
     service_url="https://www.dxinfocentre.com/tropo_eur.html",
     qthLon=18.5135,
-    qthLat=54.523833
+    qthLat=54.523833,
 )
 # ---------------
 # calendar_sq9atk
 # ---------------
 from calendar_sq9atk import CalendarSq9atk
+
 calendarsq9atk = CalendarSq9atk(
     language=lang,
     service_url="http://calendar.zoznam.sk/sunset-pl.php?city=",
@@ -340,6 +356,7 @@ calendarsq9atk = CalendarSq9atk(
 # calendar_sq2ips
 # ----------------
 from calendar_sq2ips import CalendarSq2ips
+
 calendarsq2ips = CalendarSq2ips(
     language=lang,
     lat=54.523833,
@@ -354,25 +371,28 @@ calendarsq2ips = CalendarSq2ips(
 # meteoalert_sq2ips
 # ----------------
 from meteoalert_sq2ips import MeteoAlertSq2ips
+
 meteoalertsq2ips = MeteoAlertSq2ips(
     language=lang,
     service_url="https://meteo.imgw.pl/api/meteo/messages/v1/",
     city_id=["2262"],  # Gdynia
-    #start_message="ostrzezenia_meteorologiczne_i_hydrologiczne_imgw",
+    # start_message="ostrzezenia_meteorologiczne_i_hydrologiczne_imgw",
     start_message="",
     hydronames=["W_G_6_PM", "Z_G_22_PM"],  # Gdynia i bałtyk
     short_validity=True,
 )
 from antistorm_sq2ips import AntistormSq2ips
+
 antistormsq2ips = AntistormSq2ips(
     language=lang,
     service_url="http://antistorm.eu/webservice.php",
-    city_id=73 # Gdynia
+    city_id=73,  # Gdynia
 )
 # ---------------
 # spaceweather_sq2ips
 # ---------------
 from spaceweather_sq2ips import SpaceWeatherSq2ips
+
 spaceweathersq2ips = SpaceWeatherSq2ips(
     language=lang,
     # burze geomagnetyczne
@@ -382,14 +402,15 @@ spaceweathersq2ips = SpaceWeatherSq2ips(
     # Burze radiacyjne
     urlS="https://services.swpc.noaa.gov/json/goes/primary/integral-protons-1-day.json",
     # Chwilowe burze geomagnetyczne
-    geomagneticShort = True,
-    radioNoise = False
+    geomagneticShort=True,
+    radioNoise=False,
 )
 
 # ---------------
 # meteostation_sq2ips
 # ---------------
 from meteostation_sq2ips import MeteoStationSq2ips
+
 meteostationsq2ips = MeteoStationSq2ips(
     language=lang,
     ip=meteostation_ip,
@@ -400,80 +421,81 @@ meteostationsq2ips = MeteoStationSq2ips(
 # meteo_yr_sq2ips
 # ---------------
 from meteo_yr_sq2ips import MeteoYrSq2ips
+
 meteoyrsq2ips = MeteoYrSq2ips(
     language=lang,
     service_url="https://www.yr.no",
-    id="2-3099424", # Gdynia
+    id="2-3099424",  # Gdynia
     current=True,
-    intervals=[6, 12]
+    intervals=[6, 12],
 )
 
 # ---------------
 # kse_sq2ips
 # ---------------
 from kse_sq2ips import KseSq2ips
+
 ksesq2ips = KseSq2ips(
-    language=lang,
-    service_url="https://www.pse.pl/transmissionMapService"
+    language=lang, service_url="https://www.pse.pl/transmissionMapService"
 )
 
 # ---------------
 # time_sq2ips
 # ---------------
 from time_sq2ips import TimeSq2ips
+
 timesq2ips = TimeSq2ips(
-    language=lang,
-    start_message=[" _ ", "raport_meteorologiczny", "z_godziny"]
+    language=lang, start_message=[" _ ", "raport_meteorologiczny", "z_godziny"]
 )
 # WSZYSTKIE MODUŁY
 modules_all = [
-    activitymap,            # marker na mapie wx.ostol.pl
-    timesq2ips,             # godzina
-    meteoalertsq2ips,       # ostrzeżenia meteorologiczne imgw
-    antistormsq2ips,        # radar pogodowy
-    meteostationsq2ips,     # dane ze stacji meteo
-    meteoyrsq2ips,          # pogoda z yr
-    openweathersq9atk,      # pogoda openweathermap
-    meteosq9atk,            # pogoda alternatywa
-    imgwpodestsq2ips,       # wodowskazy z hydro.imgw.pl
-    airpollutionsq9atk,     # zanieczyszczenia powietrza z GIOŚ
-    airlysq9atk,            # zanieczyszczenia powietrza z Airly
-    firessq2ips,            # informacja o stopniu zagrożenia pożarowego lasów
-    ksesq2ips,              # dane systemowe z pse.pl
-    spaceweathersq2ips,     # pogoda kosmiczna
-    geomagneticsq9atk,      # zaburzenia geomagnetyczne
-    propagationsq9atk,      # propagacja KF
-    propagationsq2ips,      # propagacja KF z hamqsl.com
-    vhftroposq9atk,         # propagacja tropo
-    radioactivesq9atk,      # promieniowanie jonizujące
-    radioactivesq2ips,      # promieniowanie jonizujące z paa
-    calendarsq9atk,         # wschód i zachód słońca
-    calendarsq2ips,         # wschód i zachód słońca bez internetu
+    activitymap,  # marker na mapie wx.ostol.pl
+    timesq2ips,  # godzina
+    meteoalertsq2ips,  # ostrzeżenia meteorologiczne imgw
+    antistormsq2ips,  # radar pogodowy
+    meteostationsq2ips,  # dane ze stacji meteo
+    meteoyrsq2ips,  # pogoda z yr
+    openweathersq9atk,  # pogoda openweathermap
+    meteosq9atk,  # pogoda alternatywa
+    imgwpodestsq2ips,  # wodowskazy z hydro.imgw.pl
+    airpollutionsq9atk,  # zanieczyszczenia powietrza z GIOŚ
+    airlysq9atk,  # zanieczyszczenia powietrza z Airly
+    firessq2ips,  # informacja o stopniu zagrożenia pożarowego lasów
+    ksesq2ips,  # dane systemowe z pse.pl
+    spaceweathersq2ips,  # pogoda kosmiczna
+    geomagneticsq9atk,  # zaburzenia geomagnetyczne
+    propagationsq9atk,  # propagacja KF
+    propagationsq2ips,  # propagacja KF z hamqsl.com
+    vhftroposq9atk,  # propagacja tropo
+    radioactivesq9atk,  # promieniowanie jonizujące
+    radioactivesq2ips,  # promieniowanie jonizujące z paa
+    calendarsq9atk,  # wschód i zachód słońca
+    calendarsq2ips,  # wschód i zachód słońca bez internetu
 ]
 # WŁĄCZONE MODUŁY
 modules = [
-    activitymap,            # marker na mapie wx.ostol.pl
-    timesq2ips,             # godzina
-    meteoalertsq2ips,       # ostrzeżenia meteorologiczne imgw
+    activitymap,  # marker na mapie wx.ostol.pl
+    timesq2ips,  # godzina
+    meteoalertsq2ips,  # ostrzeżenia meteorologiczne imgw
     # antistormsq2ips,      # radar pogodowy
     # meteostationsq2ips,   # dane ze stacji meteo
     # meteoyrsq2ips,        # pogoda z yr
-    openweathersq9atk,      # pogoda openweathermap
+    openweathersq9atk,  # pogoda openweathermap
     # meteosq9atk,          # pogoda alternatywa
     # imgwpodestsq2ips,     # wodowskazy z hydro.imgw.pl
     # airpollutionsq9atk,   # zanieczyszczenia powietrza z GIOŚ
-    airlysq9atk,            # zanieczyszczenia powietrza z Airly
+    airlysq9atk,  # zanieczyszczenia powietrza z Airly
     # firessq2ips,          # informacja o stopniu zagrożenia pożarowego lasów
     # ksesq2ips,            # dane systemowe z pse.pl
-    spaceweathersq2ips,     # pogoda kosmiczna
-    # geomagneticsq9atk,    # zaburzenia geomagnetyczne 
+    spaceweathersq2ips,  # pogoda kosmiczna
+    # geomagneticsq9atk,    # zaburzenia geomagnetyczne
     # propagationsq9atk,    # propagacja KF
-    propagationsq2ips,      # propagacja KF z hamqsl.com
-    vhftroposq9atk,         # propagacja tropo
+    propagationsq2ips,  # propagacja KF z hamqsl.com
+    vhftroposq9atk,  # propagacja tropo
     # radioactivesq9atk,    # promieniowanie jonizujące
-    radioactivesq2ips,      # promieniowanie jonizujące z paa
+    radioactivesq2ips,  # promieniowanie jonizujące z paa
     # calendarsq9atk,       # wschód i zachód słońca
-    calendarsq2ips,         # wschód i zachód słońca bez internetu
+    calendarsq2ips,  # wschód i zachód słońca bez internetu
 ]
 # MODUŁY OFFLINE
 offline_modules = [
@@ -487,5 +509,5 @@ aux_modules = {
     spaceweathersq2ips: geomagneticsq9atk,
     radioactivesq2ips: radioactivesq9atk,
     calendarsq2ips: calendarsq9atk,
-    propagationsq2ips: propagationsq9atk
+    propagationsq2ips: propagationsq9atk,
 }

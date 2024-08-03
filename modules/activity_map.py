@@ -25,23 +25,32 @@ from sr0wx_module import SR0WXModule
 
 class ActivityMap(SR0WXModule):
     """This module does not give any data, it just contacts application to mark
-station on the map.
+    station on the map.
 
-Parameters:
-    - `callsign`: your station callsign
-    - `latitude`, `longitude`: geographic position of station
-    - `hour_quarter`: quarter in which station is transmitting (to be
-    deprecated)
-    - `above_sea_level`: antenna's height a.s.l.
-    - `above_ground_level`: antenna's height a.g.l.
-    - `station_range`: station's range in normal conditions, in kilometers
-    - `additional_info`: additional information to show on website
-    - `service_url`: mapping service url, defaults to SQ9ATK service
+    Parameters:
+        - `callsign`: your station callsign
+        - `latitude`, `longitude`: geographic position of station
+        - `hour_quarter`: quarter in which station is transmitting (to be
+        deprecated)
+        - `above_sea_level`: antenna's height a.s.l.
+        - `above_ground_level`: antenna's height a.g.l.
+        - `station_range`: station's range in normal conditions, in kilometers
+        - `additional_info`: additional information to show on website
+        - `service_url`: mapping service url, defaults to SQ9ATK service
     """
 
-    def __init__(self, callsign, latitude, longitude, hour_quarter,
-                 above_sea_level, above_ground_level, station_range,
-                 additional_info="", service_url=""):
+    def __init__(
+        self,
+        callsign,
+        latitude,
+        longitude,
+        hour_quarter,
+        above_sea_level,
+        above_ground_level,
+        station_range,
+        additional_info="",
+        service_url="",
+    ):
         self.__callsign = callsign
         self.__latitude = latitude
         self.__longitude = longitude
@@ -71,30 +80,30 @@ Parameters:
                 "range": self.__station_range,
                 "info": self.__additional_info,
             }
-            dump = json.dumps(station_info, separators=(',', ':'))
+            dump = json.dumps(station_info, separators=(",", ":"))
             b64data = base64.urlsafe_b64encode(dump.encode())
             url = self.__service_url.encode() + b64data
             url = url.decode()
             self.__logger.info("::: Odpytuję adres: " + url)
-            #----------------------
+            # ----------------------
 
             for i in range(4):
                 try:
                     response = requests.get(url, timeout=15).text
 
-                    if response != 'OK':
+                    if response != "OK":
                         raise Exception("Non-OK response")
                     break
                 except Exception as e:
                     if i < 3:
-                        self.__logger.warning(f"Exception sending data:\n{e}\ntrying again...")
+                        self.__logger.warning(
+                            f"Exception sending data:\n{e}\ntrying again..."
+                        )
                     else:
                         raise e
             self.__logger.info("::: Dane wysłano, status OK\n")
 
-            connection.send({
-                "message": None,
-                "source": ""})
+            connection.send({"message": None, "source": ""})
         except Exception as e:
             self.__logger.exception(f"Exception when running {self}: {e}")
             connection.send(dict())

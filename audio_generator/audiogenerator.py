@@ -8,7 +8,7 @@ import glob
 import shutil
 import json
 
-sys.path.append('../')
+sys.path.append("../")
 
 from pl_google import trim_pl
 
@@ -19,6 +19,7 @@ apikey = None
 
 apicounter = 0
 
+
 def requestData(url, timeout, repeat, headers=None):
     for i in range(repeat):
         try:
@@ -28,37 +29,41 @@ def requestData(url, timeout, repeat, headers=None):
             else:
                 break
         except Exception as e:
-            if i < repeat-1:
+            if i < repeat - 1:
                 print(f"Error: {e}, trying again...")
             else:
                 raise e
     return data
 
+
 def GetKey(apikey):
     if apikey is not None:
         return apikey
-    url = 'https://responsivevoice.org/'
+    url = "https://responsivevoice.org/"
     data = requestData(url, 15, 4)
-    soup = bs.BeautifulSoup(data.text, 'lxml')
-    elem = soup.find('script', attrs={'id': 'responsive-voice-js'})
-    src = elem.get('src')
+    soup = bs.BeautifulSoup(data.text, "lxml")
+    elem = soup.find("script", attrs={"id": "responsive-voice-js"})
+    src = elem.get("src")
     query = urlparse(src).query
     query_elements = parse_qs(query)
-    key = query_elements['key'][0]
+    key = query_elements["key"][0]
 
     return key
 
+
 def GetMp3(word, filename, key):
-    url = f'https://texttospeech.responsivevoice.org/v1/text:synthesize?lang={lang}&engine=g1&name=&pitch=0.5&rate=0.5&volume=1&key={key}&gender={gender}&text={quote_plus(word)}'
-    
+    url = f"https://texttospeech.responsivevoice.org/v1/text:synthesize?lang={lang}&engine=g1&name=&pitch=0.5&rate=0.5&volume=1&key={key}&gender={gender}&text={quote_plus(word)}"
+
     data = requestData(url, 15, 5)
-    open(f'mp3/{filename}.mp3', 'wb').write(data.content)
+    open(f"mp3/{filename}.mp3", "wb").write(data.content)
+
 
 def convert(filename):
     if not os.path.exists("ogg/"):
         os.mkdir("ogg")
     os.system(
-        f"ffmpeg -hide_banner -loglevel error -y -i \"mp3/{filename}.mp3\" -af silenceremove=start_periods=1:start_duration=0:start_threshold=-60dB:stop_periods=-1:stop_duration=0:stop_threshold=-60dB -ar 22050 -acodec libvorbis \"ogg/{filename}.ogg\"")
+        f'ffmpeg -hide_banner -loglevel error -y -i "mp3/{filename}.mp3" -af silenceremove=start_periods=1:start_duration=0:start_threshold=-60dB:stop_periods=-1:stop_duration=0:stop_threshold=-60dB -ar 22050 -acodec libvorbis "ogg/{filename}.ogg"'
+    )
     os.remove(f"mp3/{filename}.mp3")
 
 
@@ -68,7 +73,8 @@ def GetOgg(l, key):
     # print(f"word: {word} | filename: {filename}")
     GetMp3(word, filename, key)
     convert(filename)
-    return(os.path.exists(f"ogg/{filename}.ogg"))
+    return os.path.exists(f"ogg/{filename}.ogg")
+
 
 def generate(slownik_list):
     slownik_list_new = []
@@ -76,7 +82,7 @@ def generate(slownik_list):
     for f in slownik_list:
         if "".join(["ogg/", f[1], ".ogg"]) not in files:
             slownik_list_new.append(f)
-    
+
     print(f"Liczba sampli do wygenerowania: {len(slownik_list_new)}")
     print(f"Liczba wszystkich sampli: {len(slownik_list)}")
     print("Uruchamianie generatora...")
@@ -86,19 +92,20 @@ def generate(slownik_list):
     for slowo in tqdm(slownik_list_new, unit="samples"):
         try:
             if GetOgg(slowo, key):
-                c+=1
+                c += 1
             else:
                 raise Exception("Plik nie utwożony.")
         except Exception as e:
             notgenerated.append(slowo)
     return notgenerated, c
 
+
 if __name__ == "__main__":
     print("Uruchamianie...")
     print("Sprawdzanie katalogu mp3/...")
     if os.path.exists("mp3/"):
         print("Katalog istnieje, usuwanie...")
-        shutil.rmtree('mp3')
+        shutil.rmtree("mp3")
     print("Tworzenie nowego katalogu mp3/")
     os.mkdir("mp3")
     slownik_list = []
@@ -122,6 +129,6 @@ if __name__ == "__main__":
                 print("Generowanie brakujących sampli...")
             notgenerated, c = generate(slownik_list)
             print(f"Wygenerowano {c}/{len(slownik_list)}")
-    
+
     print("usuwanie katalogu mp3/...")
     os.removedirs("mp3/")

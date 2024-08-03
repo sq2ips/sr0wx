@@ -3,10 +3,22 @@ from operator import itemgetter
 
 from sr0wx_module import SR0WXModule
 
+
 class ImgwPodestSq2ips(SR0WXModule):
     """Klasa pobierająca informacje stanie wody"""
-    
-    def __init__(self, language, service_url, wodowskazy, zlewnie, custom_names, custom_rivers, use_outdated, read_level, read_diff_level):
+
+    def __init__(
+        self,
+        language,
+        service_url,
+        wodowskazy,
+        zlewnie,
+        custom_names,
+        custom_rivers,
+        use_outdated,
+        read_level,
+        read_diff_level,
+    ):
         self.__language = language
         self.__service_url = service_url
         self.__wodowskazy = wodowskazy
@@ -16,9 +28,17 @@ class ImgwPodestSq2ips(SR0WXModule):
         self.__use_outdated = use_outdated
         self.__read_level = read_level
         self.__read_diff_level = read_diff_level
-        self.__codes_all = ['below', 'low', 'medium', 'high', 'warning', 'alarm']
-        self.__codes = {'alarm': "przekroczenia_stanow_alarmowych", 'warning': "przekroczenia_stanow_ostrzegawczych", 'below': "przekroczenia_absolutnych_stanow_minimalnych"}
-        self.__codes_diff = {"alarm":"diffToAlarm", "warning":"diffToWarn", "below": "diffToAbsoluteMin"}
+        self.__codes_all = ["below", "low", "medium", "high", "warning", "alarm"]
+        self.__codes = {
+            "alarm": "przekroczenia_stanow_alarmowych",
+            "warning": "przekroczenia_stanow_ostrzegawczych",
+            "below": "przekroczenia_absolutnych_stanow_minimalnych",
+        }
+        self.__codes_diff = {
+            "alarm": "diffToAlarm",
+            "warning": "diffToWarn",
+            "below": "diffToAbsoluteMin",
+        }
         self.__cm_units = ["centymetr", "centymetry", "centymetrow"]
         self.__logger = logging.getLogger(__name__)
 
@@ -26,8 +46,8 @@ class ImgwPodestSq2ips(SR0WXModule):
         stations = {}
         for station in data:
             stations[int(station["code"])] = station
-        return(stations)
-    
+        return stations
+
     def getStations(self, stations):
         stations_id = []
         # wodowskazy ze zlewni
@@ -47,26 +67,36 @@ class ImgwPodestSq2ips(SR0WXModule):
             else:
                 self.__logger.warning(f"wodowskaz o kodzie {w} nie istnieje")
         return stations_id
-    
+
     def checkStations(self, stations, stations_id):
         stations_checked = []
         for id in stations_id:
             station = stations[id]
             if "Outdated" in station["statusCode"]:
                 if not self.__use_outdated:
-                    self.__logger.warning(f"Zdezaktualizowany stan wody z wodowskazu {station['code']}, kod {station['statusCode']}, pomijanie...")
+                    self.__logger.warning(
+                        f"Zdezaktualizowany stan wody z wodowskazu {station['code']}, kod {station['statusCode']}, pomijanie..."
+                    )
                     continue
                 else:
-                    self.__logger.warning(f"Zdezaktualizowany stan wody z wodowskazu {station['code']}, kod {station['statusCode']}, używanie mimo to...")
-            elif station["statusCode"] in ['no-water-state-data', None]:
-                self.__logger.warning(f"Nieznany stan wody z wodowskazu {station['code']}, kod {station['statusCode']}")
+                    self.__logger.warning(
+                        f"Zdezaktualizowany stan wody z wodowskazu {station['code']}, kod {station['statusCode']}, używanie mimo to..."
+                    )
+            elif station["statusCode"] in ["no-water-state-data", None]:
+                self.__logger.warning(
+                    f"Nieznany stan wody z wodowskazu {station['code']}, kod {station['statusCode']}"
+                )
             elif station["statusCode"] == "unknown":
-                self.__logger.warning(f"Brak stanów charakterystycznych z wodowskazu {station['code']}")
+                self.__logger.warning(
+                    f"Brak stanów charakterystycznych z wodowskazu {station['code']}"
+                )
             else:
                 if station["statusCode"] in self.__codes_all:
                     stations_checked.append(station)
                 else:
-                    self.__logger.warning(f"Nieprawidłowy kod, otrzymano {station['statusCode']}")
+                    self.__logger.warning(
+                        f"Nieprawidłowy kod, otrzymano {station['statusCode']}"
+                    )
         return stations_checked
 
     def groupStations(self, stations):
@@ -74,14 +104,20 @@ class ImgwPodestSq2ips(SR0WXModule):
         for station in stations:
             if station["statusCode"] not in stations_grouped:
                 stations_grouped[station["statusCode"]] = []
-            stations_grouped[station["statusCode"]] = stations_grouped[station["statusCode"]] + [station]
-        
+            stations_grouped[station["statusCode"]] = stations_grouped[
+                station["statusCode"]
+            ] + [station]
+
         stations_grouped_sorted = {}
 
         for code in self.__codes:
             if code in stations_grouped:
-                stations_grouped_sorted[code] = sorted(stations_grouped[code], key = itemgetter("river"))
-                self.__logger.info(f"Kod: {code}, liczba wodowskazów: {len(stations_grouped_sorted[code])}")
+                stations_grouped_sorted[code] = sorted(
+                    stations_grouped[code], key=itemgetter("river")
+                )
+                self.__logger.info(
+                    f"Kod: {code}, liczba wodowskazów: {len(stations_grouped_sorted[code])}"
+                )
 
         return stations_grouped_sorted
 
@@ -116,32 +152,44 @@ class ImgwPodestSq2ips(SR0WXModule):
             msg += self.__custom_rivers[river]
         else:
             msg += self.__language.trim_pl(river)
-        
+
         msg += " wodowskaz "
         if station["name"] in self.__custom_names:
-            msg += self.__custom_names["".join(station["name"].lower().split()).replace("-", " ")]
+            msg += self.__custom_names[
+                "".join(station["name"].lower().split()).replace("-", " ")
+            ]
         else:
-            msg += self.__language.trim_pl("".join(station["name"].lower().split()).replace("-", " "))
-        
+            msg += self.__language.trim_pl(
+                "".join(station["name"].lower().split()).replace("-", " ")
+            )
+
         if station["currentState"] is not None and self.__read_level:
             msg += " poziom "
-            msg += self.__language.read_number(int(station["currentState"]["value"]), units=self.__cm_units)
+            msg += self.__language.read_number(
+                int(station["currentState"]["value"]), units=self.__cm_units
+            )
 
-        if None not in [station[x] for x in self.__codes_diff.values()] and self.__read_diff_level:
+        if (
+            None not in [station[x] for x in self.__codes_diff.values()]
+            and self.__read_diff_level
+        ):
             msg += " przekroczenie_o "
-            msg += self.__language.read_number(abs(int(station[self.__codes_diff[station["statusCode"]]])), units=self.__cm_units)
+            msg += self.__language.read_number(
+                abs(int(station[self.__codes_diff[station["statusCode"]]])),
+                units=self.__cm_units,
+            )
 
         msg += " "
-        
+
         if station["trend"] < 0:
             msg += "tendencja_spadkowa "
         elif station["trend"] == 0:
             pass
         elif station["trend"] > 0:
             msg += "tendencja_wzrostowa "
-        
+
         msg += "_"
-        return(msg)
+        return msg
 
     def get_data(self, connection):
         try:
@@ -153,7 +201,7 @@ class ImgwPodestSq2ips(SR0WXModule):
             stations = self.toDict(data)
             if len(stations) == 0:
                 raise Exception("Brak danych")
-            
+
             self.__logger.info("::: Wyszukiwanie wybranych wodowskazów...")
             # wyszukiwanie wodowskazów na podstawie id i zlewni
             stations_id = self.getStations(stations)
@@ -167,7 +215,9 @@ class ImgwPodestSq2ips(SR0WXModule):
                 raise Exception("Brak funkcjonujących wodowskazów na liście")
             self.__logger.info(f"Liczba wszystkich wodowskazów: {len(stations)}")
             self.__logger.info(f"Liczba wybranych wodowskazów: {len(stations_id)}")
-            self.__logger.info(f"Liczba poprawnych wybranych wodowskazów: {len(stations_checked)}")
+            self.__logger.info(
+                f"Liczba poprawnych wybranych wodowskazów: {len(stations_checked)}"
+            )
 
             self.__logger.info("::: Grupowanie danych z wodowskazów...")
             # grupowanie wodowskazów na podstawie kodów
@@ -181,16 +231,20 @@ class ImgwPodestSq2ips(SR0WXModule):
                         message += self.getText(station)
 
             if len(message.split()) > 1:
-                connection.send({
-                    "message": message,
-                    "source": "hydro_imgw",
-                })
+                connection.send(
+                    {
+                        "message": message,
+                        "source": "hydro_imgw",
+                    }
+                )
             else:
                 self.__logger.warning("Brak przekroczeń wybranych stanów wody")
-                connection.send({
-                    "message": None,
-                    "source": "",
-                })
+                connection.send(
+                    {
+                        "message": None,
+                        "source": "",
+                    }
+                )
         except Exception as e:
             self.__logger.exception(f"Exception when running {self}: {e}")
             connection.send(dict())

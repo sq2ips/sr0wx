@@ -19,8 +19,8 @@ class CalendarSq2ips(SR0WXModule):
         self.__logger = logging.getLogger(__name__)
 
     def hoursToNumbers(self, time="00:00"):
-        datetime_object = datetime.datetime.strptime(time, '%H:%M')
-        time_words = self.__language.read_datetime(datetime_object, '%H %M')
+        datetime_object = datetime.datetime.strptime(time, "%H:%M")
+        time_words = self.__language.read_datetime(datetime_object, "%H %M")
         return time_words
 
     def get_data(self, connection):
@@ -35,19 +35,40 @@ class CalendarSq2ips(SR0WXModule):
             Gdynia.horizon = self.__hori
             Gdynia.date = datetime.datetime.now()
             sun = ephem.Sun()
-            sunrise = " ".join(["wscho_d_sl_on_ca", "godzina", self.hoursToNumbers(str(ephem.localtime(
-                Gdynia.next_rising(sun)).hour) + ":" + str(ephem.localtime(Gdynia.next_rising(sun)).minute)), " "])
-            sunset = " ".join(["zacho_d_sl_on_ca", "godzina", self.hoursToNumbers(str(ephem.localtime(
-                Gdynia.next_setting(sun)).hour) + ":" + str(ephem.localtime(Gdynia.next_setting(sun)).minute)), " "])
-            message = " ".join(
-                ["_", "kalendarium", "_", sunrise, "_", sunset, "_"])
+            sunrise = " ".join(
+                [
+                    "wscho_d_sl_on_ca",
+                    "godzina",
+                    self.hoursToNumbers(
+                        str(ephem.localtime(Gdynia.next_rising(sun)).hour)
+                        + ":"
+                        + str(ephem.localtime(Gdynia.next_rising(sun)).minute)
+                    ),
+                    " ",
+                ]
+            )
+            sunset = " ".join(
+                [
+                    "zacho_d_sl_on_ca",
+                    "godzina",
+                    self.hoursToNumbers(
+                        str(ephem.localtime(Gdynia.next_setting(sun)).hour)
+                        + ":"
+                        + str(ephem.localtime(Gdynia.next_setting(sun)).minute)
+                    ),
+                    " ",
+                ]
+            )
+            message = " ".join(["_", "kalendarium", "_", sunrise, "_", sunset, "_"])
             Gdynia.next_antitransit
             self.__logger.info(f"Wschód: {ephem.localtime(Gdynia.next_rising(sun))}")
             self.__logger.info(f"Zachód: {ephem.localtime(Gdynia.next_setting(sun))}")
-            connection.send({
-                "message": message,
-                "source": "",
-            })
+            connection.send(
+                {
+                    "message": message,
+                    "source": "",
+                }
+            )
         except Exception as e:
             self.__logger.exception(f"Exception when running {self}: {e}")
             connection.send(dict())

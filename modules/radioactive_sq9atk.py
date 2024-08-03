@@ -17,7 +17,7 @@ class RadioactiveSq9atk(SR0WXModule):
         return data.text
 
     def isSensorMatchedById(self, sensorId, string):
-        pos = string.find(("Details sensor "+str(sensorId)))
+        pos = string.find(("Details sensor " + str(sensorId)))
         return pos >= 0
 
     def isSensorRow(self, string):
@@ -65,21 +65,42 @@ class RadioactiveSq9atk(SR0WXModule):
             self.__logger.info("::: Przetwarzam dane...")
             data = self.getSensorData(html)
 
-            msvCurrent = int(float(data['current'])*100)
-            msvAverage = int(float(data['average'])*100)
+            msvCurrent = int(float(data["current"]) * 100)
+            msvAverage = int(float(data["average"]) * 100)
 
-            averageValue = " ".join(["wartos_c__aktualna", self.__language.read_decimal(
-                msvCurrent)+" ", "mikrosjiwerta", "na_godzine_"])
-            currentValue = " ".join(["s_rednia_wartos_c__dobowa", self.__language.read_decimal(
-                msvAverage)+" ", "mikrosjiwerta", "na_godzine_"])
+            averageValue = " ".join(
+                [
+                    "wartos_c__aktualna",
+                    self.__language.read_decimal(msvCurrent) + " ",
+                    "mikrosjiwerta",
+                    "na_godzine_",
+                ]
+            )
+            currentValue = " ".join(
+                [
+                    "s_rednia_wartos_c__dobowa",
+                    self.__language.read_decimal(msvAverage) + " ",
+                    "mikrosjiwerta",
+                    "na_godzine_",
+                ]
+            )
 
             message = " ".join(
-                [" _ poziom_promieniowania _ ", averageValue, " _ ", currentValue, " _ "])
+                [
+                    " _ poziom_promieniowania _ ",
+                    averageValue,
+                    " _ ",
+                    currentValue,
+                    " _ ",
+                ]
+            )
 
-            connection.send({
-                "message": message,
-                "source": "radioactiveathome_org",
-            })
+            connection.send(
+                {
+                    "message": message,
+                    "source": "radioactiveathome_org",
+                }
+            )
         except Exception as e:
             self.__logger.exception(f"Exception when running {self}: {e}")
             connection.send(dict())

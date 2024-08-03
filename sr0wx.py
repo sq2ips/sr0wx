@@ -2,6 +2,7 @@
 
 import os
 from pathlib import Path
+
 os.chdir("/".join(str(Path(__file__)).split("/")[:-1]))
 
 import requests
@@ -17,7 +18,9 @@ import inspect
 from colorcodes import *
 
 
-LICENSE = COLOR_OKBLUE + """
+LICENSE = (
+    COLOR_OKBLUE
+    + """
 
 Copyright 2009-2014 Michal Sadowski (sq6jnx at hamradio dot pl)
 
@@ -37,7 +40,9 @@ limitations under the License.
 
 You can find full list of contributors on github.com/sq6jnx/sr0wx.py
 
-""" + COLOR_ENDC
+"""
+    + COLOR_ENDC
+)
 
 
 #
@@ -101,6 +106,7 @@ def setup_logging(config):
 
     return logger
 
+
 #
 # All datas returned by SR0WX modules will be stored in ``data`` variable.
 
@@ -131,7 +137,7 @@ except getopt.GetoptError:
 
 for opt, arg in opts:
     if opt in ["-c", "--config"]:
-        if arg[-3:] == '.py':
+        if arg[-3:] == ".py":
             arg = arg[:-3]
         config = __import__(arg)
     elif opt in ["-m", "--modules"]:
@@ -171,9 +177,11 @@ aux_modules = {**config.aux_modules, **{v: k for k, v in config.aux_modules.item
 
 try:
     logger.info("Checking internet connection...")
-    requests.get('http://google.com', timeout=20)
+    requests.get("http://google.com", timeout=20)
 except requests.ConnectionError:
-    logger.error(COLOR_FAIL + "No internet connection, offline mode active" + COLOR_ENDC + "\n")
+    logger.error(
+        COLOR_FAIL + "No internet connection, offline mode active" + COLOR_ENDC + "\n"
+    )
     modules = config.offline_modules
     message += " ".join(config.data_sources_error_msg)
 else:
@@ -191,8 +199,10 @@ else:
     os.mkdir("cache/")
 
 lang = config.lang
-config.pl_google=lang
-sources = [lang.source, ]
+config.pl_google = lang
+sources = [
+    lang.source,
+]
 
 if config.multi_processing:
     logger.info("multiprocessing is ON\n")
@@ -204,7 +214,11 @@ if config.multi_processing:
         processes.append(Process(target=module.get_data, args=(conn2,)))
 
     for p in processes:
-        logger.info(COLOR_OKBLUE + f"starting {str(modules[processes.index(p)])}..." + COLOR_ENDC)
+        logger.info(
+            COLOR_OKBLUE
+            + f"starting {str(modules[processes.index(p)])}..."
+            + COLOR_ENDC
+        )
         p.start()
 
     for p in processes:
@@ -218,8 +232,15 @@ if config.multi_processing:
         module_source = module_data.get("source", "")
         if module_message == "":
             func_modules += COLOR_FAIL + str(modules[connections.index(c)]) + COLOR_ENDC
-            if modules[connections.index(c)] in aux_modules and aux_modules[modules[connections.index(c)]] not in modules:
-                logger.info(COLOR_OKBLUE + f"Starting auxilary module {aux_modules[modules[connections.index(c)]]} for module {modules[connections.index(c)]}..." + COLOR_ENDC)
+            if (
+                modules[connections.index(c)] in aux_modules
+                and aux_modules[modules[connections.index(c)]] not in modules
+            ):
+                logger.info(
+                    COLOR_OKBLUE
+                    + f"Starting auxilary module {aux_modules[modules[connections.index(c)]]} for module {modules[connections.index(c)]}..."
+                    + COLOR_ENDC
+                )
                 conn1, conn2 = Pipe()
                 aux_modules[modules[connections.index(c)]].get_data(conn2)
                 module_data = conn1.recv()
@@ -227,22 +248,36 @@ if config.multi_processing:
                 module_source = module_data.get("source", "")
                 func_modules += " auxilary: "
                 if module_message == "":
-                    func_modules += COLOR_FAIL + str(aux_modules[modules[connections.index(c)]]) + COLOR_ENDC + "\n"
+                    func_modules += (
+                        COLOR_FAIL
+                        + str(aux_modules[modules[connections.index(c)]])
+                        + COLOR_ENDC
+                        + "\n"
+                    )
                 else:
                     any_func_modules = True
-                    func_modules += COLOR_OKGREEN + str(aux_modules[modules[connections.index(c)]]) + COLOR_ENDC + "\n"
-                    message = " ".join((message, module_message))     
+                    func_modules += (
+                        COLOR_OKGREEN
+                        + str(aux_modules[modules[connections.index(c)]])
+                        + COLOR_ENDC
+                        + "\n"
+                    )
+                    message = " ".join((message, module_message))
             else:
                 func_modules += "\n"
 
         elif module_message is None:
-            func_modules += COLOR_OKGREEN + str(modules[connections.index(c)]) + COLOR_ENDC + "\n"
+            func_modules += (
+                COLOR_OKGREEN + str(modules[connections.index(c)]) + COLOR_ENDC + "\n"
+            )
         else:
             any_func_modules = True
-            func_modules += COLOR_OKGREEN + str(modules[connections.index(c)]) + COLOR_ENDC + "\n"
+            func_modules += (
+                COLOR_OKGREEN + str(modules[connections.index(c)]) + COLOR_ENDC + "\n"
+            )
             message = " ".join((message, module_message))
         if module_message != "" and module_source != "":
-            sources.append(module_data['source'])
+            sources.append(module_data["source"])
 else:
     logger.info("multiprocessing is OFF\n")
     func_modules = ""
@@ -263,11 +298,27 @@ else:
             func_modules += COLOR_OKGREEN + str(module) + COLOR_ENDC + "\n"
             message = " ".join((message, module_message))
         if module_message != "" and module_source != "":
-            sources.append(module_data['source'])
+            sources.append(module_data["source"])
 
 
-logger.info(COLOR_BOLD + "modules (" + COLOR_ENDC + COLOR_OKGREEN + "functioning" + COLOR_ENDC + COLOR_BOLD + " / " +
-            COLOR_ENDC + COLOR_FAIL + "not functioning" + COLOR_ENDC + COLOR_BOLD + "):\n" + COLOR_ENDC + func_modules)
+logger.info(
+    COLOR_BOLD
+    + "modules ("
+    + COLOR_ENDC
+    + COLOR_OKGREEN
+    + "functioning"
+    + COLOR_ENDC
+    + COLOR_BOLD
+    + " / "
+    + COLOR_ENDC
+    + COLOR_FAIL
+    + "not functioning"
+    + COLOR_ENDC
+    + COLOR_BOLD
+    + "):\n"
+    + COLOR_ENDC
+    + func_modules
+)
 
 if not any_func_modules:
     logger.critical("ERROR: No functioning modules, exiting...")
@@ -276,7 +327,7 @@ if not any_func_modules:
 # data. Every element of returned list is actually a filename of a sample.
 
 message = config.hello_msg + message.split()
-if hasattr(config, 'read_sources_msg'):
+if hasattr(config, "read_sources_msg"):
     if config.read_sources_msg:
         if len(sources) > 1:
             message += sources
@@ -311,8 +362,14 @@ for el in message:
 
 if config.ctcss_tone is not None:
     import numpy
-    arr = numpy.array([config.ctcss_volume * numpy.sin(2.0 * numpy.pi * round(config.ctcss_tone)
-                      * x / 16000) for x in range(0, 16000)]).astype(numpy.int16)
+
+    arr = numpy.array(
+        [
+            config.ctcss_volume
+            * numpy.sin(2.0 * numpy.pi * round(config.ctcss_tone) * x / 16000)
+            for x in range(0, 16000)
+        ]
+    ).astype(numpy.int16)
     arr2 = numpy.c_[arr, arr]
     ctcss = pygame.sndarray.make_sound(arr2)
     logger.info(COLOR_WARNING + f"CTCSS tone {config.ctcss_tone}Hz" + COLOR_ENDC)
@@ -327,13 +384,15 @@ logger.info("Checking samples...")
 sound_samples = {}
 for el in message:
     if "upper" in dir(el):
-        if el[0:7] == 'file://':
+        if el[0:7] == "file://":
             sound_samples[el] = pygame.mixer.Sound(el[7:])
         sample = "".join([config.lang_name, "/samples/", el, ".ogg"])
         if el != "_" and el not in sound_samples:
             if not os.path.isfile(sample):
                 logger.warning(COLOR_FAIL + f"Couldn't find {sample}" + COLOR_ENDC)
-                sound_samples[el] = pygame.mixer.Sound(config.lang_name + "/samples/beep.ogg")
+                sound_samples[el] = pygame.mixer.Sound(
+                    config.lang_name + "/samples/beep.ogg"
+                )
             else:
                 sound_samples[el] = pygame.mixer.Sound(sample)
 
@@ -341,6 +400,7 @@ nopi = True
 if config.rpi_pin is not None:
     try:
         import RPi.GPIO as GPIO
+
         GPIO.setmode(GPIO.BOARD)
         GPIO.setup(config.rpi_pin, GPIO.OUT)
         GPIO.output(config.rpi_pin, GPIO.HIGH)
@@ -356,11 +416,11 @@ if config.rpi_pin is not None:
 # details.
 
 if config.serial_port is not None:
-
     import serial
+
     try:
         ser = serial.Serial(config.serial_port, config.serial_baud_rate)
-        if config.serial_signal == 'DTR':
+        if config.serial_signal == "DTR":
             logger.info(COLOR_OKGREEN + "DTR/PTT set to ON" + COLOR_ENDC)
             ser.setDTR(1)
             ser.setRTS(0)
@@ -369,7 +429,9 @@ if config.serial_port is not None:
             ser.setDTR(0)
             ser.setRTS(1)
     except Exception as e:
-        logger.error(f"Failed to open serial port {config.serial_port}@{config.serial_baud_rate}: {e}")
+        logger.error(
+            f"Failed to open serial port {config.serial_port}@{config.serial_baud_rate}: {e}"
+        )
 
 
 pygame.time.delay(500)
@@ -400,8 +462,11 @@ for el in message:
         elif "upper" not in dir(el):
             sound = pygame.sndarray.make_sound(el)
             if config.pygame_bug == 1:
-                sound = pygame.sndarray.make_sound(pygame.sndarray.array(
-                    sound)[:len(pygame.sndarray.array(sound))/2])
+                sound = pygame.sndarray.make_sound(
+                    pygame.sndarray.array(sound)[
+                        : len(pygame.sndarray.array(sound)) / 2
+                    ]
+                )
             voice_channel = sound.play()
         while voice_channel.get_busy():
             pygame.time.Clock().tick(config.clockTick)
@@ -435,13 +500,14 @@ if config.saveAudio or saveAudioOverwrite:
     try:
         logger.info("Importing pydub...")
         from pydub import AudioSegment
+
         logger.info("Creating samples list...")
         samples = []
         for el in message:
             if el == "_":
                 samples.append(AudioSegment.silent(duration=config.delayValue))
             elif "upper" in dir(el):
-                if el[0:7] == 'file://':
+                if el[0:7] == "file://":
                     sample_full = el[7:]
                 sample = "".join([config.lang_name, "/samples/", el, ".ogg"])
                 if not os.path.isfile(sample):

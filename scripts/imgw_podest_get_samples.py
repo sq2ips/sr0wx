@@ -3,11 +3,12 @@ import getopt
 import requests
 import json
 
-sys.path.append('../')
+sys.path.append("../")
 
 from pl_google import trim_pl
 
 url = "https://hydro-back.imgw.pl/list/hydrologic"
+
 
 def parseName(name):
     na = ["(", ")", "jez.", "morze"]
@@ -25,6 +26,7 @@ def parseName(name):
     river = " ".join(river.split())
     return river
 
+
 zlewnie = []
 wodowskazy = []
 all = False
@@ -37,7 +39,9 @@ try:
         raise getopt.GetoptError("No options got")
     opts, args = getopt.getopt(argv, "z:w:s:ac")
 except getopt.GetoptError:
-    print("Program generujący sample nazw rzek i wodowskazów do modułu imgw_podest_sq2ips, parametry:\n-a pobieranie wszystkich sampli\n-z pobieranie sampli z danej zlewni\n-w pobieranie sampli danego wodowskazu\n-fplik json do zapisu nazw sampli")
+    print(
+        "Program generujący sample nazw rzek i wodowskazów do modułu imgw_podest_sq2ips, parametry:\n-a pobieranie wszystkich sampli\n-z pobieranie sampli z danej zlewni\n-w pobieranie sampli danego wodowskazu\n-fplik json do zapisu nazw sampli"
+    )
     exit()
 
 for opt, arg in opts:
@@ -56,7 +60,12 @@ stations = requests.get(url).json()
 
 samples = []
 for s in stations:
-    if (s["catchment"] is not None and int(s["catchment"]) in zlewnie or s["code"] is not None and int(s["code"]) in wodowskazy) or all:
+    if (
+        s["catchment"] is not None
+        and int(s["catchment"]) in zlewnie
+        or s["code"] is not None
+        and int(s["code"]) in wodowskazy
+    ) or all:
         samples.append(parseName(s["river"]))
         samples.append(parseName(s["name"]))
 

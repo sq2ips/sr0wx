@@ -4,8 +4,10 @@ from sr0wx_module import SR0WXModule
 import logging
 from datetime import datetime
 
+
 class SpaceWeatherSq2ips(SR0WXModule):
     """Moduł pobierający informacje o alertach pogody kosmicznej"""
+
     def __init__(self, language, urlG, urlR, urlS, geomagneticShort, radioNoise):
         self.__language = language
         self.__urlG = urlG
@@ -25,11 +27,15 @@ class SpaceWeatherSq2ips(SR0WXModule):
         del data[0]
         if self.__geomagneticShort:
             val = float(data[-1][Kp])
-            self.__logger.info(f"Burze geomagnetyczne geomagnetyczne (chwilowe): Kp={val}, data: {data[-1][date]}")
+            self.__logger.info(
+                f"Burze geomagnetyczne geomagnetyczne (chwilowe): Kp={val}, data: {data[-1][date]}"
+            )
         else:
             val_list = []
             for d in data:
-                if (datetime.now() - datetime.strptime(d[date], "%Y-%m-%d %H:%M:%S.000")).days < 1:
+                if (
+                    datetime.now() - datetime.strptime(d[date], "%Y-%m-%d %H:%M:%S.000")
+                ).days < 1:
                     val_list.append(float(d[Kp]))
             val = max(val_list)
             self.__logger.info(f"Burze geomagnetyczne geomagnetyczne: Kp={val}")
@@ -47,7 +53,7 @@ class SpaceWeatherSq2ips(SR0WXModule):
         elif val >= 9:
             message = "ekstremalne"
 
-        return (message)
+        return message
 
     def ProcessR(self, data):
         val_list = []
@@ -58,15 +64,15 @@ class SpaceWeatherSq2ips(SR0WXModule):
 
         if val < 10**-5:
             message = None
-        elif val >= 10**-5 and val < 5*10**-5:
+        elif val >= 10**-5 and val < 5 * 10**-5:
             message = "mal_e"
-        elif val >= 5*10**-5 and val < 10**-4:
+        elif val >= 5 * 10**-5 and val < 10**-4:
             message = "duz_e"
         elif val >= 10**-4 and val < 10**-3:
             message = "bardzo_duz_e"
-        elif val >= 10**-3 and val < 2*10**-3:
+        elif val >= 10**-3 and val < 2 * 10**-3:
             message = "silne"
-        elif val >= 2*10**-3:
+        elif val >= 2 * 10**-3:
             message = "ekstremalne"
 
         return message
@@ -75,7 +81,9 @@ class SpaceWeatherSq2ips(SR0WXModule):
         val_list = []
 
         for d in data:
-            if (datetime.now() - datetime.strptime(d["time_tag"], "%Y-%m-%dT%H:%M:%SZ")).seconds // 3600 <= 6:
+            if (
+                datetime.now() - datetime.strptime(d["time_tag"], "%Y-%m-%dT%H:%M:%SZ")
+            ).seconds // 3600 <= 6:
                 val_list.append(float(d["flux"]))
         val = max(val_list)
 
@@ -94,6 +102,7 @@ class SpaceWeatherSq2ips(SR0WXModule):
         elif val >= 10**5:
             message = "ekstremalne"
         return message
+
     def get_data(self, connection):
         try:
             self.__logger.info("::: Pobieranie danych")
@@ -127,10 +136,12 @@ class SpaceWeatherSq2ips(SR0WXModule):
                     message += dS
                     message += " burze_radiacyjne "
 
-            connection.send({
-                "message": message,
-                "source": "swpc",
-            })
+            connection.send(
+                {
+                    "message": message,
+                    "source": "swpc",
+                }
+            )
         except Exception as e:
             self.__logger.exception(f"Exception when running {self}: {e}")
             connection.send(dict())

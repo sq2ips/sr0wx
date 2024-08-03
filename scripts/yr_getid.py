@@ -5,14 +5,14 @@ parameters = "Program szukający id do modułu meteo_yr_sq2ips.py:\n\nParametry:
 
 url = "https://www.yr.no/api/v0/locations/search?language=en&q="
 
-if  len(sys.argv) == 1 or sys.argv[1] == "-h":
+if len(sys.argv) == 1 or sys.argv[1] == "-h":
     print(parameters)
     exit(0)
 elif sys.argv[1] == "-f":
     print("Program szukający id stacji do modułu meteo_yr_sq2ips.py\n")
     print(f"wyszukiwanie id na podstawie filtra: {sys.argv[2]}")
     print("Pobierane danych...")
-    r = requests.get(url+sys.argv[2]).json()
+    r = requests.get(url + sys.argv[2]).json()
     print("Przetwarzanie danych...")
     print(f"Ilość wyników: {r["totalResults"]}\n")
     print("miasto/obszar: id stacji")

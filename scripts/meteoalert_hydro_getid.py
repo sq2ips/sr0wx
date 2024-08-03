@@ -5,13 +5,13 @@ parameters = "Program szukający id regionu hydro (ostrzeżenia hydrologiczne) d
 
 url = "https://meteo.imgw.pl/dyn/data/zlew.json?v=1.37"
 
-if  len(sys.argv) == 1 or sys.argv[1] == "-h":
+if len(sys.argv) == 1 or sys.argv[1] == "-h":
     print(parameters)
     exit(0)
 elif sys.argv[1] == "-a":
     print("Program szukający id obszaru do modułu meteoalert_sq2ips.py")
     print("Pobieranie danych..")
-    data = requests.get(url).json()['features']
+    data = requests.get(url).json()["features"]
     print("Przetwarzanie danych...")
     print(f"Ilość regionów: {len(data)}\n")
     print("miasto/powiat: id stacji")
@@ -21,7 +21,7 @@ elif sys.argv[1] == "-f":
     print("Program szukający id stacji do modułu meteoalert_sq2ips.py\n")
     print(f"wyszukiwanie id na podstawie filtra: {sys.argv[2]}")
     print("Pobierane danych...")
-    data = requests.get(url).json()['features']
+    data = requests.get(url).json()["features"]
     print("Przetwarzanie danych...")
     print(f"Ilość regionów: {len(data)}\n")
     print("miasto/powiat: id stacji")

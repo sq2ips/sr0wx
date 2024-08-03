@@ -4,87 +4,98 @@ from datetime import datetime, timedelta
 
 from sr0wx_module import SR0WXModule
 
+
 class FiresSq2ips(SR0WXModule):
     """Moduł pobierający informacje o stopniu zagrożenia pożarowego lasów"""
+
     def __init__(self, language, service_url, zone):
         self.__service_url = service_url
         self.__language = language
         self.__zone = zone
         self.__logger = logging.getLogger(__name__)
-        self.__codes = {"0": "brak_zagroz_enia", "1": "mal_e_zagroz_enie", "2": "s_rednie_zagroz_enie", "3": "duz_e_zagroz_enie"}
+        self.__codes = {
+            "0": "brak_zagroz_enia",
+            "1": "mal_e_zagroz_enie",
+            "2": "s_rednie_zagroz_enie",
+            "3": "duz_e_zagroz_enie",
+        }
 
     def parseTable(self, table):
         rows = []
-        for i, row in enumerate(table.find_all('tr')):
+        for i, row in enumerate(table.find_all("tr")):
             if i > 0:
                 els = []
-                for el in row.find_all('td'):
+                for el in row.find_all("td"):
                     els.append(el.text)
                 rows.append(els)
 
         for row in rows:
             if len(row) > 1 and self.__zone in row[0]:
-                return(row[1:])
+                return row[1:]
 
     def parseLabel(self, label, l):
         rows = []
-        for i, row in enumerate(label.find_all('tr')):
+        for i, row in enumerate(label.find_all("tr")):
             els = []
-            for el in row.find_all('th'):
+            for el in row.find_all("th"):
                 els.append(el.text)
             rows.append(els)
-        return(rows[-1][-l:])
+        return rows[-1][-l:]
 
     def processDate(self, text):
         date = datetime.strptime(text[-15:], "%Y-%m-%d%H:%M")
         if date.date() == datetime.now().date():
-            return("dzis")
-        elif date.date() == datetime.now().date()+timedelta(days=1):
-            return("jutro")
-        elif date.date() == datetime.now().date()+timedelta(days=2):
-            return("po_jutrze")
+            return "dzis"
+        elif date.date() == datetime.now().date() + timedelta(days=1):
+            return "jutro"
+        elif date.date() == datetime.now().date() + timedelta(days=2):
+            return "po_jutrze"
         else:
             raise Exception("Invalid date")
 
     def processData(self, row):
         if row == "brak danych":
             return None
-            self.__logger.warning( "Brak danych z obszaru")
+            self.__logger.warning("Brak danych z obszaru")
         elif " - " in row and len(row.split()) == 3:
-            return(row.split()[0])
+            return row.split()[0]
         else:
-            self.__logger.warning( "Nieprawidłowe dane")
+            self.__logger.warning("Nieprawidłowe dane")
             return None
-    
+
     def get_data(self, connection):
         try:
             self.__logger.info("::: Pobieranie danych o zagrożeniu pożarowym lasów...")
             html = self.requestData(self.__service_url, self.__logger, 20, 3).text
 
             self.__logger.info("::: Przetwarzanie danych...")
-            soup = BeautifulSoup(html, 'html.parser')
+            soup = BeautifulSoup(html, "html.parser")
 
-            table = soup.find_all('table')[0]
+            table = soup.find_all("table")[0]
             warnings_raw = self.parseTable(table)
             if warnings_raw is None:
                 self.__logger.error("Brak danych ze źródła")
-                connection.send({
-                    "message": None,
-                    "source": "",
-                })
+                connection.send(
+                    {
+                        "message": None,
+                        "source": "",
+                    }
+                )
             else:
                 warnings = []
                 for c in warnings_raw:
                     warnings.append(self.processData(c))
-                
+
                 if set(warnings) == {None}:
                     self.__logger.error("Brak żadnych danych z czujników")
-                    connection.send({
-                        "message": None,
-                        "source": "",
-                    })
+                    connection.send(
+                        {
+                            "message": None,
+                            "source": "",
+                        }
+                    )
                 else:
-                    label_table = soup.find_all('table')[1]
+                    label_table = soup.find_all("table")[1]
                     label = self.parseLabel(label_table, len(warnings))
 
                     dates = []
@@ -103,8 +114,8 @@ class FiresSq2ips(SR0WXModule):
                     message = "zagroz_enie_poz_arowe_laso_w _ "
                     sk = 0
                     for i in range(len(dictmsg)):
-                        if sk>0:
-                            sk-=0
+                        if sk > 0:
+                            sk -= 0
                             continue
 
                         ind = []
@@ -112,21 +123,25 @@ class FiresSq2ips(SR0WXModule):
                             if list(dictmsg.values())[i] == list(dictmsg.values())[j]:
                                 ind.append(j)
 
-                        sk = len(ind)-1
+                        sk = len(ind) - 1
                         msglist = []
 
                         for i in ind:
                             msglist.append(list(dictmsg.keys())[i])
 
                         if len(msglist) > 1:
-                            msglist.insert(len(msglist)-1, "i")
+                            msglist.insert(len(msglist) - 1, "i")
 
-                        message += " ".join(msglist + [self.__codes[list(dictmsg.values())[i]], "_ "])
+                        message += " ".join(
+                            msglist + [self.__codes[list(dictmsg.values())[i]], "_ "]
+                        )
 
-                    connection.send({
-                        "message": message,
-                        "source": "traxelektronik",
-                    })
+                    connection.send(
+                        {
+                            "message": message,
+                            "source": "traxelektronik",
+                        }
+                    )
         except Exception as e:
             self.__logger.exception(f"Exception when running {self}: {e}")
             connection.send(dict())

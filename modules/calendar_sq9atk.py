@@ -22,20 +22,19 @@ class CalendarSq9atk(SR0WXModule):
 
     def getSunsetSunrise(self):
         self.__logger.info("::: Pobieram dane o wschodzie i zachodzie słońca")
-        r = re.compile(r'<h1>(.*)(\d\d:\d\d)(.*)(\d\d:\d\d)</h1>')
-        url = self.__service_url+str(self.__city_id)
+        r = re.compile(r"<h1>(.*)(\d\d:\d\d)(.*)(\d\d:\d\d)</h1>")
+        url = self.__service_url + str(self.__city_id)
         html = self.downloadFile(url)
         matches = r.findall(str(html))
-        self.__logger.debug(
-            "Dane diagnostyczne: zawartość matches = " + str(matches))
+        self.__logger.debug("Dane diagnostyczne: zawartość matches = " + str(matches))
         return {
-            'sunrise': matches[0][1],
-            'sunset': matches[0][3],
+            "sunrise": matches[0][1],
+            "sunset": matches[0][3],
         }
 
     def hourToNumbers(self, time="00:00"):
-        datetime_object = datetime.strptime(time, '%H:%M')
-        time_words = self.__language.read_datetime(datetime_object, '%H %M')
+        datetime_object = datetime.strptime(time, "%H:%M")
+        time_words = self.__language.read_datetime(datetime_object, "%H %M")
         return time_words
 
     def get_data(self, connection):
@@ -44,17 +43,30 @@ class CalendarSq9atk(SR0WXModule):
             self.__logger.info("::: Przetwarzam dane...")
 
             sunrise = " ".join(
-                ["wscho_d_sl_on_ca", "godzina", self.hourToNumbers(times['sunrise']), " "])
-            sunset = " ".join(["zacho_d_sl_on_ca", "godzina",
-                              self.hourToNumbers(times['sunset']), " "])
+                [
+                    "wscho_d_sl_on_ca",
+                    "godzina",
+                    self.hourToNumbers(times["sunrise"]),
+                    " ",
+                ]
+            )
+            sunset = " ".join(
+                [
+                    "zacho_d_sl_on_ca",
+                    "godzina",
+                    self.hourToNumbers(times["sunset"]),
+                    " ",
+                ]
+            )
 
-            message = " ".join(
-                [" _ kalendarium _ ", sunrise, " _ ", sunset, " _ "])
+            message = " ".join([" _ kalendarium _ ", sunrise, " _ ", sunset, " _ "])
 
-            connection.send({
-                "message": message,
-                "source": "calendar_zoznam_sk",
-            })
+            connection.send(
+                {
+                    "message": message,
+                    "source": "calendar_zoznam_sk",
+                }
+            )
         except Exception as e:
             self.__logger.exception(f"Exception when running {self}: {e}")
             connection.send(dict())
