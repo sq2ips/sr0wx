@@ -40,7 +40,7 @@ class CalendarSq2ips(SR0WXModule):
             sunset = " ".join(["zacho_d_sl_on_ca", "godzina", self.hoursToNumbers(str(ephem.localtime(
                 Gdynia.next_setting(sun)).hour) + ":" + str(ephem.localtime(Gdynia.next_setting(sun)).minute)), " "])
             message = " ".join(
-                [" _ kalendarium _ ", sunrise, " _ ", sunset, " _ "])
+                ["_", "kalendarium", "_", sunrise, "_", sunset, "_"])
             Gdynia.next_antitransit
             self.__logger.info(f"Wschód: {ephem.localtime(Gdynia.next_rising(sun))}")
             self.__logger.info(f"Zachód: {ephem.localtime(Gdynia.next_setting(sun))}")
