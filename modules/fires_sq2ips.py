@@ -98,6 +98,8 @@ class FiresSq2ips(SR0WXModule):
                                     dictmsg[date] = warn
                             else:
                                 dictmsg[date] = warn
+                    
+                    print(dictmsg)
 
                     message = "zagroz_enie_poz_arowe_laso_w _ "
                     sk = 0
@@ -117,7 +119,8 @@ class FiresSq2ips(SR0WXModule):
                         for i in ind:
                             msglist.append(list(dictmsg.keys())[i])
 
-                        msglist.insert(len(msglist)-1, "i")
+                        if len(msglist) > 1:
+                            msglist.insert(len(msglist)-1, "i")
 
                         message += " ".join(msglist + [self.__codes[list(dictmsg.values())[i]], "_ "])
 
