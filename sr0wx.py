@@ -237,7 +237,7 @@ if config.multi_processing:
         module_source = module_data.get("source", "")
         if module_message == "":
             func_modules += COLOR_FAIL + str(modules[connections.index(c)]) + COLOR_ENDC
-            if modules[connections.index(c)] in aux_modules:
+            if modules[connections.index(c)] in aux_modules and aux_modules[modules[connections.index(c)]] not in modules:
                 logger.info(COLOR_OKBLUE + f"Starting auxilary module {aux_modules[modules[connections.index(c)]]} for module {modules[connections.index(c)]}..." + COLOR_ENDC)
                 conn1, conn2 = Pipe()
                 aux_modules[modules[connections.index(c)]].get_data(conn2)
