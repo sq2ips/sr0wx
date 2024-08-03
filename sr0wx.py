@@ -112,14 +112,6 @@ def setup_logging(config):
 
     return logger
 
-
-def my_import(name):
-    mod = __import__(name)
-    components = name.split('.')
-    for comp in components[1:]:
-        mod = getattr(mod, comp)
-    return mod
-
 #
 # All datas returned by SR0WX modules will be stored in ``data`` variable.
 
@@ -209,8 +201,9 @@ else:
     logger.info("Cache dir does not exists, creating...")
     os.mkdir("cache/")
 
-
-lang = my_import('.'.join((config.lang, config.lang)))
+logger.info("Loading lang module...")
+lang = config.lang
+config.pl_google=lang
 sources = [lang.source, ]
 
 if config.multi_processing:
@@ -349,11 +342,11 @@ for el in message:
     if "upper" in dir(el):
         if el[0:7] == 'file://':
             sound_samples[el] = pygame.mixer.Sound(el[7:])
-        sample = "".join([config.lang, "/samples/", el, ".ogg"])
+        sample = "".join([config.lang_name, "/samples/", el, ".ogg"])
         if el != "_" and el not in sound_samples:
             if not os.path.isfile(sample):
                 logger.warning(COLOR_FAIL + f"Couldn't find {sample}" + COLOR_ENDC)
-                sound_samples[el] = pygame.mixer.Sound(config.lang + "/samples/beep.ogg")
+                sound_samples[el] = pygame.mixer.Sound(config.lang_name + "/samples/beep.ogg")
             else:
                 sound_samples[el] = pygame.mixer.Sound(sample)
 
@@ -463,9 +456,9 @@ if config.saveAudio or saveAudioOverwrite:
             elif "upper" in dir(el):
                 if el[0:7] == 'file://':
                     sample_full = el[7:]
-                sample = "".join([config.lang, "/samples/", el, ".ogg"])
+                sample = "".join([config.lang_name, "/samples/", el, ".ogg"])
                 if not os.path.isfile(sample):
-                    sample_full = config.lang + "/samples/beep.ogg"
+                    sample_full = config.lang_name + "/samples/beep.ogg"
                 else:
                     sample_full = sample
                 samples.append(AudioSegment.from_file(sample_full))

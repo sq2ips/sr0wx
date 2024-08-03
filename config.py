@@ -12,8 +12,12 @@ from datetime import datetime
 
 from colorcodes import *
 
-# język
-import pl_google.pl_google as pl_google
+def my_import(name):
+    mod = __import__(name)
+    components = name.split('.')
+    for comp in components[1:]:
+        mod = getattr(mod, comp)
+    return mod
 
 # logger
 log_line_format = '%(asctime)s %(name)s %(levelname)s: %(message)s'
@@ -65,7 +69,7 @@ rpi_pin = 40
 # wieloprocesowość dla modułów
 multi_processing = True
 
-lang = "pl_google" # język
+lang_name = "pl_google" # język
 pygame_bug = 0
 
 # ustawienie wartości pygame.time.Clock().tick()
@@ -91,6 +95,12 @@ data_sources_error_msg = ['_', 'internetowe_zrodlo_danych_niedostepne']
 # czytanie informacji o źródłach danych
 read_sources_msg = False
 
+#####################
+
+# INICJALIZACJA JĘZYKA
+lang = my_import('.'.join((lang_name, lang_name)))
+
+pl_google = lang
 #####################
 
 # INICJALIZACJA I KONFIGURACJA MODUŁÓW
