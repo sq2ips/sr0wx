@@ -12,5 +12,6 @@ pyserial>=3.5
 numpy>=1.25.1
 pygame>=2.4.0
 importlib-metadata>=5.0.0
-python-dotenv>1.0.1-2
+python-dotenv>=1.0.1-2
+coloredlogs>=.15.0.1
 RPi.GPIO>=20.7.0
