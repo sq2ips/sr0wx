@@ -504,10 +504,16 @@ offline_modules = [
 # MODUŁY AWARYJNE
 aux_modules = {
     openweathersq9atk: meteosq9atk,
+    meteosq9atk: openweathersq9atk,
     meteoyrsq2ips: openweathersq9atk,
     airlysq9atk: airpollutionsq9atk,
+    airpollutionsq9atk: airlysq9atk,
     spaceweathersq2ips: geomagneticsq9atk,
+    geomagneticsq9atk: spaceweathersq2ips,
     radioactivesq2ips: radioactivesq9atk,
+    radioactivesq9atk: radioactivesq2ips,
     calendarsq2ips: calendarsq9atk,
+    calendarsq9atk: calendarsq2ips,
     propagationsq2ips: propagationsq9atk,
+    propagationsq9atk: propagationsq2ips
 }

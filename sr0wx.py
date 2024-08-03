@@ -173,7 +173,8 @@ elif modules_text is not None:
 else:
     modules = config.modules
 
-aux_modules = {**config.aux_modules, **{v: k for k, v in config.aux_modules.items()}}
+#aux_modules = {**config.aux_modules, **{v: k for k, v in config.aux_modules.items()}}
+aux_modules = config.aux_modules
 
 try:
     logger.info("Checking internet connection...")
