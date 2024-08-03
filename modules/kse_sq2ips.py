@@ -15,8 +15,10 @@ class KseSq2ips(SR0WXModule):
 
     def get_data(self, connection):
         try:
+            self.__logger.info("::: Pobieranie danych stanu sieci energetycznych...")
             data = self.requestData(self.__service_url, self.__logger, 15, 3).json()["data"]
 
+            self.__logger.info("::: Przetwarazznie dancyh...")
             message = "stan_sieci_energetycznej"
 
             message += " ".join([" _ zapotrzebowanie", self.__language.read_power(round(data["podsumowanie"]["zapotrzebowanie"], -2), "mega")])

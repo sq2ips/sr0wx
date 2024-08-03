@@ -114,7 +114,7 @@ class AirPollutionSq9atk(SR0WXModule):
             message += valuesMessage
             connection.send({
                 "message": message,
-                "source": "powietrze_malopolska_pl",
+                "source": "gios",
             })
         except Exception as e:
             self.__logger.exception(

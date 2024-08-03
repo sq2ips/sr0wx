@@ -136,13 +136,15 @@ message = " "
 # Modules may be also given in commandline, separated by a comma.
 
 config = None
+
 test_mode = False
 modules_text = None
 saveAudioOverwrite = False
+all_modules = False
 
 try:
     argv = sys.argv[1:]
-    opts, args = getopt.getopt(argv, "c:m:ts")
+    opts, args = getopt.getopt(argv, "c:m:tsa")
 except getopt.GetoptError:
     pass
 
@@ -157,6 +159,8 @@ for opt, arg in opts:
         test_mode = True
     elif opt == "-s":
         saveAudioOverwrite = True
+    elif opt == "-a":
+        all_modules = True
 
 if config is None:
     import config as config
@@ -169,7 +173,9 @@ logger.info(COLOR_WARNING + "sr0wx.py started" + COLOR_ENDC)
 if test_mode:
     logger.info(COLOR_WARNING + "Test mode active" + COLOR_ENDC)
 
-if modules_text is not None:
+if all_modules:
+    modules = config.modules_all
+elif modules_text is not None:
     modules = []
     for m in config.modules_all:
         if inspect.getfile(m.__class__).split("/")[-1][:-3] in modules_text:

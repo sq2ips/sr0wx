@@ -113,7 +113,7 @@ class MeteoSq9atk(SR0WXModule):
 
             connection.send({
                 "message": message,
-                "source": "",
+                "source": "pogoda_onet",
             })
         except Exception as e:
             self.__logger.exception(
