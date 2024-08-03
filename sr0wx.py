@@ -235,35 +235,37 @@ if config.multi_processing:
             func_modules += COLOR_FAIL + str(modules[connections.index(c)]) + COLOR_ENDC
             if (
                 modules[connections.index(c)] in aux_modules
-                and aux_modules[modules[connections.index(c)]] not in modules
             ):
-                logger.info(
-                    COLOR_OKBLUE
-                    + f"Starting auxilary module {aux_modules[modules[connections.index(c)]]} for module {modules[connections.index(c)]}..."
-                    + COLOR_ENDC
-                )
-                conn1, conn2 = Pipe()
-                aux_modules[modules[connections.index(c)]].get_data(conn2)
-                module_data = conn1.recv()
-                module_message = module_data.get("message", "")
-                module_source = module_data.get("source", "")
-                func_modules += " auxilary: "
-                if module_message == "":
-                    func_modules += (
-                        COLOR_FAIL
-                        + str(aux_modules[modules[connections.index(c)]])
+                if aux_modules[modules[connections.index(c)]] not in modules:
+                    logger.info(
+                        COLOR_OKBLUE
+                        + f"Starting auxilary module {aux_modules[modules[connections.index(c)]]} for module {modules[connections.index(c)]}..."
                         + COLOR_ENDC
-                        + "\n"
                     )
+                    conn1, conn2 = Pipe()
+                    aux_modules[modules[connections.index(c)]].get_data(conn2)
+                    module_data = conn1.recv()
+                    module_message = module_data.get("message", "")
+                    module_source = module_data.get("source", "")
+                    func_modules += " auxilary: "
+                    if module_message == "":
+                        func_modules += (
+                            COLOR_FAIL
+                            + str(aux_modules[modules[connections.index(c)]])
+                            + COLOR_ENDC
+                            + "\n"
+                        )
+                    else:
+                        any_func_modules = True
+                        func_modules += (
+                            COLOR_OKGREEN
+                            + str(aux_modules[modules[connections.index(c)]])
+                            + COLOR_ENDC
+                            + "\n"
+                        )
+                        message = " ".join((message, module_message))
                 else:
-                    any_func_modules = True
-                    func_modules += (
-                        COLOR_OKGREEN
-                        + str(aux_modules[modules[connections.index(c)]])
-                        + COLOR_ENDC
-                        + "\n"
-                    )
-                    message = " ".join((message, module_message))
+                    func_modules += COLOR_WARNING + " auxilary module: " + str(aux_modules[modules[connections.index(c)]]) + " alredy running..." + COLOR_ENDC + "\n"
             else:
                 func_modules += "\n"
 
