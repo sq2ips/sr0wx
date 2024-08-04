@@ -20,6 +20,7 @@ Nagranie komunikatu stacji SR2WXG: [SR2WXG](https://github.com/user-attachments/
 - Dodanie modułu pobierającego propagacje oraz poziom zakłuceń z hamqsl.com (propagation_sq2ips.py)
 - Dodanie modułu pobierający pogodę z yr.no (meteo_yr_sq2ips.py) (testowy)
 - Dodanie modułu informującego o stopniu zagrożenia pożarowego lasów (fires_sq2ips.py)
+- Dodanie modułu radaru pogodowego (antistorm_sq2ips.py)
 - Napisanie od nowa modułu informującego o stanie wody z wodowskazów ze strony hydro.imgw.pl (imgw_podest_sq2ips.py)
 - Przepisanie całej aplikacji z python 2 na 3
 - Dodanie generatora sampli napisanego w pythonie i wygenerowanie od nowa wszystkich sampli
@@ -34,9 +35,10 @@ Nagranie komunikatu stacji SR2WXG: [SR2WXG](https://github.com/user-attachments/
 - Inicjalizacja pygame jako podmodułu
 - Dodanie katalogu cache
 - przeniesienie wszystkich modułów do katalogu modules/
+- Zmiana systemu loggera na coloredlogs
+- Dodanie kilku parametrów urucamiania
 
 ## Planowane prace
-- Napisanie modułu pobierającego dane o burzach z antistorm.eu
 - Napisanie modułu pobierającego dane ze stacji pogodowych przez APRS
 
 ## Licencja
