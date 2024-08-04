@@ -265,7 +265,7 @@ if config.multi_processing:
                         )
                         message = " ".join((message, module_message))
                 else:
-                    func_modules += COLOR_WARNING + " auxilary module: " + str(aux_modules[modules[connections.index(c)]]) + " alredy running..." + COLOR_ENDC + "\n"
+                    func_modules += COLOR_WARNING + " auxilary module: " + str(aux_modules[modules[connections.index(c)]]) + " already running..." + COLOR_ENDC + "\n"
             else:
                 func_modules += "\n"
 
