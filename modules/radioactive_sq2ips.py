@@ -38,13 +38,13 @@ class RadioactiveSq2ips(SR0WXModule):
     def request_sr(self, url):
         start = datetime.now().strftime("%Y-%m-%dT00:00:01.000Z")
         end = datetime.now().strftime("%Y-%m-%dT%H:%M:%S.000Z")
-        url = url + self.__sensor_id + f"?dateFrom={str(start)}&dateTo={str(end)}"
+        url = f"{url}{self.__sensor_id}?dateFrom={str(start)}&dateTo={str(end)}"
         self.__logger.info("::: Pobieranie średnich danych...")
         data = self.requestData(url, self.__logger, 10, 3).json()
         prs = 0
         try:
-            for i in range(len(data)):
-                prs += float(data[i]["moc_dawki"])
+            for d in data:
+                prs += float(d["moc_dawki"])
         except KeyError:
             raise ValueError("Nieprawidłowa odpowiedź serwera")
         if prs == 0:
@@ -55,42 +55,17 @@ class RadioactiveSq2ips(SR0WXModule):
 
     def processData(self, data):
         # self.__logger.info(int(datetime.now().strftime("%d")) - int(datetime.strptime(data["tip_date"], "%Y-%m-%d %H:%M").strftime("%d")))
-        if datetime.strptime(data["tip_date"], "%Y-%m-%d %H:%M").strftime(
-            "%Y-%m-%d"
-        ) != datetime.now().strftime("%Y-%m-%d"):
-            if (
-                int(datetime.now().strftime("%d"))
-                - int(
-                    datetime.strptime(data["tip_date"], "%Y-%m-%d %H:%M").strftime("%d")
-                )
-            ) > 1:
-                raise ValueError(
-                    "Dane są nieaktualne o więcej niż jeden dzień! oczekiwane: "
-                    + datetime.now().strftime("%Y-%m-%d")
-                    + ", otrzymane: "
-                    + datetime.strptime(data["tip_date"], "%Y-%m-%d %H:%M").strftime(
-                        "%Y-%m-%d"
-                    )
-                )
-            else:
-                self.__logger.warning(
-                    "Dane są nieaktualne o jeden dzień! oczekiwane: "
-                    + datetime.now().strftime("%Y-%m-%d")
-                    + ", otrzymane: "
-                    + datetime.strptime(data["tip_date"], "%Y-%m-%d %H:%M").strftime(
-                        "%Y-%m-%d"
-                    )
-                )
-        self.__logger.info(
-            "Wartość z czujnika "
-            + data["stacja"]
-            + ", data: "
-            + str(datetime.strptime(data["tip_date"], "%Y-%m-%d %H:%M"))
-            + ": "
-            + data["tip_value"]
-        )
-        v = round(float(data["tip_value"][0:5]), 2)
-        return v
+        datediff = datetime.now() - datetime.strptime(data["tip_date"], "%Y-%m-%d %H:%M")
+
+        if datediff.days == 0:
+            pass
+        elif datediff.days == 1:
+            self.__logger.info(f"Dane są nieaktualne o jeden dzień, różnica czasów wynosi {datediff.hours}")
+        elif datediff.days > 1:
+            raise ValueError(f"Dane są nieaktualne o więcej niż jeden dzień, różnica czasów wynosi {datediff.hours}")
+
+        self.__logger.info(f"Wartość z czujnika {data['stacja']}, data: {str(datetime.strptime(data['tip_date'], '%Y-%m-%d %H:%M'))}: {data['tip_value']}")
+        return round(float(data["tip_value"][0:5]), 2)
 
     def get_data(self, connection):
         try:
@@ -98,8 +73,7 @@ class RadioactiveSq2ips(SR0WXModule):
             value = self.processData(data)
             value_sr = self.request_sr(self.__service_url_sr)
             self.__logger.info("Wartość przetwożona: " + str(value))
-            va = int(value * 100)
-            # self.__logger.info(va)
+            va = round(value * 100)
             curentValue = " ".join(
                 [
                     "wartos_c__aktualna",
@@ -109,7 +83,7 @@ class RadioactiveSq2ips(SR0WXModule):
                 ]
             )
             if value_sr is not None:
-                va_sr = int(round(value_sr, 2) * 100)
+                va_sr = round(value_sr*100)
                 self.__logger.info("Średnia wartość przetwożona: " + str(va_sr / 100))
                 averageValue = " ".join(
                     [
