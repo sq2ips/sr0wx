@@ -1,5 +1,5 @@
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from sr0wx_module import SR0WXModule
 
@@ -54,15 +54,14 @@ class RadioactiveSq2ips(SR0WXModule):
             return prs / len(data)
 
     def processData(self, data):
-        # self.__logger.info(int(datetime.now().strftime("%d")) - int(datetime.strptime(data["tip_date"], "%Y-%m-%d %H:%M").strftime("%d")))
         datediff = datetime.now() - datetime.strptime(data["tip_date"], "%Y-%m-%d %H:%M")
 
-        if datediff.days == 0:
+        if datediff < timedelta(days=1):
             pass
-        elif datediff.days == 1:
-            self.__logger.info(f"Dane są nieaktualne o jeden dzień, różnica czasów wynosi {datediff.hours}")
-        elif datediff.days > 1:
-            raise ValueError(f"Dane są nieaktualne o więcej niż jeden dzień, różnica czasów wynosi {datediff.hours}")
+        elif datediff >= timedelta(days=1) and datediff < timedelta(days=2):
+            self.__logger.warning(f"Dane są nieaktualne o jeden dzień, różnica czasów wynosi {datediff}")
+        else:
+            raise ValueError(f"Dane są nieaktualne o więcej niż jeden dzień, różnica czasów wynosi {datediff}")
 
         self.__logger.info(f"Wartość z czujnika {data['stacja']}, data: {str(datetime.strptime(data['tip_date'], '%Y-%m-%d %H:%M'))}: {data['tip_value']}")
         return round(float(data["tip_value"][0:5]), 2)
