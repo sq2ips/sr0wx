@@ -129,18 +129,15 @@ modules_text = None
 saveAudioOverwrite = False
 all_modules = False
 
-try:
-    argv = sys.argv[1:]
-    opts, args = getopt.getopt(argv, "c:m:tsa")
-except getopt.GetoptError:
-    pass
+argv = sys.argv[1:]
+opts, args = getopt.getopt(argv, "c:m:tsa")
 
 for opt, arg in opts:
-    if opt in ["-c", "--config"]:
+    if opt in "-c":
         if arg[-3:] == ".py":
             arg = arg[:-3]
         config = __import__(arg)
-    elif opt in ["-m", "--modules"]:
+    elif opt in "-m":
         modules_text = arg.split(",")
     elif opt == "-t":
         test_mode = True
@@ -148,7 +145,6 @@ for opt, arg in opts:
         saveAudioOverwrite = True
     elif opt == "-a":
         all_modules = True
-
 if config is None:
     import config as config
 
