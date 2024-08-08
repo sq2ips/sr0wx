@@ -53,7 +53,7 @@ dict_log_config = {
             "level": "INFO",
             "class": "logging.handlers.RotatingFileHandler",
             "formatter": "format_for_file",
-            "filename": "../logs/pogoda/"
+            "filename": "../logs/baltyk/"
             + str(datetime.now().strftime("%Y-%m-%d_%H:%M"))
             + ".log",
             "maxBytes": 500000,
