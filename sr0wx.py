@@ -15,6 +15,7 @@ import pygame
 import getopt
 import glob
 import inspect
+import socket
 from colorcodes import *
 
 
@@ -152,6 +153,13 @@ logger = setup_logging(config)
 
 logger.info(COLOR_WARNING + "sr0wx.py started" + COLOR_ENDC)
 # logger.info(LICENSE)
+
+try:
+    s = socket.socket()
+    s.bind((socket.gethostname(), 56432))
+except OSError:
+    logger.error("Another sr0wx instance is running, exiting...")
+    exit(1)
 
 if test_mode:
     logger.info(COLOR_WARNING + "Test mode active" + COLOR_ENDC)

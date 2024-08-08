@@ -33,10 +33,10 @@ class AntistormSq2ips(SR0WXModule):
         self.__logger.info(f"id: {self.__city_id}, miasto: {data['m']}")
 
         data_dict = {}
-        if bool(data["a_b"]):
+        if data["t_b"] < 255 and data["p_b"] > 0:
             data_dict["burza"] = [data["t_b"], self.getProbability(data["p_b"])]
 
-        if bool(data["a_o"]):
+        if data["t_o"] < 255 and data["p_o"] > 0:
             data_dict["deszcz"] = [data["t_o"], self.getProbability(data["p_o"])]
 
         return data_dict
