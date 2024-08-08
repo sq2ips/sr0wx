@@ -114,6 +114,7 @@ class BaltykSq2ips(SR0WXModule):
             "w cyrkulacji",
             "z kierunków",
             "w deszcz",
+            "w czasie burz",
             "deszczu ze śniegiem",
             "lokalne burze",
             "lokalne mgły",
