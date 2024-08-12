@@ -8,13 +8,15 @@ class MeteoAlertSq2ips(SR0WXModule):
     """Moduł pobierający dane o zagrożeniach meteorolologicznych i hydrologicznych z meteo.imgw.pl"""
 
     def __init__(
-        self, language, city_id, start_message, hydronames, short_validity, service_url
+        self, language, city_id, start_message, hydronames, short_validity, read_probability, service_url
     ):
         self.__language = language
         self.__short_validity = short_validity
+        self.__read_pobability = read_probability
         self.__hydronames = hydronames
         self.__start_message = start_message
         self.__city_id = city_id
+        self.__service_url = service_url
         self.__logger = logging.getLogger(__name__)
         self.codes = {
             "SW": "silnym_wiatrem",
@@ -61,7 +63,6 @@ class MeteoAlertSq2ips(SR0WXModule):
             "SH": "suszy_hydrologicznej",
         }
         self.stopnie = {"1": "pierwszego", "2": "drugiego", "3": "trzeciego"}
-        self.__service_url = service_url
 
     def processDate(self, validity, komets=False):
         if validity[0:4] == "9999":
@@ -157,22 +158,15 @@ class MeteoAlertSq2ips(SR0WXModule):
             else:
                 warnings_used.append(kod)
                 stopien = alerts["warnings"][i]["Level"]
-                # prawd = alerts["warnings"][i]["Probability"]
+                prawd = alerts["warnings"][i]["Probability"]
                 wazne_do = alerts["warnings"][i]["LxValidTo"]
-                wazne_do_text = self.processDate(wazne_do)
-                self.__logger.info(
-                    "kod: " + kod + " stopień: " + stopien + " ważne do: " + wazne_do
-                )
-                message += " ".join(
-                    [
-                        "ostrzezenie_przed",
-                        self.codes[kod],
-                        self.stopnie[stopien],
-                        "stopnia",
-                        wazne_do_text,
-                        "_ ",
-                    ]
-                )
+                self.__logger.info(f"kod: {kod}, stopień: {stopien}, prawdopodobieństwo: {prawd}, ważne do: {wazne_do}")
+                message += " ".join(["ostrzezenie_przed", self.codes[kod], ""])
+                message += " ".join([self.stopnie[stopien], "stopnia "])
+                if self.__read_pobability:
+                    message += " ".join(["prawdopodobienstwo", self.__language.read_percent(int(prawd)), ""])
+                message += " ".join([self.processDate(wazne_do), "_ "])
+
         return message
 
     def processHydro(self, hydronames, alerts_hydro):
@@ -186,23 +180,17 @@ class MeteoAlertSq2ips(SR0WXModule):
                         self.__logger.warning("Powtórzenie ostrzeżenia: " + kod)
                     else:
                         hydro_used.append(kod)
-                        # prawd = alerts_hydro["warnings"][i]["WarnHydro"]["Probability"]
+                        prawd = alerts_hydro["warnings"][i]["WarnHydro"]["Probability"]
                         stopien = alerts_hydro["warnings"][i]["WarnHydro"]["Level"]
                         wazne_do = alerts_hydro["warnings"][i]["WarnHydro"]["LxValidTo"]
-                        wazne_do_text = self.processDate(wazne_do)
-                        self.__logger.info(
-                            "kod: "
-                            + kod
-                            + " stopień: "
-                            + stopien
-                            + " ważne do: "
-                            + wazne_do
-                        )
+                        self.__logger.info(f"kod: {kod}, prawdopodobieństwo: {prawd}, ważne do: {wazne_do}")
 
                         message += " ".join(["ostrzezenie_przed", self.codes[kod], ""])
                         # if stopien in self.stopnie:
                         #    message += " ".join([self.stopnie[stopien], "stopnia "]) # ostrzerzenia hydro nie potrzebują stopni
-                        message += " ".join([wazne_do_text, "_ "])
+                        if self.__read_pobability:
+                            message += " ".join(["prawdopodobienstwo", self.__language.read_percent(int(prawd)), ""])
+                        message += " ".join([self.processDate(wazne_do), "_ "])
         return message
 
     def get_data(self, connection):

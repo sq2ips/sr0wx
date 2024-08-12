@@ -364,6 +364,7 @@ meteoalertsq2ips = MeteoAlertSq2ips(
     start_message="",
     hydronames=["W_G_6_PM", "Z_G_22_PM"],  # Gdynia i bałtyk
     short_validity=True,
+    read_probability=False,
 )
 
 # ----------------
@@ -437,7 +438,7 @@ timesq2ips = TimeSq2ips(
 
 # WŁĄCZONE MODUŁY
 modules = [
-    activitymap,            # marker na mapie wx.ostol.pl
+    activitymap,            # marker na mapie wx.vhf.com.pl
     timesq2ips,             # godzina
     meteoalertsq2ips,       # ostrzeżenia meteorologiczne IMGW
     # antistormsq2ips,      # radar pogodowy
@@ -468,7 +469,7 @@ offline_modules = [
 
 # WSZYSTKIE MODUŁY
 modules_all = [
-    activitymap,                # marker na mapie wx.ostol.pl
+    activitymap,                # marker na mapie wx.vhf.com.pl
     timesq2ips,                 # godzina
     meteoalertsq2ips,           # ostrzeżenia meteorologiczne IMGW
     antistormsq2ips,            # radar pogodowy
