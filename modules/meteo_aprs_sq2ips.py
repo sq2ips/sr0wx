@@ -4,8 +4,6 @@ import json
 import os
 from datetime import datetime, timedelta
 
-import aprs
-
 import logging
 from sr0wx_module import SR0WXModule
 
@@ -17,8 +15,44 @@ class MeteoAprsSq2ips(SR0WXModule):
         self.__move_after = move_after
 
     def parseAprsWeather(self, frame):
-        frame = aprs.parse_frame(frame)
+        if type(frame) is not str:
+            raise TypeError(f"Invalid frame type, expected string got {frame}")
+        if len(frame) == 0:
+            raise ValueError("Frame is empty")
         
+        try:
+            (head, body) = frame.split(':', 1)
+        except:
+            raise ValueError("frame has no body", frame)
+        
+        if len(body) == 0:
+            raise ValueError("frame body is empty", frame)
+        
+        try:
+            (fromcall, path) = head.split('>', 1)
+        except:
+            raise ValueError("invalid packet header")
+
+        if (not 1 <= len(fromcall) <= 9 or not re.findall(r"^[a-z0-9]{0,9}(\-[a-z0-9]{1,8})?$", fromcall, re.I)):
+            raise ParseError("fromcallsign is invalid")
+        
+        frame_type = body[0]
+        body = body[1:]
+
+        if len(body) == 0:
+            raise ValueError("frame body is empty after packet type character", frame)
+        
+
+
+        if (frame_type in '!=/@;' or 0 <= body.find('!') < 40) and "_" in body:
+            data = body[body.find("_")+1:]
+        elif frame_type == "_":
+            data = body
+        else:
+            # ramka nie pogodowa
+            return None
+        
+        data = re.match(r"^([cSgtrpPlLs#][0-9\-\. ]{3}|h[0-9\. ]{2}|b[0-9\. ]{5})+", body)
 
     def updateFiles(self):
         files = glob.glob("".join([self.__path, "/data/*"]))
@@ -65,21 +99,16 @@ class MeteoAprsSq2ips(SR0WXModule):
         frames = {}
         for date, frame in zip(frames_text.keys(), frames_text.values()):
             try:
-                frame_parsed[date] = aprslib.parse(frame)
+                parsed = self.parseAprsWeather(frame)
+                if parsed is not None:
+                    frame_parsed[date] = parsed
             except Exception as e:
-                self.__logger.warning(f"Unable to parse frame {frame}, aprslib returns error {e}")
+                self.__logger.warning(f"Unable to parse frame {frame}, got error {e}")
+        
+        if len(frames) == 0:
+            raise Exception("No weather frames")
         
         return frames
-    
-    def filterFrames(self, frames):
-        weather_frames = {}
-        for date, frame in zip(frames.keys(). frames.values()):
-            if 'weather' in frame:
-                weather_frames[date] = frame
-        if len(weather_frames) > 0:
-            return weather_frames
-        else:
-            raise Exception("No weather frames")
     
 
     def choseFrame(self, weather_frames):
