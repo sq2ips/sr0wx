@@ -1,44 +1,40 @@
 import requests
 from urllib.parse import urlparse, parse_qs, quote_plus
 import bs4 as bs
-from tqdm import tqdm
-import os
-import sys
-import glob
 import shutil
+from tqdm import tqdm
 import json
+import glob
+import sys
+import os
+import getopt
 
 sys.path.append("../")
 
 from pl_google import trim_pl
 
-gender = "female"
+slownik_filename = "slownik.json"
+samples_dir = "../pl_google/samples/"
 lang = "pl"
+gender = "female"
 
-apikey = None
-
-apicounter = 0
-
-
-def requestData(url, timeout, repeat, headers=None):
+def requestData(url, timeout, repeat):
     for i in range(repeat):
         try:
-            data = requests.get(url, timeout=timeout, headers=headers)
+            data = requests.get(url, timeout=timeout)
             if not data.ok:
                 raise Exception("Got wrong response")
             else:
                 break
         except Exception as e:
             if i < repeat - 1:
-                print(f"Error: {e}, trying again...")
+                print(f"Exception getting data: {e}, trying again...")
             else:
                 raise e
     return data
 
-
-def GetKey(apikey):
-    if apikey is not None:
-        return apikey
+def getApiKey():
+    print("Uzyskiwanie klucza API... ", end="")
     url = "https://responsivevoice.org/"
     data = requestData(url, 15, 4)
     soup = bs.BeautifulSoup(data.text, "lxml")
@@ -47,9 +43,8 @@ def GetKey(apikey):
     query = urlparse(src).query
     query_elements = parse_qs(query)
     key = query_elements["key"][0]
-
+    print("OK")
     return key
-
 
 def GetMp3(word, filename, key):
     url = f"https://texttospeech.responsivevoice.org/v1/text:synthesize?lang={lang}&engine=g1&name=&pitch=0.5&rate=0.5&volume=1&key={key}&gender={gender}&text={quote_plus(word)}"
@@ -57,78 +52,173 @@ def GetMp3(word, filename, key):
     data = requestData(url, 15, 5)
     open(f"mp3/{filename}.mp3", "wb").write(data.content)
 
-
 def convert(filename):
     if not os.path.exists("ogg/"):
         os.mkdir("ogg")
-    os.system(
-        f'ffmpeg -hide_banner -loglevel error -y -i "mp3/{filename}.mp3" -af silenceremove=start_periods=1:start_duration=0:start_threshold=-60dB:stop_periods=-1:stop_duration=0:stop_threshold=-60dB -ar 22050 -acodec libvorbis "ogg/{filename}.ogg"'
-    )
+    code = os.system(f"ffmpeg -hide_banner -loglevel error -y -i \"./mp3/{filename}.mp3\" -af silenceremove=start_periods=1:start_duration=0:start_threshold=-60dB:stop_periods=-1:stop_duration=0:stop_threshold=-60dB -ar 22050 -acodec libvorbis \"./ogg/{filename}.ogg\"")
+    if code != 0:
+        raise Exception("ffmpeg returned non zero exit code.")
     os.remove(f"mp3/{filename}.mp3")
 
-
-def GetOgg(l, key):
-    filename = l[1]
-    word = l[0]
-    # print(f"word: {word} | filename: {filename}")
+def GetOgg(phrase, key):
+    filename, word = phrase
+    if filename in ["", None]:
+        raise ValueError("Pusta nazwa pliku")
+    if word in ["", None]:
+        raise ValueError("Puste słowo")
     GetMp3(word, filename, key)
     convert(filename)
-    return os.path.exists(f"ogg/{filename}.ogg")
+    if not os.path.exists(f"ogg/{filename}.ogg"):
+        raise FileExistsError(f"Plik sampla {filename} nie wygenerowany.")
 
-
-def generate(slownik_list):
-    slownik_list_new = []
-    files = glob.glob("ogg/*")
-    for f in slownik_list:
-        if "".join(["ogg/", f[1], ".ogg"]) not in files:
-            slownik_list_new.append(f)
-
-    print(f"Liczba sampli do wygenerowania: {len(slownik_list_new)}")
-    print(f"Liczba wszystkich sampli: {len(slownik_list)}")
-    print("Uruchamianie generatora...")
-    c = 0
-    notgenerated = []
-    key = GetKey(apikey)
-    for slowo in tqdm(slownik_list_new, unit="samples"):
+def generate(slownik, key):
+    for slowo in tqdm(slownik, unit="samples"):
         try:
-            if GetOgg(slowo, key):
-                c += 1
-            else:
-                raise Exception("Plik nie utwożony.")
+            GetOgg(slowo, key)
         except Exception as e:
-            notgenerated.append(slowo)
-    return notgenerated, c
+            print(f"Podczas generowania sampla {slowo} otrzymano błąd: {e}")
 
+def getExistingSamples(path):
+    files = glob.glob(path)
 
-if __name__ == "__main__":
-    print("Uruchamianie...")
-    print("Sprawdzanie katalogu mp3/...")
-    if os.path.exists("mp3/"):
-        print("Katalog istnieje, usuwanie...")
-        shutil.rmtree("mp3")
-    print("Tworzenie nowego katalogu mp3/")
-    os.mkdir("mp3")
-    slownik_list = []
+    samples = []
+    for file in files:
+        samples.append(file.split("/")[-1].split(".")[0])
+    return samples
 
-    print("Ładowanie danych z pliku slownik.json...")
-    with open("slownik.json", "r") as f:
+def loadSlownik(filename):
+    print(f"Ładowanie danych z pliku {filename}... ", end="")
+    with open(filename, "r") as f:
         data = json.load(f)
-    slownik = data["slownik"]
+    slownik_custom = data["slownik"]
     slownik_auto = data["slownik_auto"]
+    print("OK")
 
-    print("Tworzenie listy sampli...")
+    return slownik_custom, slownik_auto
 
-    for slowo in list(slownik.keys()):
-        slownik_list.append([slownik[slowo], slowo])
-    for slowo in slownik_auto:
-        slownik_list.append([slowo, trim_pl(slowo)])
-    notgenerated = [None]
-    for i in range(3):
-        if len(notgenerated) > 0:
-            if i > 1:
-                print("Generowanie brakujących sampli...")
-            notgenerated, c = generate(slownik_list)
-            print(f"Wygenerowano {c}/{len(slownik_list)}")
+def makeSamplesList(slownik_custom, slownik_auto):
+    print("Tworzenie listy sampli... ", end="")
+    
+    slownik = []
+    if len(slownik_custom) > 0:
+        for slowo in list(slownik_custom.keys()):
+            slownik.append([slowo, slownik_custom[slowo]])
+    if len(slownik_auto) > 0:
+        for slowo in slownik_auto:
+            slownik.append([trim_pl(slowo), slowo])
+    print("OK")
+    
+    print(f"Liczba wszystkich sampli w słowniku: {len(slownik)}")
+    return slownik
 
-    print("usuwanie katalogu mp3/...")
-    os.removedirs("mp3/")
+def saveSlownikData(filename, slownik_custom, slownik_auto):
+    print(f"Zapisywanie danych do pliku {filename}... ", end="")
+
+    with open(filename, "w") as f:
+        json.dump({"slownik": slownik_custom, "slownik_auto": slownik_auto}, f, ensure_ascii=False, indent=4)
+    print("OK")
+
+print("Uruchamiane...")
+
+opts, args = getopt.getopt(sys.argv[1:], "p:msr")
+
+move = False
+saveSlownik = False
+regenerate = False
+phrases_auto = []
+phrases_custom = []
+for opt, arg in opts:
+    if opt == "-m": #
+        move = True
+    elif opt == "-p": #
+        if len(arg.split(",")) == 1:
+            phrases_auto.append(arg)
+        elif len(arg.split(",")) == 2:
+            phrases_custom.append(arg.split(","))
+        else:
+            print(f"Invalid phrase format {arg}")
+    elif opt == "-s": #
+        saveSlownik = True
+        move = True
+    elif opt == "-r":
+        regenerate = True
+        move = True
+
+print("Sprawdzanie katalogu mp3/...")
+if os.path.exists("mp3/"):
+    print("Katalog istnieje, usuwanie...")
+    shutil.rmtree("mp3")
+print("Tworzenie nowego katalogu mp3/")
+os.mkdir("mp3")
+
+slownik = []
+
+if (len(phrases_auto) + len(phrases_custom)) > 0:
+    if len(phrases_auto) > 0:
+        for slowo in phrases_auto:
+            slownik.append([trim_pl(slowo), slowo])
+    if len(phrases_custom) > 0:
+        slownik += phrases_custom
+else:
+    slownik_custom, slownik_auto = loadSlownik(slownik_filename)
+    slownik = makeSamplesList(slownik_custom, slownik_auto)
+
+slowa_files = getExistingSamples("".join([samples_dir, "*"]))
+
+slownik_new = []
+
+if not regenerate:
+    for i, slowo in enumerate(slownik):
+        if not slowo[0] in slowa_files:
+            slownik_new.append(slowo)
+
+    slownik = slownik_new
+
+if len(slownik) > 0:
+    print(f"Liczba sampli do wygenerowania: {len(slownik)}")
+else:
+    print("Brak sampli do wygenerowania")
+    exit()
+
+key = getApiKey()
+
+print("Uruchamianie genertora...")
+
+generate(slownik, key)
+
+print("usuwanie katalogu mp3/...")
+os.removedirs("mp3/")
+
+if saveSlownik:
+    if (len(phrases_auto) + len(phrases_custom)) > 0:
+        slownik_custom, slownik_auto = loadSlownik(slownik_filename)
+        if len(phrases_auto) > 0:
+            slownik_auto += phrases_auto
+        if len(phrases_custom) > 0:
+            slownik_custom.update(phrases_custom)
+        
+        print("Sortowanie... ", end="")
+        slownik_custom = dict(sorted(slownik_custom.items()))
+        slownik_auto = list(set(list(slownik_auto)))
+        slownik_auto = sorted(slownik_auto)
+        print("OK")
+
+        saveSlownikData(slownik_filename, slownik_custom, slownik_auto)
+    else:
+        print("Brak sampli do zapisania.")
+
+if regenerate:
+    print("Removing old samples...")
+    shutil.rmtree(samples_dir)
+    print("OK", end="")
+    os.path.mkdir(samples_dir)
+
+if move:
+    files = glob.glob("./ogg/*")
+    if len(files) > 0:
+        print(f"Przenoszenie sampli do {samples_dir}...")
+        print(files)
+        for file in tqdm(files, unit="files"):
+            shutil.move(file, "".join([samples_dir]))
+    else:
+        print("No files to move.")

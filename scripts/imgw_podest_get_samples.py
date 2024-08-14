@@ -92,6 +92,6 @@ if len(samples) > 0:
             json.dump(samples, f, ensure_ascii=False)
         print(f"Zapisano sample do pliku {file}")
     else:
-        print(json.dumps(samples_r, indent=4, ensure_ascii=False))
+        print(json.dumps(samples, indent=4, ensure_ascii=False))
 else:
     print("brak brakującyh sampli")
