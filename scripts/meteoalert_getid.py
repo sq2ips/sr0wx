@@ -10,8 +10,10 @@ if len(sys.argv) == 1 or sys.argv[1] == "-h":
     exit(0)
 elif sys.argv[1] == "-a":
     print("Program szukający id obszaru do modułu meteoalert_sq2ips.py")
-    print("Pobieranie danych..")
+    print("Pobieranie danych... ", end="")
+    sys.stdout.flush()
     names = requests.get(url).json()
+    print("OK")
     print("Przetwarzanie danych...")
     print(f"Ilość regionów: {len(names["features"])}\n")
     print("miasto/powiat: id stacji")
@@ -20,8 +22,10 @@ elif sys.argv[1] == "-a":
 elif sys.argv[1] == "-f":
     print("Program szukający id stacji do modułu meteoalert_sq2ips.py\n")
     print(f"wyszukiwanie id na podstawie filtra: {sys.argv[2]}")
-    print("Pobierane danych...")
+    print("Pobieranie danych... ", end="")
+    sys.stdout.flush()
     names = requests.get(url).json()
+    print("OK")
     print("Przetwarzanie danych...")
     print(f"Ilość regionów: {len(names["features"])}\n")
     print("miasto/powiat: id stacji")

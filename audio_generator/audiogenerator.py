@@ -35,6 +35,7 @@ def requestData(url, timeout, repeat):
 
 def getApiKey():
     print("Uzyskiwanie klucza API... ", end="")
+    sys.stdout.flush()
     url = "https://responsivevoice.org/"
     data = requestData(url, 15, 4)
     soup = bs.BeautifulSoup(data.text, "lxml")
