@@ -41,7 +41,7 @@ try:
     opts, args = getopt.getopt(argv, "z:w:s:acu")
 except getopt.GetoptError:
     print(
-        "Program generujący sample nazw rzek i wodowskazów do modułu imgw_podest_sq2ips, parametry:\n-a pobieranie wszystkich sampli\n-z pobieranie sampli z danej zlewni\n-w pobieranie sampli danego wodowskazu\n-f plik json do zapisu nazw sampli\n-c sprawdzenie istniejących sampli w słowniku"
+        "Program generujący sample nazw rzek i wodowskazów do modułu imgw_podest_sq2ips, parametry:\n-a pobieranie wszystkich sampli\n-z pobieranie sampli z danej zlewni (na podstawie id zlewni)\n-w pobieranie sampli danego wodowskazu (na podstawie id wodowskazu)\n-f plik json do zapisu nazw sampli\n-u aktualizacja słownika (zamienne z -f)\n-c sprawdzenie istniejących sampli w słowniku"
     )
     exit()
 
@@ -60,6 +60,9 @@ for opt, arg in opts:
         zlewnie += [int(z) for z in arg.split(",")]
     elif opt == "-w":
         wodowskazy += [int(w) for w in arg.split(",")]
+
+if not all and zlewnie == [] and wodowskazy == []:
+    raise Exception("Brak sampli do wyszukania, użyj -a, -z lub -w")
 
 print("Pobieranie danych... ", end="")
 sys.stdout.flush()
@@ -92,8 +95,7 @@ if check:
             print(f"sampel: {s.lower()} jest już w słowniku, pomijanie...")
         else:
             samples_new.append(s)
-
-samples = samples_new
+    samples = samples_new
 
 for s in samples:
     if s == "":
