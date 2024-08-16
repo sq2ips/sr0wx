@@ -55,8 +55,8 @@ class RadioactiveSq9atk(SR0WXModule):
             if self.isSensorRow(row):
                 if self.isSensorMatchedById(self.__sensor_id, row):
                     ret = self.extractSensorData(row)
-                else:
-                    raise ValueError(f"Sensor o id: {self.__sensor_id} nie istnieje")
+        if ret == {}:
+            raise ValueError(f"Sensor o id: {self.__sensor_id} nie istnieje")
         return ret
 
     def get_data(self, connection):

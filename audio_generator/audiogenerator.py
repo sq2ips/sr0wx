@@ -71,6 +71,10 @@ def GetOgg(phrase, key):
     convert(filename)
     if not os.path.exists(f"ogg/{filename}.ogg"):
         raise FileExistsError(f"Plik sampla {filename} nie wygenerowany.")
+    elif os.path.getsize(f"ogg/{filename}.ogg") == 0:
+        raise Exception(f"Plik sampla {filename} jest pusty.")
+    elif os.system(f"ffmpeg -i ogg/{filename}.ogg -f null -err_detect +crccheck+bitstream+buffer+explode+careful+compliant+aggressive -v error -xerror -") != 0:
+        raise Exception(f"Plik sampla {filename} jest uszkodzony.")
 
 def generate(slownik, key):
     for slowo in tqdm(slownik, unit="samples"):
@@ -78,6 +82,9 @@ def generate(slownik, key):
             GetOgg(slowo, key)
         except Exception as e:
             print(f"Podczas generowania sampla {slowo} otrzymano błąd: {e}")
+            if os.path.exists(f"ogg/{slowo[0]}.ogg"):
+                print(f"Usuwanie pliku ogg/{slowo[0]}.ogg...")
+                os.remove(f"ogg/{slowo[0]}.ogg")
 
 def getExistingSamples(path):
     files = glob.glob(path)
@@ -222,7 +229,6 @@ if move:
     files = glob.glob("./ogg/*")
     if len(files) > 0:
         print(f"Przenoszenie sampli do {samples_dir}...")
-        print(files)
         for file in tqdm(files, unit="files"):
             shutil.move(file, "".join([samples_dir]))
     else:

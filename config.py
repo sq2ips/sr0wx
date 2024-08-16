@@ -265,7 +265,7 @@ from radioactive_sq9atk import RadioactiveSq9atk
 radioactivesq9atk = RadioactiveSq9atk(
     language=lang,
     service_url="http://radioactiveathome.org/map/",
-    sensor_id=39306,  # czujnik w centrum Gdyni
+    sensor_id=47425,  # czujnik w Kołobrzegu
     # więcej czujników na stronie http://radioactiveathome.org/map/
 )
 
