@@ -85,6 +85,8 @@ stations_dict = {}
 for station in stations:
     stations_dict[trim_pl(station)] = trimSpecials(station)
 
+print(f"Liczba sampli: {len(stations_dict)}")
+
 if update:
     with open(slownik_file, "r") as f:
         slownik = json.load(f)
@@ -93,11 +95,10 @@ if update:
     for station in (stations_dict.keys()):
         if station not in slownik["slownik"]:
             stations_dict_new[station] = stations_dict[station]
-            pass
         else:
             print(f"Sampel {station} jest już w słowniku")
 
-    print(len(stations_dict_new), len(stations_dict))
+    print(f"Liczba sampli po sprawdzeniu: {len(stations_dict_new)}")
     stations_dict = stations_dict_new
             
     slownik["slownik"].update(stations_dict)
