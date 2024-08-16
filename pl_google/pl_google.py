@@ -69,6 +69,8 @@ def trim_pl(text):
         .replace(",", "")
         .replace(".", "")
         .replace(" - ", "_")
+        .replace("/", " ")
+        .replace("\\", " ")
         .replace("(", "")
         .replace(")", "")
         .replace(" ", "_")

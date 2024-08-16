@@ -14,24 +14,29 @@ def trimSpecials(text):
         .replace("_", " ")\
         .replace("(", "")\
         .replace(")", "")\
-        .replace("ii", "drógiego")\
+        .replace(" iii", " trzeciego")\
+        .replace(" ii", " drógiego")\
         .replace("wlkp.", "wielkopolski")\
         .replace("gen.", "generała")\
         .replace("ul.", "ulica")\
         .replace("wyb.", "wybrzeże")\
         .replace("os.", "osiedle")\
         .replace("kard.", "kardynała")\
-        .replace("al.", "aleja")\
+        .replace("al.", "aleja ")\
+        .replace("pl.", "plac")\
+        .replace(" ak ", " armii krajowej ")\
         .replace("ks.", "księdza")\
-        .replace("św.", "świętego")
+        .replace("św.", "świętego")\
+        .replace("imgw", "IMGW")\
+        .replace("imigw", "IMGW")\
+        .replace("kpn", "KPN")\
+        .replace("rpn", "RPN")\
+        .replace(" mpn", " MPN")\
+        .replace("igf pan", "IGF PAN")\
+        .replace("100", "stó")
     text = text.split()
     
-    text_new = []
-    for t in text:
-        if not (len(t) == 2 and t[1] == "."):
-            text_new.append(t)
-    
-    return " ".join(text_new)
+    return " ".join(text)
 
 url = "https://api.gios.gov.pl/pjp-api/rest/station/findAll"
 slownik_file = "../audio_generator/slownik.json"
@@ -103,7 +108,7 @@ if update:
             
     slownik["slownik"].update(stations_dict)
 
-    #with open(slownik_file, "w") as f:
-    #    json.dump({"slownik": slownik["slownik"], "slownik_auto": slownik["slownik_auto"]}, f, indent=4, ensure_ascii=False)
+    with open(slownik_file, "w") as f:
+        json.dump({"slownik": slownik["slownik"], "slownik_auto": slownik["slownik_auto"]}, f, indent=4, ensure_ascii=False)
 else:
     print(json.dumps(stations_dict, indent=4, ensure_ascii=False))
