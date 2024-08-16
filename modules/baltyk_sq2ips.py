@@ -20,6 +20,25 @@ class BaltykSq2ips(SR0WXModule):
             "NORTHERN BALTIC": "baltyku_n",
             "POLISH COASTAL WATERS": "baltyku_psb",
         }
+    def TrimPl(text):
+        text = (
+            text.lower()
+            .replace(("ą"), "a_")
+            .replace(("ć"), "c_")
+            .replace(("ę"), "e_")
+            .replace(("ł"), "l_")
+            .replace(("ń"), "n_")
+            .replace(("ó"), "o_")
+            .replace(("ś"), "s_")
+            .replace(("ź"), "x_")
+            .replace(("ż"), "z_")
+            .replace(":", "")
+            .replace(",", "")
+            .replace(".", " _ ")
+            .replace(" - ", "_")
+            .replace("-", "_")
+        )
+        return text
 
     def request(self, url):
         r = self.requestData(url, self.__logger, 15, 3)
@@ -138,7 +157,7 @@ class BaltykSq2ips(SR0WXModule):
             except KeyError:
                 pass
 
-        text = self.__language.TrimPl(text)
+        text = self.TrimPl(text).replace(".", " _ ")
 
         return text
 

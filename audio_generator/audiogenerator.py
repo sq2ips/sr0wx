@@ -121,7 +121,11 @@ def saveSlownikData(filename, slownik_custom, slownik_auto):
 
 print("Uruchamiane...")
 
-opts, args = getopt.getopt(sys.argv[1:], "p:msr")
+try:
+    opts, args = getopt.getopt(sys.argv[1:], "p:msr")
+except getopt.GetoptError:
+    print("Generator sampli do modułu językowego pl_google:\n\nParametry\n-m przeniesienie wygenerowanych sampli do katalogu ../pl_google/samples/\n-p podane nowych sampli do wygenerowania, w przypadku sampli neregularnych format to -p nazwa_pliku,sampel (każdy kolejny sampel to kolejny parametr)\n-s zapisanie podanych sampli do słownika\n-r ponowne wygenerowanie wszystkich sampli ze słownika")
+    exit()
 
 move = False
 saveSlownik = False
@@ -129,16 +133,16 @@ regenerate = False
 phrases_auto = []
 phrases_custom = []
 for opt, arg in opts:
-    if opt == "-m": #
+    if opt == "-m":
         move = True
-    elif opt == "-p": #
+    elif opt == "-p":
         if len(arg.split(",")) == 1:
             phrases_auto.append(arg)
         elif len(arg.split(",")) == 2:
             phrases_custom.append(arg.split(","))
         else:
-            print(f"Invalid phrase format {arg}")
-    elif opt == "-s": #
+            print(f"Invalid format {arg}")
+    elif opt == "-s":
         saveSlownik = True
         move = True
     elif opt == "-r":

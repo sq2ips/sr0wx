@@ -146,7 +146,8 @@ class ImgwPodestSq2ips(SR0WXModule):
         else:
             msg = " rzeka "
 
-        river = self.parseRiverName(station["river"]).replace("-", " ")
+        print(station["river"])
+        river = self.parseRiverName(station["river"])
 
         if river in self.__custom_rivers:
             msg += self.__custom_rivers[river]
@@ -155,13 +156,9 @@ class ImgwPodestSq2ips(SR0WXModule):
 
         msg += " wodowskaz "
         if station["name"] in self.__custom_names:
-            msg += self.__custom_names[
-                "".join(station["name"].lower().split()).replace("-", " ")
-            ]
+            msg += self.__custom_names[" ".join(station["name"].split())]
         else:
-            msg += self.__language.trim_pl(
-                "".join(station["name"].lower().split()).replace("-", " ")
-            )
+            msg += self.__language.trim_pl(" ".join(station["name"].split()))
 
         if station["currentState"] is not None and self.__read_level:
             msg += " poziom "

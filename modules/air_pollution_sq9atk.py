@@ -53,7 +53,7 @@ class AirPollutionSq9atk(SR0WXModule):
         for row in self.getJson(url):
             value = self.getSensorValue(row["id"])
             if value[1] > 1:  # czasem tu schodzi none
-                qualityIndexName = self.mbstr2asci(value[0]) + "IndexLevel"
+                qualityIndexName = self.__language.trim_pl(value[0]) + "IndexLevel"
                 if qualityIndexName in levelIndexArray:
                     index = levelIndexArray[qualityIndexName]["indexLevelName"]
                 else:
@@ -62,9 +62,9 @@ class AirPollutionSq9atk(SR0WXModule):
                     [
                         row["id"],
                         qualityIndexName,
-                        self.mbstr2asci(row["param"]["paramName"]),
+                        self.__language.trim_pl(row["param"]["paramName"]),
                         value[1],
-                        self.mbstr2asci(index),
+                        self.__language.trim_pl(index),
                     ]
                 )
         if len(sensors) > 0:
@@ -101,7 +101,7 @@ class AirPollutionSq9atk(SR0WXModule):
             message = " "
             message = " _ informacja_o_skaz_eniu_powietrza _ "
             message += (
-                " stacja_pomiarowa " + self.mbstr2asci(self.getStationName()) + " _ "
+                " stacja_pomiarowa " + self.__language.trim_pl(self.getStationName()) + " _ "
             )
             message += valuesMessage
             connection.send(
@@ -113,24 +113,3 @@ class AirPollutionSq9atk(SR0WXModule):
         except Exception as e:
             self.__logger.exception(f"Exception when running {self}: {e}")
             connection.send(dict())
-
-    def mbstr2asci(self, string):
-        """Zwraca "bezpieczną" nazwę dla wyrazu z polskimi znakami diakrytycznymi"""
-        return (
-            string.lower()
-            .replace("ą", "a_")
-            .replace("ć", "c_")
-            .replace("ę", "e_")
-            .replace("ł", "l_")
-            .replace("ń", "n_")
-            .replace("ó", "o_")
-            .replace("ś", "s_")
-            .replace("ź", "x_")
-            .replace("ż", "z_")
-            .replace(" ", "_")
-            .replace("-", "_")
-            .replace("(", "")
-            .replace(")", "")
-            .replace(".", "")
-            .replace(",", "")
-        )

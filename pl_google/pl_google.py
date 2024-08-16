@@ -53,7 +53,7 @@ def ra(value):
     )
 
 
-def TrimPl(text):
+def trim_pl(text):
     text = (
         text.lower()
         .replace(("ą"), "a_")
@@ -63,19 +63,17 @@ def TrimPl(text):
         .replace(("ń"), "n_")
         .replace(("ó"), "o_")
         .replace(("ś"), "s_")
-        .replace(("ź"), "z_")
+        .replace(("ź"), "x_")
         .replace(("ż"), "z_")
         .replace(":", "")
         .replace(",", "")
-        .replace(".", " _ ")
+        .replace(".", "")
         .replace(" - ", "_")
+        .replace("(", "")
+        .replace(")", "")
+        .replace(" ", "_")
     )
-    return text
-
-
-def trim_pl(word):
-    word = TrimPl(word).replace(" ", "_")
-    return word
+    return "".join(text.split())
 
 
 def remove_accents(function):
