@@ -72,7 +72,12 @@ class ImgwPodestSq2ips(SR0WXModule):
         stations_checked = []
         for id in stations_id:
             station = stations[id]
-            if "Outdated" in station["statusCode"]:
+            
+            if station["statusCode"] in ["no-water-state-data", None]:
+                self.__logger.warning(
+                    f"Nieznany stan wody z wodowskazu {station['code']}, kod {station['statusCode']}"
+                )
+            elif "Outdated" in station["statusCode"]:
                 if not self.__use_outdated:
                     self.__logger.warning(
                         f"Zdezaktualizowany stan wody z wodowskazu {station['code']}, kod {station['statusCode']}, pomijanie..."
@@ -82,10 +87,6 @@ class ImgwPodestSq2ips(SR0WXModule):
                     self.__logger.warning(
                         f"Zdezaktualizowany stan wody z wodowskazu {station['code']}, kod {station['statusCode']}, używanie mimo to..."
                     )
-            elif station["statusCode"] in ["no-water-state-data", None]:
-                self.__logger.warning(
-                    f"Nieznany stan wody z wodowskazu {station['code']}, kod {station['statusCode']}"
-                )
             elif station["statusCode"] == "unknown":
                 self.__logger.warning(
                     f"Brak stanów charakterystycznych z wodowskazu {station['code']}"
@@ -146,7 +147,6 @@ class ImgwPodestSq2ips(SR0WXModule):
         else:
             msg = " rzeka "
 
-        print(station["river"])
         river = self.parseRiverName(station["river"])
 
         if river in self.__custom_rivers:
