@@ -111,6 +111,9 @@ saveAudio = False
 # Ścieżka zapisu pliku wraz z nazwą i rozszerzeniem
 audioPath = "./sr0wx.wav"
 
+# Sprawdzanie dostępności aktualizacji
+check_for_updates = True
+
 # wiadomość początkowa i końcowa jest pliku .env
 # hello_msg = ['_', 'test']
 # goodbye_msg = ['_', "beep2"]

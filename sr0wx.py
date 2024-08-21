@@ -11,6 +11,7 @@ import logging
 import coloredlogs
 from multiprocessing import Process, Pipe
 import sys
+import subprocess
 import pygame
 import getopt
 import glob
@@ -191,6 +192,30 @@ except requests.ConnectionError:
     message += " ".join(config.data_sources_error_msg)
 else:
     logger.info(COLOR_OKGREEN + "Connection OK" + COLOR_ENDC)
+
+if config.check_for_updates:
+    try:
+        logger.info("Checking for newer version availability...")
+        branch = subprocess.check_output("git --no-pager branch".split()).decode().split("\n")
+
+        for b in branch:
+            if "*" in b:
+                branch = "".join(b.replace("*", "").split())
+                break
+
+        local_hash = subprocess.check_output('git --no-pager log --format="%H" -n 1'.split()).decode().replace("\"", "")
+        local_hash.replace("\n", "")
+        local_hash = "".join(local_hash.split())
+
+        global_hash = subprocess.check_output("git ls-remote https://github.com/sq2ips/sr0wx".split() + [branch]).decode().split()[0]
+
+        if local_hash == global_hash:
+            logger.info("Version is up to date.")
+        else:
+            logger.warning("Newer version is available, use 'git pull' to update.")
+
+    except Exception as e:
+        logger.error(f"Unable to check newer version availability, got error: {e}")
 
 logger.info("Checking cache...")
 if os.path.exists("cache/"):
