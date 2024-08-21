@@ -15,7 +15,7 @@ elif sys.argv[1] == "-a":
     names = requests.get(url).json()
     print("OK")
     print("Przetwarzanie danych...")
-    print(f"Ilość regionów: {len(names["features"])}\n")
+    print(f"Ilość regionów: {len(names['features'])}\n")
     print("miasto/powiat: id stacji")
     for i in names["features"]:
         print(f'{i["properties"]["jpt_nazwa_"]}: {i["properties"]["jpt_kod_je"]}')
@@ -27,7 +27,7 @@ elif sys.argv[1] == "-f":
     names = requests.get(url).json()
     print("OK")
     print("Przetwarzanie danych...")
-    print(f"Ilość regionów: {len(names["features"])}\n")
+    print(f"Ilość regionów: {len(names['features'])}\n")
     print("miasto/powiat: id stacji")
     any = True
     for i in names["features"]:

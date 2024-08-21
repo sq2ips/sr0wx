@@ -19,7 +19,7 @@ elif sys.argv[1] == "-z":
     print("miasto, powiat, zlewnia: id\n")
     for z in data:
         print(
-            f"{z["identifier"]}, pow. {z['district']}, {z["base_catchment"]["name"]}: {z["base_catchment"]["ID"]}"
+            f'{z["identifier"]}, pow. {z["district"]}, {z["base_catchment"]["name"]}: {z["base_catchment"]["ID"]}'
         )
 
 elif sys.argv[1] == "-s":
@@ -35,7 +35,7 @@ elif sys.argv[1] == "-s":
 
     for s in data:
         if sys.argv[2].lower() in s["name"].lower():
-            print(f"{s["river"]}, {s["name"]}: {s["catchment"]}, {s["code"]}")
+            print(f'{s["river"]}, {s["name"]}: {s["catchment"]}, {s["code"]}')
 
 elif sys.argv[1] == "-r":
     url = "https://hydro-back.imgw.pl/list/hydrologic"
@@ -50,7 +50,7 @@ elif sys.argv[1] == "-r":
 
     for s in data:
         if sys.argv[2].lower() in s["river"].lower():
-            print(f"{s["river"]}, {s["name"]}: {s["catchment"]}, {s["code"]}")
+            print(f'{s["river"]}, {s["name"]}: {s["catchment"]}, {s["code"]}')
 elif sys.argv[1] == "-w":
     url = "https://hydro-back.imgw.pl/list/hydrologic"
     print(
@@ -64,4 +64,4 @@ elif sys.argv[1] == "-w":
 
     for s in data:
         if sys.argv[2] == s["code"]:
-            print(f"{s["river"]}, {s["name"]}: {s["catchment"]}")
+            print(f'{s["river"]}, {s["name"]}: {s["catchment"]}')

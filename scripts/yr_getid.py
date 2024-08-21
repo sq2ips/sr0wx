@@ -14,16 +14,16 @@ elif sys.argv[1] == "-f":
     print("Pobierane danych...")
     r = requests.get(url + sys.argv[2]).json()
     print("Przetwarzanie danych...")
-    print(f"Ilość wyników: {r["totalResults"]}\n")
+    print(f"Ilość wyników: {r['totalResults']}\n")
     print("miasto/obszar: id stacji")
     for id in r["_embedded"]["location"]:
         text = f'{id["name"]}, {id["category"]["name"]}, '
         if "subregion" in id:
-            text += f"{id["subregion"]["name"]}, "
+            text += f'{id["subregion"]["name"]}, '
         if "region" in id:
-            text += f"{id["region"]["name"]} "
-        text += f"({id["country"]["name"]}), elevation {id["elevation"]}m: "
-        text += f"{id["id"]}"
+            text += f'{id["region"]["name"]} '
+        text += f'({id["country"]["name"]}), elevation {id["elevation"]}m: '
+        text += f'{id["id"]}'
         print(text)
 else:
     print("Nieznany parametr.")
