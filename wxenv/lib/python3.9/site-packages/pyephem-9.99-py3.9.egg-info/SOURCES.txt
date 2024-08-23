@@ -1,0 +1,7 @@
+setup.cfg
+setup.py
+pyephem.egg-info/PKG-INFO
+pyephem.egg-info/SOURCES.txt
+pyephem.egg-info/dependency_links.txt
+pyephem.egg-info/requires.txt
+pyephem.egg-info/top_level.txt

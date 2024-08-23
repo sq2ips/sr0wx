@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python
 
 import os
 from pathlib import Path
@@ -17,8 +17,8 @@ import getopt
 import glob
 import inspect
 import socket
-from colorcodes import *
 
+from colorcodes import *
 
 LICENSE = (
     COLOR_OKBLUE
