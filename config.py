@@ -408,6 +408,16 @@ meteostationsq2ips = MeteoStationSq2ips(
 )
 
 # ---------------
+# meteo_aprs_sq2ips
+# ---------------
+from meteo_aprs_sq2ips import MeteoAprsSq2ips
+meteoaprssq2ips = MeteoAprsSq2ips(
+    language=lang,
+    path="",
+    move_after=0
+)
+
+# ---------------
 # meteo_yr_sq2ips
 # ---------------
 from meteo_yr_sq2ips import MeteoYrSq2ips
