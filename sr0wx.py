@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import os
 from pathlib import Path
@@ -9,7 +9,7 @@ import requests
 import logging.config
 import logging
 import coloredlogs
-from multiprocessing import Process, Pipe
+from multiprocessing import Pool, Pipe
 import sys
 import subprocess
 import pygame
@@ -108,6 +108,22 @@ def setup_logging(config):
 
     return logger
 
+def run_module(args):
+    module, logger = args
+    logger.info(
+        COLOR_OKBLUE
+        + f"starting {str(module)}..."
+        + COLOR_ENDC
+    )
+    e = None
+    try:
+        module_data = module.get_data()
+    except Exception as e:
+        logger.exception(f"Exception when running {self}: {e}")
+        return {module: [e, None]}
+    else:
+        return {module: [None, module_data]}
+            
 
 #
 # All datas returned by SR0WX modules will be stored in ``data`` variable.
@@ -181,19 +197,21 @@ else:
 #aux_modules = {**config.aux_modules, **{v: k for k, v in config.aux_modules.items()}}
 aux_modules = config.aux_modules
 
+offline_mode = False
 try:
     logger.info("Checking internet connection...")
-    requests.get("http://google.com", timeout=20)
-except requests.ConnectionError:
+    requests.get("http://google.com", timeout=15)
+except (requests.ConnectionError, requests.ReadTimeout) as e:
     logger.error(
-        COLOR_FAIL + "No internet connection, offline mode active" + COLOR_ENDC + "\n"
+        COLOR_FAIL + f"No internet connection, got error {e}, offline mode active" + COLOR_ENDC + "\n"
     )
+    offline_mode = True
     modules = config.offline_modules
     message += " ".join(config.data_sources_error_msg)
 else:
     logger.info(COLOR_OKGREEN + "Connection OK" + COLOR_ENDC)
 
-if config.check_for_updates:
+if config.check_for_updates and not offline_mode:
     try:
         logger.info("Checking for newer version availability...")
         branch = subprocess.check_output("git --no-pager branch".split()).decode().split("\n")
@@ -236,51 +254,46 @@ sources = [
 
 if config.multi_processing:
     logger.info("multiprocessing is ON\n")
-    processes = []
-    connections = []
+
+    logger.info("starting modules...")
+
+    args = []
+
     for module in modules:
-        conn1, conn2 = Pipe()
-        connections.append(conn1)
-        processes.append(Process(target=module.get_data, args=(conn2,)))
+        args.append([module, logger])
 
-    for p in processes:
-        logger.info(
-            COLOR_OKBLUE
-            + f"starting {str(modules[processes.index(p)])}..."
-            + COLOR_ENDC
-        )
-        p.start()
-
-    for p in processes:
-        p.join()
+    print(type(modules[0]))
+    with Pool(4) as pool:
+        print(args)
+        print(run_module)
+        modules_results = pool.map(run_module, args) # ????
+        #modules_results = map_results.get(timeout=10)
 
     func_modules = ""
     any_func_modules = False
-    for c in connections:
-        module_data = c.recv()
-        module_message = module_data.get("message", "")
-        module_source = module_data.get("source", "")
-        if module_message == "":
+    for module_result in modules_results:
+        if modules_results[module_data][0] is None:
+            any_func_modules = True
+            module_data = modules_results[module_data][1]
+        else:
             func_modules += COLOR_FAIL + str(modules[connections.index(c)]) + COLOR_ENDC
-            if (
-                modules[connections.index(c)] in aux_modules
-            ):
-                if aux_modules[modules[connections.index(c)]] not in modules:
+            if module in aux_modules:
+                if aux_modules[module] not in modules:
                     logger.info(
                         COLOR_OKBLUE
-                        + f"Starting auxilary module {aux_modules[modules[connections.index(c)]]} for module {modules[connections.index(c)]}..."
+                        + f"Starting auxilary module {aux_modules[module]} for module {module}..."
                         + COLOR_ENDC
                     )
-                    conn1, conn2 = Pipe()
-                    aux_modules[modules[connections.index(c)]].get_data(conn2)
-                    module_data = conn1.recv()
-                    module_message = module_data.get("message", "")
-                    module_source = module_data.get("source", "")
+                    module_result = run_module(aux_modules[module], logger)
+                    if modules_result[0] is None:
+                        any_func_modules = True
+                        module_data = modules_results[module_data][1]
+                
                     func_modules += " auxilary: "
                     if module_message == "":
                         func_modules += (
                             COLOR_FAIL
-                            + str(aux_modules[modules[connections.index(c)]])
+                            + str(aux_modules[module])
                             + COLOR_ENDC
                             + "\n"
                         )
@@ -288,28 +301,29 @@ if config.multi_processing:
                         any_func_modules = True
                         func_modules += (
                             COLOR_OKGREEN
-                            + str(aux_modules[modules[connections.index(c)]])
+                            + str(aux_modules[module])
                             + COLOR_ENDC
                             + "\n"
                         )
-                        message = " ".join((message, module_message))
                 else:
                     func_modules += COLOR_WARNING + " auxilary module: " + str(aux_modules[modules[connections.index(c)]]) + " already running..." + COLOR_ENDC + "\n"
             else:
                 func_modules += "\n"
 
-        elif module_message is None:
-            func_modules += (
-                COLOR_OKGREEN + str(modules[connections.index(c)]) + COLOR_ENDC + "\n"
-            )
-        else:
-            any_func_modules = True
-            func_modules += (
-                COLOR_OKGREEN + str(modules[connections.index(c)]) + COLOR_ENDC + "\n"
-            )
-            message = " ".join((message, module_message))
-        if module_message != "" and module_source != "":
-            sources.append(module_data["source"])
+        if module_data is not None:
+            module_message = module_data.get("message", "")
+            module_source = module_data.get("source", "")
+            if module_message is None:
+                func_modules += (
+                    COLOR_OKGREEN + str(modules[connections.index(c)]) + COLOR_ENDC + "\n"
+                )
+            else:
+                func_modules += (
+                    COLOR_OKGREEN + str(modules[connections.index(c)]) + COLOR_ENDC + "\n"
+                )
+                message = " ".join((message, module_message))
+                sources.append(module_data["source"])
+
 else:
     logger.info("multiprocessing is OFF\n")
     func_modules = ""

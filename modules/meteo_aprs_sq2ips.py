@@ -89,7 +89,7 @@ class MeteoAprsSq2ips(SR0WXModule):
         for date, file in zip(files_frames.keys(), files_frames.values()):
             with open(file, "r") as f:
                 frame = f.read().split()[1]
-                if frame is "":
+                if frame == "":
                     self.__logger.warning(f"Empty data in frame: {file}, date: {date}")
                 else:
                     frames_text[date] = frame
