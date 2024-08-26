@@ -154,7 +154,7 @@ from baltyk_sq2ips import BaltykSq2ips
 
 baltyksq2ips = BaltykSq2ips(
     language=lang,
-    service_url="https://baltyk.imgw.pl//getdata/forecast.php?type=sea&lang=pl",
+    service_url="https://baltyk.imgw.pl/getdata/forecast.php?type=sea&lang=pl",
     # service_url="http://91.220.17.153/index-maps/forecastGetData.php?type=sea&lang=pl", # niepewne źródło
     # service_url="http://baltyk.pogodynka.pl/index-maps/forecastGetData.php?type=sea&lang=pl", # stary, nie działający URL
     region_id="SOUTHEASTERN BALTIC",
