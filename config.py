@@ -65,8 +65,8 @@ dict_log_config = {
 # dane z pliku .env
 if os.path.exists(".env"):
     load_dotenv()
-    hello_msg = os.getenv("HELLO_MSG").split(",")
-    goodbye_msg = os.getenv("GOODBYE_MSG").split(",")
+    #hello_msg = os.getenv("HELLO_MSG").split(",")
+    #goodbye_msg = os.getenv("GOODBYE_MSG").split(",")
     airly_key = os.getenv("AIRLY_KEY")
     openweather_key = os.getenv("OPENWEATHER_KEY")
     meteostation_ip = os.getenv("METEOSTATION_IP").split(",")
@@ -115,8 +115,8 @@ audioPath = "./sr0wx.wav"
 check_for_updates = True
 
 # wiadomość początkowa i końcowa jest pliku .env
-# hello_msg = ['_', 'test']
-# goodbye_msg = ['_', "beep2"]
+hello_msg = ["_","tu_eksperymentalna_automatyczna_stacja_pogodowa", "sr0wx"]
+goodbye_msg = ["_", "tu_sr0wx", "kolejny_komunikat", "_", "beep2"]
 # informacja gdy nie ma internetu
 data_sources_error_msg = ["_", "internetowe_zrodlo_danych_niedostepne"]
 # czytanie informacji o źródłach danych
