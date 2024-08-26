@@ -143,7 +143,6 @@ for opt, arg in opts:
     if opt == "-m":
         move = True
     elif opt == "-p":
-        print(arg)
         if len(arg.split("|")) == 1:
             phrases_auto.append(arg)
         elif len(arg.split("|")) == 2:
