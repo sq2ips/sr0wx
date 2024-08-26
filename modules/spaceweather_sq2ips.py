@@ -103,45 +103,35 @@ class SpaceWeatherSq2ips(SR0WXModule):
             message = "ekstremalne"
         return message
 
-    def get_data(self, connection):
-        try:
-            self.__logger.info("::: Pobieranie danych")
-            if self.__radioNoise:
-                dataR = self.DownloadData(self.__urlR)
-            dataG = self.DownloadData(self.__urlG)
-            dataS = self.DownloadData(self.__urlS)
-
-            self.__logger.info("::: Przetważanie danych")
-            dG = self.ProcessG(dataG)
-            if self.__radioNoise:
-                dR = self.ProcessR(dataR)
-            else:
-                dR = None
-            dS = self.ProcessS(dataS)
-
-            if dG is None and dR is None and dS is None:
-                message = "brak_alerto_w_pogody_kosmicznej"
-            else:
-                message = "alerty_pogody_kosmicznej _ "
-
-                if dG is not None:
-                    message += dG
-                    message += " burze_geomagnetyczne _ "
-
-                if dR is not None:
-                    message += dR
-                    message += " zakl_ucenia_jonosfery _ "
-
-                if dS is not None:
-                    message += dS
-                    message += " burze_radiacyjne "
-
-            connection.send(
-                {
-                    "message": message,
-                    "source": "swpc",
-                }
-            )
-        except Exception as e:
-            self.__logger.exception(f"Exception when running {self}: {e}")
-            connection.send(dict())
+    def get_data(self):
+        self.__logger.info("::: Pobieranie danych")
+        if self.__radioNoise:
+            dataR = self.DownloadData(self.__urlR)
+        dataG = self.DownloadData(self.__urlG)
+        dataS = self.DownloadData(self.__urlS)
+        self.__logger.info("::: Przetważanie danych")
+        dG = self.ProcessG(dataG)
+        if self.__radioNoise:
+            dR = self.ProcessR(dataR)
+        else:
+            dR = None
+        dS = self.ProcessS(dataS)
+        if dG is None and dR is None and dS is None:
+            message = "brak_alerto_w_pogody_kosmicznej"
+        else:
+            message = "alerty_pogody_kosmicznej _ "
+            if dG is not None:
+                message += dG
+                message += " burze_geomagnetyczne _ "
+            if dR is not None:
+                message += dR
+                message += " zakl_ucenia_jonosfery _ "
+            if dS is not None:
+                message += dS
+                message += " burze_radiacyjne "
+        return(
+            {
+                "message": message,
+                "source": "swpc",
+            }
+        )

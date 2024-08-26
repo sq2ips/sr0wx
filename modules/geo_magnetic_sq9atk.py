@@ -104,35 +104,28 @@ class GeoMagneticSq9atk(SR0WXModule):
         values = list(data.values())
         return int(max(values)) - int(min(values))
 
-    def get_data(self, connection):
-        try:
-            values = self.getDataParsedHtmlData()
-            daysValues = self.groupValuesByDays(values)
-            message = " _ sytuacja_geomagnetyczna_w_regionie "
-
-            self.__logger.info("::: Przetwarzam dane...")
-            for d, day in daysValues.items():
-                if len(day) > 0:
-                    message += " ".join([" _", self.__days[d - 1], ""])
-                    condition = self.getStrongestConditionOfDay(day)
-
-                    message += " ".join([self.__seasons[condition["at"]], ""])
-                    message += " ".join(
-                        [self.__conditions[int(condition["value"])], ""]
-                    )
-                    message += " ".join(
-                        [
-                            self.__fluctuations[self.getDailyFluctuation(day)],
-                            "wahania_dobowe ",
-                        ]
-                    )
-
-            connection.send(
-                {
-                    "message": message + "_",
-                    "source": "gis_meteo",
-                }
-            )
-        except Exception as e:
-            self.__logger.exception(f"Exception when running {self}: {e}")
-            connection.send(dict())
+    def get_data(self):
+        values = self.getDataParsedHtmlData()
+        daysValues = self.groupValuesByDays(values)
+        message = " _ sytuacja_geomagnetyczna_w_regionie "
+        self.__logger.info("::: Przetwarzam dane...")
+        for d, day in daysValues.items():
+            if len(day) > 0:
+                message += " ".join([" _", self.__days[d - 1], ""])
+                condition = self.getStrongestConditionOfDay(day)
+                message += " ".join([self.__seasons[condition["at"]], ""])
+                message += " ".join(
+                    [self.__conditions[int(condition["value"])], ""]
+                )
+                message += " ".join(
+                    [
+                        self.__fluctuations[self.getDailyFluctuation(day)],
+                        "wahania_dobowe ",
+                    ]
+                )
+        return(
+            {
+                "message": message + "_",
+                "source": "gis_meteo",
+            }
+        )

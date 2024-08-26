@@ -10,7 +10,7 @@ class TimeSq2ips(SR0WXModule):
         self.__start_message = start_message
         self.__logger = logging.getLogger(__name__)
 
-    def get_data(self, connection):
+    def get_data(self):
         time = ":".join([str(datetime.now().hour), str(datetime.now().minute)])
         datetime_object = datetime.strptime(time, "%H:%M")
         time_words = self.__language.read_datetime(datetime_object, "%H %M")

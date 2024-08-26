@@ -73,31 +73,24 @@ class PropagationSq9atk(SR0WXModule):
         except:
             return list()
 
-    def get_data(self, connection):
-        try:
-            image = self.downloadImage(self.__service_url)
-
-            self.__logger.info("::: Przetwarzam dane...")
-
-            message = " ".join(
-                [
-                    " _ informacje_o_propagacji ",
-                    " _ dzien _ ",
-                    # " _ pasma _ ",
-                    " _ ".join(self.collectBandConditionsFromImage(image, "day")),
-                    " _ noc _ ",
-                    # " _ pasma _ ",
-                    " _ ".join(self.collectBandConditionsFromImage(image, "night")),
-                    " _ ",
-                ]
-            )
-
-            connection.send(
-                {
-                    "message": message,
-                    "source": "noaa",
-                }
-            )
-        except Exception as e:
-            self.__logger.exception(f"Exception when running {self}: {e}")
-            connection.send(dict())
+    def get_data(self):
+        image = self.downloadImage(self.__service_url)
+        self.__logger.info("::: Przetwarzam dane...")
+        message = " ".join(
+            [
+                " _ informacje_o_propagacji ",
+                " _ dzien _ ",
+                # " _ pasma _ ",
+                " _ ".join(self.collectBandConditionsFromImage(image, "day")),
+                " _ noc _ ",
+                # " _ pasma _ ",
+                " _ ".join(self.collectBandConditionsFromImage(image, "night")),
+                " _ ",
+            ]
+        )
+        return(
+            {
+                "message": message,
+                "source": "noaa",
+            }
+        )

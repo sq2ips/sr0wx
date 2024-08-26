@@ -161,30 +161,23 @@ class BaltykSq2ips(SR0WXModule):
 
         return text
 
-    def get_data(self, connection):
-        try:
-            self.__logger.info("::: Pobieranie komunikatu dla bałtyku...")
-            data = self.request(self.__service_url)
-
-            self.__logger.info("::: Przetwarzanie danych...")
-            datap = self.process(data)
-            time = self.process_time(data)
-
-            message = " ".join(
-                ["prognoza_na_obszar", self.regions[self.__region_id], ""]
-            )
-
-            message += " ".join(["waz_na_od_godziny", time[0], "do", time[1], "_ "])
-            message += "".join(["baltyk_alert_", datap[0], " _ "])
-            message += self.say_data(datap[1])
-            message += " _ prognoza_orientacyjna_12 _ "
-            message += self.say_data(datap[2])
-            connection.send(
-                {
-                    "message": message,
-                    "source": "baltyk_imgw",
-                }
-            )
-        except Exception as e:
-            self.__logger.exception(f"Exception when running {self}: {e}")
-            connection.send(dict())
+    def get_data(self):
+        self.__logger.info("::: Pobieranie komunikatu dla bałtyku...")
+        data = self.request(self.__service_url)
+        self.__logger.info("::: Przetwarzanie danych...")
+        datap = self.process(data)
+        time = self.process_time(data)
+        message = " ".join(
+            ["prognoza_na_obszar", self.regions[self.__region_id], ""]
+        )
+        message += " ".join(["waz_na_od_godziny", time[0], "do", time[1], "_ "])
+        message += "".join(["baltyk_alert_", datap[0], " _ "])
+        message += self.say_data(datap[1])
+        message += " _ prognoza_orientacyjna_12 _ "
+        message += self.say_data(datap[2])
+        connection.send(
+            {
+                "message": message,
+                "source": "baltyk_imgw",
+            }
+        )

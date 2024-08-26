@@ -106,6 +106,9 @@ samplerate = 22050
 # wyświetlanie nazw sampli w trakcie odtważania
 showSamples = False
 
+# inwersja modułów awaryjnych
+aux_modules_inversion = False
+
 # Usatwiensia zapisu komunikatu do pliku audio
 saveAudio = False
 # Ścieżka zapisu pliku wraz z nazwą i rozszerzeniem
@@ -113,6 +116,9 @@ audioPath = "./sr0wx.wav"
 
 # Sprawdzanie dostępności aktualizacji
 check_for_updates = True
+
+# Adres url do sprawdzania aktualizacji
+upstream_url = "https://github.com/sq2ips/sr0wx"
 
 # wiadomość początkowa i końcowa jest pliku .env
 # hello_msg = ['_', 'test']

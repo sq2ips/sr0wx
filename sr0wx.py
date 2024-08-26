@@ -1,23 +1,100 @@
 #!/usr/bin/env python3
 
+#
+#    ____  ____   _____        ____  __
+#   / ___||  _ \ / _ \ \      / /\ \/ /
+#   \___ \| |_) | | | \ \ /\ / /  \  /
+#    ___) |  _ <| |_| |\ V  V /   /  \
+#   |____/|_| \_\\___/  \_/\_/   /_/\_\
+#
+# This is main program file for automatic weather station project;
+# codename SR0WX.
+#
+# This project was originaly created by SQ6JNX in 2009, the project
+# was then developed by SQ9ATK who added a lot of modules, around 2023 I (SQ2IPS) started developing it.
+# I created also created some modules and also rewriten the code to python 3 and also started writing documentation.
+# Almost all longer coments are made by SQ6JNX. You can read documentation/manual at https://github.com/sq2ips/sr0wx/wiki.
+#
+# =====
+# About
+# =====
+#
+# Every automatic station's callsign in Poland (SP) is prefixed by "SR".
+# This software is intended to read aloud weather informations (mainly).
+# That's why we (or I) called it SR0WX.
+#
+# Extensions (mentioned above) are called ``modules`` (or ``languages``).
+# Main part of SR0WX is called ``core``.
+#
+# SR0WX consists quite a lot of independent files so I (SQ6JNX) suggest
+# reading other manuals (mainly configuration- and internationalization
+# manual) in the same time as reading this one. Really.
+#
+# ============
+# Requirements
+# ============
+#
+# SR0WX (core) requires the following packages:
+#
+# ``os``, ``sys`` and ``time`` doesn't need further explanation, these are
+# syandard Python packages.
+#
+# ``pygame`` [#]_ is a library helpful for game development, this project
+# uses it for reading (playing) sound samples. ``config`` is just a
+# SR0WX configuration file and it is described separately.
+#
+# ..[#] www.pygame.org
+#
+# =========
+# Let's go!
+# =========
+#
+# For infrmational purposes script says hello and gives local time/date,
+# so it will be possible to find out how long script was running.
+
+# Imports
+
+# time measuring
+from time import time
+time_start = time()
+
+# system and path libs
 import os
 from pathlib import Path
 
+# this i a trick that changes system dir to dir of this file for fixing problems with locating other files
 os.chdir("/".join(str(Path(__file__)).split("/")[:-1]))
 
-import requests
+# logging libraries
 import logging.config
 import logging
 import coloredlogs
-from multiprocessing import Pool, Pipe
+
+# requests for checking internet connection
+import requests
+
+# system, getopt and inspect libs for getting command line args and modules
 import sys
-import subprocess
-import pygame
 import getopt
-import glob
 import inspect
+
+# subprocess lib for executing git commands to check version
+import subprocess
+
+# multiprocessing for modules
+from multiprocessing.pool import ThreadPool as Pool
+from multiprocessing import Process
+
+# pygame for playing audio
+import pygame
+
+# glob for checking cache
+import glob
+
+# socket for checking for other program instances
 import socket
 
+# colorcodes
 from colorcodes import *
 
 LICENSE = (
@@ -46,84 +123,24 @@ You can find full list of contributors on github.com/sq6jnx/sr0wx.py
     + COLOR_ENDC
 )
 
-
-#
-#
-# ********
-# sr0wx.py
-# ********
-#
-# This is main program file for automatic weather station project;
-# codename SR0WX.
-#
-# (At the moment) SR0WX can read METAR [#]_ weather informations and
-# is able to read them aloud in Polish. SR0WX is fully extensible, so
-# it's easy to make it read any other data in any language (I hope).
-#
-# .. [#] http://en.wikipedia.org/wiki/METAR
-#
-# =====
-# About
-# =====
-#
-# Every automatic station's callsign in Poland (SP) is prefixed by "SR".
-# This software is intended to read aloud weather informations (mainly).
-# That's why we (or I) called it SR0WX.
-#
-# Extensions (mentioned above) are called ``modules`` (or ``languages``).
-# Main part of SR0WX is called ``core``.
-#
-# SR0WX consists quite a lot of independent files so I (SQ6JNX) suggest
-# reading other manuals (mainly configuration- and internationalization
-# manual) in the same time as reading this one. Really.
-#
-# ============
-# Requirements
-# ============
-#
-# SR0WX (core) requires the following packages:
-
-# ``os``, ``sys`` and ``time`` doesn't need further explanation, these are
-# syandard Python packages.
-#
-# ``pygame`` [#]_ is a library helpful for game development, this project
-# uses it for reading (playing) sound samples. ``config`` is just a
-# SR0WX configuration file and it is described separately.
-#
-# ..[#] www.pygame.org
-#
-# =========
-# Let's go!
-# =========
-#
-# For infrmational purposes script says hello and gives local time/date,
-# so it will be possible to find out how long script was running.
-
-# Logging configuration
-
-
-def setup_logging(config):
-    logging.config.dictConfig(config.dict_log_config)
-    logger = logging.getLogger(__name__)
-
-    return logger
+# LOGGING CONFIGURATION
 
 def run_module(args):
-    module, logger = args
-    logger.info(
-        COLOR_OKBLUE
-        + f"starting {str(module)}..."
-        + COLOR_ENDC
-    )
+    module, logger, aux = args
+    if not aux:
+        logger.info(
+            COLOR_OKBLUE
+            + f"starting {str(module)}..."
+            + COLOR_ENDC
+        )
     e = None
     try:
         module_data = module.get_data()
     except Exception as e:
-        logger.exception(f"Exception when running {self}: {e}")
+        logger.exception(f"Exception when running {module}: {e}")
         return {module: [e, None]}
     else:
         return {module: [None, module_data]}
-            
 
 #
 # All datas returned by SR0WX modules will be stored in ``data`` variable.
@@ -139,6 +156,8 @@ message = " "
 # informations.
 #
 # Modules may be also given in commandline, separated by a comma.
+
+# Args
 
 config = None
 
@@ -166,11 +185,16 @@ for opt, arg in opts:
 if config is None:
     import config as config
 
-logger = setup_logging(config)
+# Logger
+
+logging.config.dictConfig(config.dict_log_config)
+logger = logging.getLogger(__name__)
 
 logger.info(COLOR_WARNING + "sr0wx.py started" + COLOR_ENDC)
 # logger.info(LICENSE)
+logger.info(COLOR_OKBLUE + f"For documentation see {config.upstream_url}/wiki")
 
+# Checking for another instacnces
 try:
     s = socket.socket()
     s.bind((socket.gethostname(), 56432))
@@ -181,6 +205,7 @@ except OSError:
 if test_mode:
     logger.info(COLOR_WARNING + "Test mode active" + COLOR_ENDC)
 
+# command line modules
 if all_modules:
     modules = config.modules_all
 elif modules_text is not None:
@@ -194,9 +219,13 @@ elif modules_text is not None:
 else:
     modules = config.modules
 
-#aux_modules = {**config.aux_modules, **{v: k for k, v in config.aux_modules.items()}}
-aux_modules = config.aux_modules
+# aux modules
+if config.aux_modules_inversion:
+    aux_modules = {**config.aux_modules, **{v: k for k, v in config.aux_modules.items()}}
+else:
+    aux_modules = config.aux_modules
 
+# internet connection
 offline_mode = False
 try:
     logger.info("Checking internet connection...")
@@ -211,6 +240,7 @@ except (requests.ConnectionError, requests.ReadTimeout) as e:
 else:
     logger.info(COLOR_OKGREEN + "Connection OK" + COLOR_ENDC)
 
+# updates
 if config.check_for_updates and not offline_mode:
     try:
         logger.info("Checking for newer version availability...")
@@ -225,7 +255,7 @@ if config.check_for_updates and not offline_mode:
         local_hash.replace("\n", "")
         local_hash = "".join(local_hash.split())
 
-        global_hash = subprocess.check_output("git ls-remote https://github.com/sq2ips/sr0wx".split() + [branch]).decode().split()[0]
+        global_hash = subprocess.check_output(f"git ls-remote {config.upstream_url}".split() + [branch]).decode().split()[0]
 
         if local_hash == global_hash:
             logger.info("Version is up to date.")
@@ -235,6 +265,7 @@ if config.check_for_updates and not offline_mode:
     except Exception as e:
         logger.error(f"Unable to check newer version availability, got error: {e}")
 
+# cache
 logger.info("Checking cache...")
 if os.path.exists("cache/"):
     cache_dir = glob.glob("cache/*")
@@ -246,12 +277,16 @@ else:
     logger.info("Cache dir does not exists, creating...")
     os.mkdir("cache/")
 
+# lang
 lang = config.lang
 config.pl_google = lang
+
+# sources
 sources = [
     lang.source,
 ]
 
+# modules launching
 if config.multi_processing:
     logger.info("multiprocessing is ON\n")
 
@@ -259,24 +294,35 @@ if config.multi_processing:
 
     args = []
 
+    # list of args: logger and modules
     for module in modules:
-        args.append([module, logger])
+        args.append((module, logger, False))
 
-    print(type(modules[0]))
+    # Pool and processes map
     with Pool(4) as pool:
-        print(args)
-        print(run_module)
-        modules_results = pool.map(run_module, args) # ????
+        modules_results_raw = pool.map(run_module, args) # ????
         #modules_results = map_results.get(timeout=10)
+    
+    # appending returned data to one dict
+    modules_results = {}
+    for module_result in modules_results_raw:
+        modules_results.update(module_result)
 
+    # loop thru all modules
     func_modules = ""
     any_func_modules = False
-    for module_result in modules_results:
-        if modules_results[module_data][0] is None:
-            any_func_modules = True
-            module_data = modules_results[module_data][1]
+    for module in modules:
+        module_data = None
+        
+        # if there was not any error
+        if modules_results[module][0] is None:
+            module_data = modules_results[module][1]
+            func_modules += (
+                    COLOR_OKGREEN + str(module) + COLOR_ENDC + "\n"
+                )
         else:
-            func_modules += COLOR_FAIL + str(modules[connections.index(c)]) + COLOR_ENDC
+            func_modules += COLOR_FAIL + str(module) + COLOR_ENDC
+            # if there was try running aux module
             if module in aux_modules:
                 if aux_modules[module] not in modules:
                     logger.info(
@@ -284,13 +330,12 @@ if config.multi_processing:
                         + f"Starting auxilary module {aux_modules[module]} for module {module}..."
                         + COLOR_ENDC
                     )
-                    module_result = run_module(aux_modules[module], logger)
-                    if modules_result[0] is None:
-                        any_func_modules = True
-                        module_data = modules_results[module_data][1]
+                    module_result = run_module((aux_modules[module], logger, True))
+                    if module_result[aux_modules[module]][0] is None:
+                        module_data = module_result[aux_modules[module]][1]
                 
                     func_modules += " auxilary: "
-                    if module_message == "":
+                    if module_result[aux_modules[module]][0] is not None:
                         func_modules += (
                             COLOR_FAIL
                             + str(aux_modules[module])
@@ -298,7 +343,6 @@ if config.multi_processing:
                             + "\n"
                         )
                     else:
-                        any_func_modules = True
                         func_modules += (
                             COLOR_OKGREEN
                             + str(aux_modules[module])
@@ -306,21 +350,16 @@ if config.multi_processing:
                             + "\n"
                         )
                 else:
-                    func_modules += COLOR_WARNING + " auxilary module: " + str(aux_modules[modules[connections.index(c)]]) + " already running..." + COLOR_ENDC + "\n"
+                    func_modules += COLOR_WARNING + " auxilary module: " + str(aux_modules[module]) + " already running..." + COLOR_ENDC + "\n"
             else:
                 func_modules += "\n"
 
+        # check returned data and append to `message` varible
         if module_data is not None:
             module_message = module_data.get("message", "")
             module_source = module_data.get("source", "")
-            if module_message is None:
-                func_modules += (
-                    COLOR_OKGREEN + str(modules[connections.index(c)]) + COLOR_ENDC + "\n"
-                )
-            else:
-                func_modules += (
-                    COLOR_OKGREEN + str(modules[connections.index(c)]) + COLOR_ENDC + "\n"
-                )
+            if module_message is not None:
+                any_func_modules = True
                 message = " ".join((message, module_message))
                 sources.append(module_data["source"])
 
@@ -369,6 +408,7 @@ logger.info(
 if not any_func_modules:
     logger.critical("ERROR: No functioning modules, exiting...")
     exit(1)
+
 # When all the modules finished its' work it's time to ``.split()`` returned
 # data. Every element of returned list is actually a filename of a sample.
 
@@ -575,6 +615,7 @@ if config.saveAudio or saveAudioOverwrite:
     except Exception as e:
         logger.error(f"Couldn't save message, got error {e}")
 
+logger.info(f"Script was running for {time()-time_start} secconds")
 logger.info(COLOR_WARNING + "goodbye" + COLOR_ENDC)
 
 # Documentation is a good thing when you need to double or triple your

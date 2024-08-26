@@ -92,42 +92,38 @@ class PropagationSq2ips(SR0WXModule):
             text += " do " + noise[1]
         return text
 
-    def get_data(self, connection):
-        try:
-            root = self.DownloadData(self.__service_url)
-            self.__logger.info("::: Przetważanie danych...")
-            conditions_day, conditions_night, noise = self.process(root)
-            text_day = self.getText(conditions_day)
-            text_night = self.getText(conditions_night)
-            noise_level = None
-            if self.__radioNoise:
-                try:
-                    noise_level = self.getNoise(noise)
-                except Exception as e:
-                    if e == KeyError:
-                        self.__logger.warning(
-                            "Nieprawidłowa odczytana wartość poziomu zakłuceń, pomijane..."
-                        )
-            message = " ".join(
-                [
-                    " _ informacje_o_propagacji ",
-                    " _ dzien _ ",
-                    text_day,
-                    " _ noc _ ",
-                    text_night,
-                ]
-            )
-            if self.__radioNoise:
-                if noise_level is None:
-                    self.__logger.warning("Brak danych o poziomie zakłuceń")
-                else:
-                    message += " _ poziom_zakl_ucen_ " + noise_level
-            connection.send(
-                {
-                    "message": message,
-                    "source": "hamqsl",
-                }
-            )
-        except Exception as e:
-            self.__logger.exception(f"Exception when running {self}: {e}")
-            connection.send(dict())
+    def get_data(self):
+        root = self.DownloadData(self.__service_url)
+        self.__logger.info("::: Przetważanie danych...")
+        conditions_day, conditions_night, noise = self.process(root)
+        text_day = self.getText(conditions_day)
+        text_night = self.getText(conditions_night)
+        noise_level = None
+        if self.__radioNoise:
+            try:
+                noise_level = self.getNoise(noise)
+            except Exception as e:
+                if e == KeyError:
+                    self.__logger.warning(
+                        "Nieprawidłowa odczytana wartość poziomu zakłuceń, pomijane..."
+                    )
+        message = " ".join(
+            [
+                " _ informacje_o_propagacji ",
+                " _ dzien _ ",
+                text_day,
+                " _ noc _ ",
+                text_night,
+            ]
+        )
+        if self.__radioNoise:
+            if noise_level is None:
+                self.__logger.warning("Brak danych o poziomie zakłuceń")
+            else:
+                message += " _ poziom_zakl_ucen_ " + noise_level
+        return(
+            {
+                "message": message,
+                "source": "hamqsl",
+            }
+        )

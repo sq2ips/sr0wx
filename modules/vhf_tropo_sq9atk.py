@@ -223,48 +223,37 @@ class VhfTropoSq9atk(SR0WXModule):
 
         return message
 
-    def get_data(self, connection):
-        try:
-            self.__logger.info("::: Pobieranie kodu html...")
-            html = self.requestData(self.__service_url, self.__logger, 10, 3).text
-            self.__logger.info("::: Wyszukiwanie obrazu mapy...")
-            mapUrl = self.findMapUrlInHtml(html, "imgClickAndChange")
-
-            self.__logger.info("::: Pobieranie obrazu mapy...")
-            self.downloadMapFile(mapUrl, "cache/vhf_map.png")
-
-            mapImg = self.readMapImageFile("cache/vhf_map.png")
-
-            mapWidth, mapHeight = mapImg.size
-
-            x, y = self.lonLatToMapXY(self.__qthLon, self.__qthLat, mapWidth, mapHeight)
-
-            self.__logger.info("::: Przetwarzanie warunków lokalizacji...")
-            mainConditionValue = self.getLocationCondition(mapImg, x, y)
-            self.__logger.info("::: Przetwarzanie warunków kierunkowych...")
-            directionalConditionsValues = self.getDirectionalConditions(mapImg, x, y)
-            self.__logger.info("::: Przygotowywanie komunikatu...")
-
-            message = " ".join(
-                [
-                    " _ vhf_propagacja_w_pasmie_vhf _ ",
-                    "   ".join(
-                        [
-                            self.prepareMessage(
-                                mainConditionValue, directionalConditionsValues
-                            )
-                        ]
-                    ),
-                    " _ ",
-                ]
-            )
-
-            connection.send(
-                {
-                    "message": message,
-                    "source": "vhf_dx_info_center",
-                }
-            )
-        except Exception as e:
-            self.__logger.exception(f"Exception when running {self}: {e}")
-            connection.send(dict())
+    def get_data(self):
+        self.__logger.info("::: Pobieranie kodu html...")
+        html = self.requestData(self.__service_url, self.__logger, 10, 3).text
+        self.__logger.info("::: Wyszukiwanie obrazu mapy...")
+        mapUrl = self.findMapUrlInHtml(html, "imgClickAndChange")
+        self.__logger.info("::: Pobieranie obrazu mapy...")
+        self.downloadMapFile(mapUrl, "cache/vhf_map.png")
+        mapImg = self.readMapImageFile("cache/vhf_map.png")
+        mapWidth, mapHeight = mapImg.size
+        x, y = self.lonLatToMapXY(self.__qthLon, self.__qthLat, mapWidth, mapHeight)
+        self.__logger.info("::: Przetwarzanie warunków lokalizacji...")
+        mainConditionValue = self.getLocationCondition(mapImg, x, y)
+        self.__logger.info("::: Przetwarzanie warunków kierunkowych...")
+        directionalConditionsValues = self.getDirectionalConditions(mapImg, x, y)
+        self.__logger.info("::: Przygotowywanie komunikatu...")
+        message = " ".join(
+            [
+                " _ vhf_propagacja_w_pasmie_vhf _ ",
+                "   ".join(
+                    [
+                        self.prepareMessage(
+                            mainConditionValue, directionalConditionsValues
+                        )
+                    ]
+                ),
+                " _ ",
+            ]
+        )
+        return(
+            {
+                "message": message,
+                "source": "vhf_dx_info_center",
+            }
+        )
