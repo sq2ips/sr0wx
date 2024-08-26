@@ -108,6 +108,9 @@ saveAudio = False
 # Ścieżka zapisu pliku wraz z nazwą i rozszerzeniem
 audioPath = "./sr0wx.wav"
 
+# Sprawdzanie dostępności aktualizacji
+check_for_updates = True
+
 # hello_msg = ['_', 'tu_eksperymentalna_automatyczna_stacja_pogodowa', 'sr0wx']
 # goodbye_msg = ['_', 'tu_sr2wxg', "_", "kolejny_komunikat_m", "beep2"]
 read_sources_msg = False

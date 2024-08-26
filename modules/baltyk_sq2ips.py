@@ -20,7 +20,7 @@ class BaltykSq2ips(SR0WXModule):
             "NORTHERN BALTIC": "baltyku_n",
             "POLISH COASTAL WATERS": "baltyku_psb",
         }
-    def TrimPl(text):
+    def TrimPl(self, text):
         text = (
             text.lower()
             .replace(("ą"), "a_")
