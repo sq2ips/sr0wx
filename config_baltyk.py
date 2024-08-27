@@ -65,8 +65,8 @@ dict_log_config = {
 # dane z pliku .env
 if os.path.exists(".env"):
     load_dotenv()
-    hello_msg = os.getenv("HELLO_MSG_BALTYK").split(",")
-    goodbye_msg = os.getenv("GOODBYE_MSG_BALTYK").split(",")
+    #hello_msg = os.getenv("HELLO_MSG_BALTYK").split(",")
+    #goodbye_msg = os.getenv("GOODBYE_MSG_BALTYK").split(",")
     map_call = os.getenv("MAP_CALL")
     map_lat = os.getenv("MAP_LAT")
     map_lon = os.getenv("MAP_LON")
