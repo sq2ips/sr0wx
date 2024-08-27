@@ -126,7 +126,7 @@ You can find full list of contributors on github.com/sq6jnx/sr0wx.py
 # LOGGING CONFIGURATION
 
 def run_module(args):
-    module, logger, aux = args
+    module, logger, aux, timeout = args
     if not aux:
         logger.info(
             COLOR_OKBLUE
@@ -134,8 +134,10 @@ def run_module(args):
             + COLOR_ENDC
         )
     e = None
+    
     try:
-        module_data = module.get_data()
+        while time.time() - start <= timeout:
+            module_data = module.get_data()
     except Exception as e:
         logger.exception(f"Exception when running {module}: {e}")
         return {module: [e, None]}
@@ -296,11 +298,11 @@ if config.multi_processing:
 
     # list of args: logger and modules
     for module in modules:
-        args.append((module, logger, False))
+        args.append((module, logger, False, config.process_timeout))
 
     # Pool and processes map
-    with Pool(4) as pool:
-        modules_results_raw = pool.map(run_module, args) # ????
+    with Pool(config.pool_workers) as pool:
+        modules_results_raw = pool.map(run_module, args)
         #modules_results = map_results.get(timeout=10)
     
     # appending returned data to one dict
@@ -368,22 +370,18 @@ else:
     func_modules = ""
     any_func_modules = False
     for module in modules:
-        logger.info(COLOR_OKBLUE + f"starting {module}..." + COLOR_ENDC)
-        conn1, conn2 = Pipe()
-        module.get_data(conn2)
-        module_data = conn1.recv()
-        module_message = module_data.get("message", "")
-        module_source = module_data.get("source", "")
-        if module_message == "":
+        module_data = run_module((module, logger, False))
+        if module_data[module][0] is None:
+            module_message = module_data[module][1].get("message", "")
+            module_source = module_data[module][1].get("source", "")
+        if module_message is None:
             func_modules += COLOR_FAIL + str(module) + COLOR_ENDC + "\n"
-        elif module_message == None:
-            func_modules += COLOR_OKGREEN + str(module) + COLOR_ENDC + "\n"
         else:
             any_func_modules = True
             func_modules += COLOR_OKGREEN + str(module) + COLOR_ENDC + "\n"
             message = " ".join((message, module_message))
         if module_message != "" and module_source != "":
-            sources.append(module_data["source"])
+            sources.append(module_source)
 
 
 logger.info(
