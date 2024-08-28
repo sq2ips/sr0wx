@@ -76,6 +76,7 @@ class PropagationSq2ips(SR0WXModule):
             "3": "trzy",
             "4": "cztery",
             "5": "piec",
+            #"6":"szesc",
             "7": "siedem",
             "8": "osiem",
             "9": "dziewiec",
@@ -104,10 +105,9 @@ class PropagationSq2ips(SR0WXModule):
                 try:
                     noise_level = self.getNoise(noise)
                 except Exception as e:
-                    if e == KeyError:
-                        self.__logger.warning(
-                            "Nieprawidłowa odczytana wartość poziomu zakłuceń, pomijane..."
-                        )
+                    print(type(e))
+                    self.__logger.error(f"Nie udało się uzyskać danych o poziomie zakłóceń, otrzymano błąd typu {type(e).__name__}: {e}")
+                    
             message = " ".join(
                 [
                     " _ informacje_o_propagacji ",
