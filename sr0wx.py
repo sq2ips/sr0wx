@@ -55,8 +55,8 @@
 # Imports
 
 # time measuring
-from time import time
-time_start = time()
+import time
+time_start = time.time()
 
 # system and path libs
 import os
@@ -83,7 +83,7 @@ import subprocess
 
 # multiprocessing for modules
 from multiprocessing.pool import ThreadPool as Pool
-from multiprocessing import Process
+from multiprocessing.context import TimeoutError
 
 # pygame for playing audio
 import pygame
@@ -123,10 +123,8 @@ You can find full list of contributors on github.com/sq6jnx/sr0wx.py
     + COLOR_ENDC
 )
 
-# LOGGING CONFIGURATION
-
 def run_module(args):
-    module, logger, aux, timeout = args
+    module, logger, aux, = args
     if not aux:
         logger.info(
             COLOR_OKBLUE
@@ -136,8 +134,7 @@ def run_module(args):
     e = None
     
     try:
-        while time.time() - start <= timeout:
-            module_data = module.get_data()
+        module_data = module.get_data()
     except Exception as e:
         logger.exception(f"Exception when running {module}: {e}")
         return {module: [e, None]}
@@ -298,12 +295,17 @@ if config.multi_processing:
 
     # list of args: logger and modules
     for module in modules:
-        args.append((module, logger, False, config.process_timeout))
+        args.append((module, logger, False))
 
     # Pool and processes map
     with Pool(config.pool_workers) as pool:
-        modules_results_raw = pool.map(run_module, args)
-        #modules_results = map_results.get(timeout=10)
+        modules_results_map = pool.map_async(run_module, args)
+        try:
+            modules_results_raw = modules_results_map.get(timeout=config.general_timeout)
+        except TimeoutError:
+            logger.critical("General timeout exceeded, terminating pool and exiting...")
+            pool.terminate()
+            exit(1)
     
     # appending returned data to one dict
     modules_results = {}
@@ -613,7 +615,7 @@ if config.saveAudio or saveAudioOverwrite:
     except Exception as e:
         logger.error(f"Couldn't save message, got error {e}")
 
-logger.info(f"Script was running for {time()-time_start} secconds")
+logger.info(f"Script was running for {time.time()-time_start} secconds")
 logger.info(COLOR_WARNING + "goodbye" + COLOR_ENDC)
 
 # Documentation is a good thing when you need to double or triple your

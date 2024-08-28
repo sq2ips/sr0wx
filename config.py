@@ -92,8 +92,9 @@ serial_signal = "DTR"  # lub 'RTS'
 rpi_pin = 40
 # wieloprocesowość dla modułów
 multi_processing = True
-pool_workers = 8
-process_timeout = 40
+pool_workers = 4
+# ogólny limit czasu uruchomienia wszystkich modułów
+general_timeout = 120
 
 lang_name = "pl_google"  # język
 pygame_bug = 0
