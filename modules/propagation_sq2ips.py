@@ -120,7 +120,7 @@ class PropagationSq2ips(SR0WXModule):
                     self.__logger.warning("Brak danych o poziomie zakłuceń")
                 else:
                     message += " _ poziom_zakl_ucen_ " + noise_level
-            connection.send(
+            return(
                 {
                     "message": message,
                     "source": "hamqsl",
