@@ -36,7 +36,6 @@ class BaltykSq2ips(SR0WXModule):
             .replace(",", "")
             .replace(".", " _ ")
             .replace(" - ", "_")
-            .replace("-", "_")
         )
         return text
 
@@ -157,7 +156,7 @@ class BaltykSq2ips(SR0WXModule):
             except KeyError:
                 pass
 
-        text = self.TrimPl(text).replace(".", " _ ")
+        text = self.TrimPl(text)
 
         return text
 
