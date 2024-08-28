@@ -35,38 +35,30 @@ class AirlySq9atk(SR0WXModule):
             "VERY_HIGH": "bardzo_zly",
         }
 
-    def get_data(self, connection):
-        try:
-            self.__logger.info("::: Pobieram dane o zanieczyszczeniach...")
-
-            api_service_url = self.prepareApiServiceUrl()
-
-            jsonData = self.getAirlyData(api_service_url)
-
-            self.__logger.info("::: Przetwarzam dane...")
-
-            message = "".join(
-                [
-                    " _ ",
-                    " informacja_o_skaz_eniu_powietrza ",
-                    # " _ ",
-                    # " godzina ",
-                    # self.getHour(),
-                    " _ stan_ogolny ",
-                    self.__levels[jsonData["current"]["indexes"][0]["level"]],
-                    self.getPollutionLevel(jsonData["current"]["values"]),
-                    " _ ",
-                ]
-            )
-            connection.send(
-                {
-                    "message": message,
-                    "source": "airly",
-                }
-            )
-        except Exception as e:
-            self.__logger.exception(f"Exception when running {self}: {e}")
-            connection.send(dict())
+    def get_data(self):
+        self.__logger.info("::: Pobieram dane o zanieczyszczeniach...")
+        api_service_url = self.prepareApiServiceUrl()
+        jsonData = self.getAirlyData(api_service_url)
+        self.__logger.info("::: Przetwarzam dane...")
+        message = "".join(
+            [
+                " _ ",
+                " informacja_o_skaz_eniu_powietrza ",
+                # " _ ",
+                # " godzina ",
+                # self.getHour(),
+                " _ stan_ogolny ",
+                self.__levels[jsonData["current"]["indexes"][0]["level"]],
+                self.getPollutionLevel(jsonData["current"]["values"]),
+                " _ ",
+            ]
+        )
+        return(
+            {
+                "message": message,
+                "source": "airly",
+            }
+        )
 
     def getPollutionLevel(self, json):
         message = ""

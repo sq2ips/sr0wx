@@ -41,44 +41,36 @@ class AntistormSq2ips(SR0WXModule):
 
         return data_dict
 
-    def get_data(self, connection):
-        try:
-            self.__logger.info("::: Pobieranie danych radaru pogodowego...")
-            url = "".join([self.__service_url, "?id=", self.__city_id])
-            data = self.requestData(url, self.__logger, 15, 3)
-
-            self.__logger.info("::: Przetwarzanie danych...")
-            data = self.checkData(data)
-
-            data_dict = self.parseData(data)
-
-            if len(data_dict) > 0:
-                message = "radar_pogodowy "
-                for z in data_dict:
-                    message += " ".join(
-                        [
-                            "_",
-                            "zjawisko",
-                            z,
-                            "czas_do_wysta_pienia",
-                            self.__language.read_number(
-                                data_dict[z][0],
-                                units=(("minuta"), ("minuty"), ("minut")),
-                            ),
-                            "prawdopodobienstwo",
-                            self.__language.read_percent(data_dict[z][1]),
-                            "",
-                        ]
-                    )
-            else:
-                message = "brak_ostrzez_en__radaru_pogodowego"
-
-            connection.send(
-                {
-                    "message": message,
-                    "source": "antistorm_eu",
-                }
-            )
-        except Exception as e:
-            self.__logger.exception(f"Exception when running {self}: {e}")
-            connection.send(dict())
+    def get_data(self):
+        self.__logger.info("::: Pobieranie danych radaru pogodowego...")
+        url = "".join([self.__service_url, "?id=", self.__city_id])
+        data = self.requestData(url, self.__logger, 15, 3)
+        self.__logger.info("::: Przetwarzanie danych...")
+        data = self.checkData(data)
+        data_dict = self.parseData(data)
+        if len(data_dict) > 0:
+            message = "radar_pogodowy "
+            for z in data_dict:
+                message += " ".join(
+                    [
+                        "_",
+                        "zjawisko",
+                        z,
+                        "czas_do_wysta_pienia",
+                        self.__language.read_number(
+                            data_dict[z][0],
+                            units=(("minuta"), ("minuty"), ("minut")),
+                        ),
+                        "prawdopodobienstwo",
+                        self.__language.read_percent(data_dict[z][1]),
+                        "",
+                    ]
+                )
+        else:
+            message = "brak_ostrzez_en__radaru_pogodowego"
+        return(
+            {
+                "message": message,
+                "source": "antistorm_eu",
+            }
+        )

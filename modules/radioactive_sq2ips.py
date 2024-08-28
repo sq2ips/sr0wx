@@ -66,44 +66,40 @@ class RadioactiveSq2ips(SR0WXModule):
         self.__logger.info(f"Wartość z czujnika {data['stacja']}, data: {str(datetime.strptime(data['tip_date'], '%Y-%m-%d %H:%M'))}: {data['tip_value']}")
         return round(float(data["tip_value"][0:5]), 2)
 
-    def get_data(self, connection):
-        try:
-            data = self.request(self.__service_url, self.__sensor_id)
-            value = self.processData(data)
-            value_sr = self.request_sr(self.__service_url_sr)
-            self.__logger.info("Wartość przetwożona: " + str(value))
-            va = round(value * 100)
-            curentValue = " ".join(
+    def get_data(self):
+        data = self.request(self.__service_url, self.__sensor_id)
+        value = self.processData(data)
+        value_sr = self.request_sr(self.__service_url_sr)
+        self.__logger.info("Wartość przetwożona: " + str(value))
+        va = round(value * 100)
+        curentValue = " ".join(
+            [
+                "wartos_c__aktualna",
+                self.__language.read_decimal(va) + " ",
+                "mikrosjiwerta",
+                "na_godzine_",
+            ]
+        )
+        if value_sr is not None:
+            va_sr = round(value_sr*100)
+            self.__logger.info("Średnia wartość przetwożona: " + str(va_sr / 100))
+            averageValue = " ".join(
                 [
-                    "wartos_c__aktualna",
-                    self.__language.read_decimal(va) + " ",
+                    "s_rednia_wartos_c__dobowa",
+                    self.__language.read_decimal(va_sr) + " ",
                     "mikrosjiwerta",
                     "na_godzine_",
                 ]
             )
-            if value_sr is not None:
-                va_sr = round(value_sr*100)
-                self.__logger.info("Średnia wartość przetwożona: " + str(va_sr / 100))
-                averageValue = " ".join(
-                    [
-                        "s_rednia_wartos_c__dobowa",
-                        self.__language.read_decimal(va_sr) + " ",
-                        "mikrosjiwerta",
-                        "na_godzine_",
-                    ]
-                )
-            else:
-                averageValue = ""
-                self.__logger.warning("Nieprawidłowe średnie dane, pomijanie...")
-            message = " ".join(
-                [" _ poziom_promieniowania _ ", curentValue, " _ ", averageValue, " _ "]
-            )
-            connection.send(
-                {
-                    "message": message,
-                    "source": "paa",
-                }
-            )
-        except Exception as e:
-            self.__logger.exception(f"Exception when running {self}: {e}")
-            connection.send(dict())
+        else:
+            averageValue = ""
+            self.__logger.warning("Nieprawidłowe średnie dane, pomijanie...")
+        message = " ".join(
+            [" _ poziom_promieniowania _ ", curentValue, " _ ", averageValue, " _ "]
+        )
+        return(
+            {
+                "message": message,
+                "source": "paa",
+            }
+        )

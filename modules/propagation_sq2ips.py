@@ -76,7 +76,7 @@ class PropagationSq2ips(SR0WXModule):
             "3": "trzy",
             "4": "cztery",
             "5": "piec",
-            #"6":"szesc",
+            "6":"szesc",
             "7": "siedem",
             "8": "osiem",
             "9": "dziewiec",
@@ -93,8 +93,7 @@ class PropagationSq2ips(SR0WXModule):
             text += " do " + noise[1]
         return text
 
-    def get_data(self, connection):
-        try:
+    def get_data(self):
             root = self.DownloadData(self.__service_url)
             self.__logger.info("::: Przetważanie danych...")
             conditions_day, conditions_night, noise = self.process(root)
@@ -105,9 +104,8 @@ class PropagationSq2ips(SR0WXModule):
                 try:
                     noise_level = self.getNoise(noise)
                 except Exception as e:
-                    print(type(e))
                     self.__logger.error(f"Nie udało się uzyskać danych o poziomie zakłóceń, otrzymano błąd typu {type(e).__name__}: {e}")
-                    
+
             message = " ".join(
                 [
                     " _ informacje_o_propagacji ",
@@ -128,6 +126,3 @@ class PropagationSq2ips(SR0WXModule):
                     "source": "hamqsl",
                 }
             )
-        except Exception as e:
-            self.__logger.exception(f"Exception when running {self}: {e}")
-            connection.send(dict())

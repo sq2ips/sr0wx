@@ -193,46 +193,34 @@ class MeteoAlertSq2ips(SR0WXModule):
                         message += " ".join([self.processDate(wazne_do), "_ "])
         return message
 
-    def get_data(self, connection):
-        try:
-            url_komets = self.__service_url + "osmet/latest/komet-teryt?lc="
-            url_alerts = self.__service_url + "osmet/latest/osmet-teryt?lc="
-            url_alerts_hydro = self.__service_url + "warnhydro/latest/warn"
-
-            self.__logger.info("::: Pobieranie dane o ostrzeżeniach...")
-
-            komets = self.requestData(url_komets, self.__logger, 10, 3).json()
-            alerts = self.requestData(url_alerts, self.__logger, 10, 3).json()
-            alerts_hydro = self.requestData(
-                url_alerts_hydro, self.__logger, 10, 3
-            ).json()
-
-            self.__logger.info("::: Przetważanie danych...")
-
-            self.__logger.info(
-                f"id meteo: {self.__city_id}, hydronames: {self.__hydronames}"
-            )
-
-            id_wa, id_wk = self.processId(alerts, komets)
-
-            if len(id_wa) > 0 or len(id_wk) > 0:
-                os = True
-            else:
-                os = False
-
-            msg_komets, warnings_used = self.processKomets(id_wk, komets)
-            msg_alerts = self.processAlerts(id_wa, alerts, warnings_used)
-            msg_hydro = self.processHydro(self.__hydronames, alerts_hydro)
-
-            message = " ".join(["_", msg_komets, msg_alerts, msg_hydro])
-            if len(message.split()) == 1:
-                message = "_ ostrzezen_nie_ma _"
-            connection.send(
-                {
-                    "message": message,
-                    "source": "imgw_pib",
-                }
-            )
-        except Exception as e:
-            self.__logger.exception(f"Exception when running {self}: {e}")
-            connection.send(dict())
+    def get_data(self):
+        url_komets = self.__service_url + "osmet/latest/komet-teryt?lc="
+        url_alerts = self.__service_url + "osmet/latest/osmet-teryt?lc="
+        url_alerts_hydro = self.__service_url + "warnhydro/latest/warn"
+        self.__logger.info("::: Pobieranie dane o ostrzeżeniach...")
+        komets = self.requestData(url_komets, self.__logger, 10, 3).json()
+        alerts = self.requestData(url_alerts, self.__logger, 10, 3).json()
+        alerts_hydro = self.requestData(
+            url_alerts_hydro, self.__logger, 10, 3
+        ).json()
+        self.__logger.info("::: Przetważanie danych...")
+        self.__logger.info(
+            f"id meteo: {self.__city_id}, hydronames: {self.__hydronames}"
+        )
+        id_wa, id_wk = self.processId(alerts, komets)
+        if len(id_wa) > 0 or len(id_wk) > 0:
+            os = True
+        else:
+            os = False
+        msg_komets, warnings_used = self.processKomets(id_wk, komets)
+        msg_alerts = self.processAlerts(id_wa, alerts, warnings_used)
+        msg_hydro = self.processHydro(self.__hydronames, alerts_hydro)
+        message = " ".join(["_", msg_komets, msg_alerts, msg_hydro])
+        if len(message.split()) == 1:
+            message = "_ ostrzezen_nie_ma _"
+        return(
+            {
+                "message": message,
+                "source": "imgw_pib",
+            }
+        )

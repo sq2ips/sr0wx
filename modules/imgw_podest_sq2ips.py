@@ -188,60 +188,55 @@ class ImgwPodestSq2ips(SR0WXModule):
         msg += "_"
         return msg
 
-    def get_data(self, connection):
-        try:
-            # pobieranie wszystkich danych
-            data = self.requestData(self.__service_url, self.__logger, 15, 3).json()
+    def get_data(self):
+        # pobieranie wszystkich danych
+        data = self.requestData(self.__service_url, self.__logger, 15, 3).json()
+        self.__logger.info("::: Przetwarzanie danych...")
 
-            self.__logger.info("::: Przetwarzanie danych...")
-            # konwersja na dict
-            stations = self.toDict(data)
-            if len(stations) == 0:
-                raise Exception("Brak danych")
+        # konwersja na dict
+        stations = self.toDict(data)
+        if len(stations) == 0:
+            raise Exception("Brak danych")
+        self.__logger.info("::: Wyszukiwanie wybranych wodowskazów...")
 
-            self.__logger.info("::: Wyszukiwanie wybranych wodowskazów...")
-            # wyszukiwanie wodowskazów na podstawie id i zlewni
-            stations_id = self.getStations(stations)
-            if len(stations_id) == 0:
-                raise Exception("Brak wodowskazów na liście")
+        # wyszukiwanie wodowskazów na podstawie id i zlewni
+        stations_id = self.getStations(stations)
+        if len(stations_id) == 0:
+            raise Exception("Brak wodowskazów na liście")
+        self.__logger.info("::: Sprawdzanie danych z wodowskazów...")
 
-            self.__logger.info("::: Sprawdzanie danych z wodowskazów...")
-            # sprawdzanie wodowskazów na podstawie kodów
-            stations_checked = self.checkStations(stations, stations_id)
-            if len(stations_checked) == 0:
-                raise Exception("Brak funkcjonujących wodowskazów na liście")
-            self.__logger.info(f"Liczba wszystkich wodowskazów: {len(stations)}")
-            self.__logger.info(f"Liczba wybranych wodowskazów: {len(stations_id)}")
-            self.__logger.info(
-                f"Liczba poprawnych wybranych wodowskazów: {len(stations_checked)}"
+        # sprawdzanie wodowskazów na podstawie kodów
+        stations_checked = self.checkStations(stations, stations_id)
+        if len(stations_checked) == 0:
+            raise Exception("Brak funkcjonujących wodowskazów na liście")
+        self.__logger.info(f"Liczba wszystkich wodowskazów: {len(stations)}")
+        self.__logger.info(f"Liczba wybranych wodowskazów: {len(stations_id)}")
+        self.__logger.info(
+            f"Liczba poprawnych wybranych wodowskazów: {len(stations_checked)}"
+        )
+
+        self.__logger.info("::: Grupowanie danych z wodowskazów...")
+        # grupowanie wodowskazów na podstawie kodów
+        stations_grouped = self.groupStations(stations_checked)
+        message = "komunikat_hydrologiczny_imgw "
+        for code in stations_grouped:
+            if code in self.__codes:
+                message += " ".join([" _", self.__codes[code], "_"])
+                for station in stations_grouped[code]:
+                    message += self.getText(station)
+        
+        if len(message.split()) > 1:
+            return(
+                {
+                    "message": message,
+                    "source": "hydro_imgw",
+                }
             )
-
-            self.__logger.info("::: Grupowanie danych z wodowskazów...")
-            # grupowanie wodowskazów na podstawie kodów
-            stations_grouped = self.groupStations(stations_checked)
-
-            message = "komunikat_hydrologiczny_imgw "
-            for code in stations_grouped:
-                if code in self.__codes:
-                    message += " ".join([" _", self.__codes[code], "_"])
-                    for station in stations_grouped[code]:
-                        message += self.getText(station)
-
-            if len(message.split()) > 1:
-                connection.send(
-                    {
-                        "message": message,
-                        "source": "hydro_imgw",
-                    }
-                )
-            else:
-                self.__logger.warning("Brak przekroczeń wybranych stanów wody")
-                connection.send(
-                    {
-                        "message": None,
-                        "source": "",
-                    }
-                )
-        except Exception as e:
-            self.__logger.exception(f"Exception when running {self}: {e}")
-            connection.send(dict())
+        else:
+            self.__logger.warning("Brak przekroczeń wybranych stanów wody")
+            return(
+                {
+                    "message": None,
+                    "source": "",
+                }
+            )

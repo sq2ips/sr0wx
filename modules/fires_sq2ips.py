@@ -63,85 +63,57 @@ class FiresSq2ips(SR0WXModule):
             self.__logger.warning("Nieprawidłowe dane")
             return None
 
-    def get_data(self, connection):
-        try:
-            self.__logger.info("::: Pobieranie danych o zagrożeniu pożarowym lasów...")
-            html = self.requestData(self.__service_url, self.__logger, 20, 3).text
-
-            self.__logger.info("::: Przetwarzanie danych...")
-            soup = BeautifulSoup(html, "html.parser")
-
-            table = soup.find_all("table")[0]
-            warnings_raw = self.parseTable(table)
-            if warnings_raw is None:
-                self.__logger.error("Brak danych ze źródła")
-                connection.send(
+    def get_data(self):
+        self.__logger.info("::: Pobieranie danych o zagrożeniu pożarowym lasów...")
+        html = self.requestData(self.__service_url, self.__logger, 20, 3).text
+        self.__logger.info("::: Przetwarzanie danych...")
+        soup = BeautifulSoup(html, "html.parser")
+        table = soup.find_all("table")[0]
+        warnings_raw = self.parseTable(table)
+        if warnings_raw is None:
+            raise ValueError("Brak danych ze źródła")
+        else:
+            warnings = []
+            for c in warnings_raw:
+                warnings.append(self.processData(c))
+            if set(warnings) == {None}:
+                raise ValueError("Brak żadnych danych z czujników")
+            else:
+                label_table = soup.find_all("table")[1]
+                label = self.parseLabel(label_table, len(warnings))
+                dates = []
+                for l in label:
+                    dates.append(self.processDate(l))
+                dictmsg = {}
+                for warn, date in zip(warnings, dates):
+                    if warn is not None:
+                        if date in dictmsg:
+                            if warn > dictmsg[date]:
+                                dictmsg[date] = warn
+                        else:
+                            dictmsg[date] = warn
+                message = "zagroz_enie_poz_arowe_laso_w _ "
+                sk = 0
+                for i in range(len(dictmsg)):
+                    if sk > 0:
+                        sk -= 0
+                        continue
+                    ind = []
+                    for j in range(i, len(dictmsg)):
+                        if list(dictmsg.values())[i] == list(dictmsg.values())[j]:
+                            ind.append(j)
+                    sk = len(ind) - 1
+                    msglist = []
+                    for i in ind:
+                        msglist.append(list(dictmsg.keys())[i])
+                    if len(msglist) > 1:
+                        msglist.insert(len(msglist) - 1, "i")
+                    message += " ".join(
+                        msglist + [self.__codes[list(dictmsg.values())[i]], "_ "]
+                    )
+                return(
                     {
-                        "message": None,
-                        "source": "",
+                        "message": message,
+                        "source": "traxelektronik",
                     }
                 )
-            else:
-                warnings = []
-                for c in warnings_raw:
-                    warnings.append(self.processData(c))
-
-                if set(warnings) == {None}:
-                    self.__logger.error("Brak żadnych danych z czujników")
-                    connection.send(
-                        {
-                            "message": None,
-                            "source": "",
-                        }
-                    )
-                else:
-                    label_table = soup.find_all("table")[1]
-                    label = self.parseLabel(label_table, len(warnings))
-
-                    dates = []
-                    for l in label:
-                        dates.append(self.processDate(l))
-
-                    dictmsg = {}
-                    for warn, date in zip(warnings, dates):
-                        if warn is not None:
-                            if date in dictmsg:
-                                if warn > dictmsg[date]:
-                                    dictmsg[date] = warn
-                            else:
-                                dictmsg[date] = warn
-
-                    message = "zagroz_enie_poz_arowe_laso_w _ "
-                    sk = 0
-                    for i in range(len(dictmsg)):
-                        if sk > 0:
-                            sk -= 0
-                            continue
-
-                        ind = []
-                        for j in range(i, len(dictmsg)):
-                            if list(dictmsg.values())[i] == list(dictmsg.values())[j]:
-                                ind.append(j)
-
-                        sk = len(ind) - 1
-                        msglist = []
-
-                        for i in ind:
-                            msglist.append(list(dictmsg.keys())[i])
-
-                        if len(msglist) > 1:
-                            msglist.insert(len(msglist) - 1, "i")
-
-                        message += " ".join(
-                            msglist + [self.__codes[list(dictmsg.values())[i]], "_ "]
-                        )
-
-                    connection.send(
-                        {
-                            "message": message,
-                            "source": "traxelektronik",
-                        }
-                    )
-        except Exception as e:
-            self.__logger.exception(f"Exception when running {self}: {e}")
-            connection.send(dict())

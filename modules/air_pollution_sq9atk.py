@@ -91,25 +91,20 @@ class AirPollutionSq9atk(SR0WXModule):
             message += " " + levels[row[4]]
         return message
 
-    def get_data(self, connection):
-        try:
-            self.__logger.info("::: Pobieram informacje o skażeniu powietrza...")
-            sensorsData = self.getSensorsData()
-            self.__logger.info("::: Przetwarzam dane...")
-            valuesMessage = self.prepareMessage(sensorsData)
-
-            message = " "
-            message = " _ informacja_o_skaz_eniu_powietrza _ "
-            message += (
-                " stacja_pomiarowa " + self.__language.trim_pl(self.getStationName()) + " _ "
-            )
-            message += valuesMessage
-            connection.send(
-                {
-                    "message": message,
-                    "source": "gios",
-                }
-            )
-        except Exception as e:
-            self.__logger.exception(f"Exception when running {self}: {e}")
-            connection.send(dict())
+    def get_data(self):
+        self.__logger.info("::: Pobieram informacje o skażeniu powietrza...")
+        sensorsData = self.getSensorsData()
+        self.__logger.info("::: Przetwarzam dane...")
+        valuesMessage = self.prepareMessage(sensorsData)
+        message = " "
+        message = " _ informacja_o_skaz_eniu_powietrza _ "
+        message += (
+            " stacja_pomiarowa " + self.__language.trim_pl(self.getStationName()) + " _ "
+        )
+        message += valuesMessage
+        return(
+            {
+                "message": message,
+                "source": "gios",
+            }
+        )

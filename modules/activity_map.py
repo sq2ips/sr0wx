@@ -63,47 +63,38 @@ class ActivityMap(SR0WXModule):
 
         self.__logger = logging.getLogger(__name__)
 
-    def get_data(self, connection):
-        try:
-            """This module does NOT return any data! It is here just to say "hello" to
-            map utility!"""
-
-            self.__logger.info("::: Przetwarzam dane...")
-
-            station_info = {
-                "callsign": self.__callsign,
-                "lat": self.__latitude,
-                "lon": self.__longitude,
-                "q": self.__hour_quarter,
-                "asl": self.__above_sea_level,
-                "agl": self.__above_ground_level,
-                "range": self.__station_range,
-                "info": self.__additional_info,
-            }
-            dump = json.dumps(station_info, separators=(",", ":"))
-            b64data = base64.urlsafe_b64encode(dump.encode())
-            url = self.__service_url.encode() + b64data
-            url = url.decode()
-            self.__logger.info("::: Odpytuję adres: " + url)
-            # ----------------------
-
-            for i in range(4):
-                try:
-                    response = requests.get(url, timeout=15).text
-
-                    if response != "OK":
-                        raise Exception("Non-OK response")
-                    break
-                except Exception as e:
-                    if i < 3:
-                        self.__logger.warning(
-                            f"Exception sending data:\n{e}\ntrying again..."
-                        )
-                    else:
-                        raise e
-            self.__logger.info("::: Dane wysłano, status OK\n")
-
-            connection.send({"message": None, "source": ""})
-        except Exception as e:
-            self.__logger.exception(f"Exception when running {self}: {e}")
-            connection.send(dict())
+    def get_data(self):
+        """This module does NOT return any data! It is here just to say "hello" to
+        map utility!"""
+        self.__logger.info("::: Przetwarzam dane...")
+        station_info = {
+            "callsign": self.__callsign,
+            "lat": self.__latitude,
+            "lon": self.__longitude,
+            "q": self.__hour_quarter,
+            "asl": self.__above_sea_level,
+            "agl": self.__above_ground_level,
+            "range": self.__station_range,
+            "info": self.__additional_info,
+        }
+        dump = json.dumps(station_info, separators=(",", ":"))
+        b64data = base64.urlsafe_b64encode(dump.encode())
+        url = self.__service_url.encode() + b64data
+        url = url.decode()
+        self.__logger.info("::: Odpytuję adres: " + url)
+        # ----------------------
+        for i in range(4):
+            try:
+                response = requests.get(url, timeout=15).text
+                if response != "OK":
+                    raise Exception("Non-OK response")
+                break
+            except Exception as e:
+                if i < 3:
+                    self.__logger.warning(
+                        f"Exception sending data:\n{e}\ntrying again..."
+                    )
+                else:
+                    raise e
+        self.__logger.info("::: Dane wysłano, status OK")
+        return {"message": None, "source": ""}

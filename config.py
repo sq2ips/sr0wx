@@ -92,6 +92,9 @@ serial_signal = "DTR"  # lub 'RTS'
 rpi_pin = 40
 # wieloprocesowość dla modułów
 multi_processing = True
+pool_workers = 4
+# ogólny limit czasu uruchomienia wszystkich modułów
+general_timeout = 120
 
 lang_name = "pl_google"  # język
 pygame_bug = 0
@@ -106,6 +109,9 @@ samplerate = 22050
 # wyświetlanie nazw sampli w trakcie odtważania
 showSamples = False
 
+# inwersja modułów awaryjnych
+aux_modules_inversion = False
+
 # Usatwiensia zapisu komunikatu do pliku audio
 saveAudio = False
 # Ścieżka zapisu pliku wraz z nazwą i rozszerzeniem
@@ -113,6 +119,9 @@ audioPath = "./sr0wx.wav"
 
 # Sprawdzanie dostępności aktualizacji
 check_for_updates = True
+
+# Adres url do sprawdzania aktualizacji
+upstream_url = "https://github.com/sq2ips/sr0wx"
 
 # wiadomość początkowa i końcowa jest pliku .env
 hello_msg = ["_","tu_eksperymentalna_automatyczna_stacja_pogodowa", "sr0wx"]
@@ -405,6 +414,16 @@ meteostationsq2ips = MeteoStationSq2ips(
     language=lang,
     ip=meteostation_ip,
     port=4210,
+)
+
+# ---------------
+# meteo_aprs_sq2ips
+# ---------------
+from meteo_aprs_sq2ips import MeteoAprsSq2ips
+meteoaprssq2ips = MeteoAprsSq2ips(
+    language=lang,
+    path="",
+    move_after=0
 )
 
 # ---------------

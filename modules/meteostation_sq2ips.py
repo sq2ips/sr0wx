@@ -142,48 +142,43 @@ class MeteoStationSq2ips(SR0WXModule):
         elif ang >= 292.5 and ang < 337.5:
             return "po_l_nocno zachodni"
 
-    def get_data(self, connection):
-        try:
-            data = self.compare()
-            message = "aktualny_stan_pogody _ "
-
+    def get_data(self):
+        data = self.compare()
+        message = "aktualny_stan_pogody _ "
+        message += (
+            "temperatura " + self.__language.read_temperature(round(data[0])) + " "
+        )
+        if data[7] != 0.0:
             message += (
-                "temperatura " + self.__language.read_temperature(round(data[0])) + " "
+                "cisnienie " + self.__language.read_pressure(round(data[7])) + " "
             )
-            if data[7] != 0.0:
-                message += (
-                    "cisnienie " + self.__language.read_pressure(round(data[7])) + " "
-                )
-            message += (
-                "wilgotnosc " + self.__language.read_percent(round(data[1])) + " _ "
-            )
-            if round(data[3] * 3.6) < 1:
-                message += " brak_wiatru "
+        message += (
+            "wilgotnosc " + self.__language.read_percent(round(data[1])) + " _ "
+        )
+        if round(data[3] * 3.6) < 1:
+            message += " brak_wiatru "
+        else:
+            if data[6] > 0.7:
+                message += f"wiatr {self.angleProcess(data[2])} "
             else:
-                if data[6] > 0.7:
-                    message += f"wiatr {self.angleProcess(data[2])} "
-                else:
-                    message += f"wiatr zmienny {self.angleProcess(data[2])} "
-                if data[4] - data[3] > 2.0:
-                    message += (
-                        self.__language.read_speed(
-                            round(data[3] * 3.6), "kmph"
-                        ).split()[:-1][0]
-                        + " w_porywach do "
-                        + self.__language.read_gust(round(data[4] * 3.6))
-                        + " "
-                    )
-                else:
-                    message += (
-                        self.__language.read_speed(round(data[3] * 3.6), "kmph") + " "
-                    )
-            message += " _ "
-            connection.send(
-                {
-                    "message": message,
-                    "source": "",
-                }
-            )
-        except Exception as e:
-            self.__logger.exception(f"Exception when running {self}: {e}")
-            connection.send(dict())
+                message += f"wiatr zmienny {self.angleProcess(data[2])} "
+            if data[4] - data[3] > 2.0:
+                message += (
+                    self.__language.read_speed(
+                        round(data[3] * 3.6), "kmph"
+                    ).split()[:-1][0]
+                    + " w_porywach do "
+                    + self.__language.read_gust(round(data[4] * 3.6))
+                    + " "
+                )
+            else:
+                message += (
+                    self.__language.read_speed(round(data[3] * 3.6), "kmph") + " "
+                )
+        message += " _ "
+        return(
+            {
+                "message": message,
+                "source": "",
+            }
+        )

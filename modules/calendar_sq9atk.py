@@ -21,7 +21,7 @@ class CalendarSq9atk(SR0WXModule):
         return data.text
 
     def getSunsetSunrise(self):
-        self.__logger.info("::: Pobieram dane o wschodzie i zachodzie słońca")
+        self.__logger.info("::: Pobieram dane o wschodzie i zachodzie słońca...")
         r = re.compile(r"<h1>(.*)(\d\d:\d\d)(.*)(\d\d:\d\d)</h1>")
         url = self.__service_url + str(self.__city_id)
         html = self.downloadFile(url)
@@ -37,36 +37,29 @@ class CalendarSq9atk(SR0WXModule):
         time_words = self.__language.read_datetime(datetime_object, "%H %M")
         return time_words
 
-    def get_data(self, connection):
-        try:
-            times = self.getSunsetSunrise()
-            self.__logger.info("::: Przetwarzam dane...")
-
-            sunrise = " ".join(
-                [
-                    "wscho_d_sl_on_ca",
-                    "godzina",
-                    self.hourToNumbers(times["sunrise"]),
-                    " ",
-                ]
-            )
-            sunset = " ".join(
-                [
-                    "zacho_d_sl_on_ca",
-                    "godzina",
-                    self.hourToNumbers(times["sunset"]),
-                    " ",
-                ]
-            )
-
-            message = " ".join([" _ kalendarium _ ", sunrise, " _ ", sunset, " _ "])
-
-            connection.send(
-                {
-                    "message": message,
-                    "source": "calendar_zoznam_sk",
-                }
-            )
-        except Exception as e:
-            self.__logger.exception(f"Exception when running {self}: {e}")
-            connection.send(dict())
+    def get_data(self):
+        times = self.getSunsetSunrise()
+        self.__logger.info("::: Przetwarzam dane...")
+        sunrise = " ".join(
+            [
+                "wscho_d_sl_on_ca",
+                "godzina",
+                self.hourToNumbers(times["sunrise"]),
+                " ",
+            ]
+        )
+        sunset = " ".join(
+            [
+                "zacho_d_sl_on_ca",
+                "godzina",
+                self.hourToNumbers(times["sunset"]),
+                " ",
+            ]
+        )
+        message = " ".join([" _ kalendarium _ ", sunrise, " _ ", sunset, " _ "])
+        return(
+            {
+                "message": message,
+                "source": "calendar_zoznam_sk",
+            }
+        )

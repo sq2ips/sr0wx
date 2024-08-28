@@ -209,24 +209,20 @@ class MeteoYrSq2ips(SR0WXModule):
             msg += self.processForecast(data["longIntervals"][i])
         return msg
 
-    def get_data(self, connection):
-        try:
-            message = "aktualny_stan_pogody _ "
-            self.__logger.info("::: Pobieranie danych pogodowych...")
-            current, forecast = self.downloadData(self.__service_url, self.__id)
-            self.__logger.info("::: Przetwarzanie danych...")
-            if self.__current:
-                message += " ".join(
-                    [self.getCurrent(current), self.getForecast(forecast)]
-                )
-            else:
-                message += " ".join([self.getCurrent(current)])
-            connection.send(
-                {
-                    "message": message,
-                    "source": "yr",
-                }
+    def get_data(self):
+        message = "aktualny_stan_pogody _ "
+        self.__logger.info("::: Pobieranie danych pogodowych...")
+        current, forecast = self.downloadData(self.__service_url, self.__id)
+        self.__logger.info("::: Przetwarzanie danych...")
+        if self.__current:
+            message += " ".join(
+                [self.getCurrent(current), self.getForecast(forecast)]
             )
-        except Exception as e:
-            self.__logger.exception(f"Exception when running {self}: {e}")
-            connection.send(dict())
+        else:
+            message += " ".join([self.getCurrent(current)])
+        return(
+            {
+                "message": message,
+                "source": "yr",
+            }
+        )
