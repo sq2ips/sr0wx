@@ -174,7 +174,7 @@ class BaltykSq2ips(SR0WXModule):
         message += self.say_data(datap[1])
         message += " _ prognoza_orientacyjna_12 _ "
         message += self.say_data(datap[2])
-        connection.send(
+        return(
             {
                 "message": message,
                 "source": "baltyk_imgw",

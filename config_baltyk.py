@@ -89,6 +89,9 @@ serial_signal = "DTR"  # lub 'RTS'
 rpi_pin = 40
 # wieloprocesowość dla modułów
 multi_processing = True
+pool_workers = 4
+general_timeout = 60
+marginDelay = 500
 
 lang_name = "pl_google"  # język
 pygame_bug = 0
@@ -107,6 +110,11 @@ showSamples = False
 saveAudio = False
 # Ścieżka zapisu pliku wraz z nazwą i rozszerzeniem
 audioPath = "./sr0wx.wav"
+
+# inwersja modułów awaryjnych
+aux_modules_inversion = False
+
+upstream_url = "https://github.com/sq2ips/sr0wx"
 
 # Sprawdzanie dostępności aktualizacji
 check_for_updates = True
