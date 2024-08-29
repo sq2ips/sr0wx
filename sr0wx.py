@@ -164,9 +164,10 @@ test_mode = False
 modules_text = None
 saveAudioOverwrite = False
 all_modules = False
+showSamplesOverwrite = False
 
 argv = sys.argv[1:]
-opts, args = getopt.getopt(argv, "c:m:tsa")
+opts, args = getopt.getopt(argv, "c:m:tsaf")
 
 for opt, arg in opts:
     if opt in "-c":
@@ -181,6 +182,8 @@ for opt, arg in opts:
         saveAudioOverwrite = True
     elif opt == "-a":
         all_modules = True
+    elif opt == "-f":
+        showSamplesOverwrite = True
 if config is None:
     import config as config
 
@@ -285,6 +288,7 @@ sources = [
     lang.source,
 ]
 
+time_init = time.time()
 # modules launching
 if config.multi_processing:
     logger.info("multiprocessing is ON\n")
@@ -384,7 +388,7 @@ else:
             message = " ".join((message, module_message))
         if module_message != "" and module_source != "":
             sources.append(module_source)
-
+time_modules = time.time()
 
 logger.info(
     COLOR_BOLD
@@ -520,7 +524,9 @@ if config.serial_port is not None:
         )
 
 
-pygame.time.delay(500)
+pygame.time.delay(config.marginDelay)
+
+time_audio = time.time()
 
 # OK, data prepared, samples loaded, let the party begin!
 #
@@ -534,8 +540,8 @@ pygame.time.delay(500)
 logger.info("playing sound samples...\n")
 
 for el in message:
-    if config.showSamples:
-        print(el)
+    if config.showSamples or showSamplesOverwrite:
+        print(el, end=" ", flush=True)
     if el == "_":
         pygame.time.wait(config.delayValue)
     else:
@@ -562,9 +568,11 @@ for el in message:
 # other stuff) before closing the ``pygame`` mixer and display some debug
 # informations.
 
-logger.info(COLOR_WARNING + "finishing...\n" + COLOR_ENDC)
+time_playing = time.time()
 
-pygame.time.delay(500)
+pygame.time.delay(config.marginDelay)
+
+logger.info(COLOR_WARNING + "finishing...\n" + COLOR_ENDC)
 
 # If we've opened serial it's now time to close it.
 try:
@@ -615,7 +623,7 @@ if config.saveAudio or saveAudioOverwrite:
     except Exception as e:
         logger.error(f"Couldn't save message, got error {e}")
 
-logger.info(f"Script was running for {time.time()-time_start} secconds")
+logger.info(f"Script was running for {round(time.time()-time_start, 2)} seconds total, in it:\ninitialization - {round(time_init-time_start, 2)}s\nModules - {round(time_modules-time_init, 2)}s\nLoading audio - {round(time_audio-time_modules, 2)}s\nPlaying audio - {round(time_playing-time_audio, 2)}s\nFinishing - {round(time.time()-time_playing, 2)}s")
 logger.info(COLOR_WARNING + "goodbye" + COLOR_ENDC)
 
 # Documentation is a good thing when you need to double or triple your

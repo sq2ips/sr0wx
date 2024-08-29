@@ -99,6 +99,9 @@ general_timeout = 120
 lang_name = "pl_google"  # język
 pygame_bug = 0
 
+# czas odczekany między uruchomieniem i wyłączeniem PTT a odtwarzaniem audio
+marginDelay = 500
+
 # ustawienie wartości pygame.time.Clock().tick()
 clockTick = 250
 timeDelay = 300
