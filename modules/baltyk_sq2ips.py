@@ -62,8 +62,8 @@ class BaltykSq2ips(SR0WXModule):
             6: " czerwca ",
             7: " lipca ",
             8: " sierpnia ",
-            9: " września ",
-            10: " października ",
+            9: " wrzesnia ",
+            10: " pazdziernika ",
             11: " listopada ",
             12: " grudnia ",
         }
@@ -103,6 +103,16 @@ class BaltykSq2ips(SR0WXModule):
         )
 
         return [od_text, do_text]
+
+    def convertNumbers(self, text):
+        text = text.split()
+        text_new = []
+        for t in text:
+            try:
+                text_new.append(self.__language.read_number(int(t)))
+            except ValueError:
+                text_new.append(t)
+        return " ".join(text_new)
 
     def say_data(self, text):
         frazy = {
@@ -158,6 +168,8 @@ class BaltykSq2ips(SR0WXModule):
 
         text = self.TrimPl(text)
 
+        text = self.convertNumbers(text)
+
         return text
 
     def get_data(self):
@@ -167,9 +179,9 @@ class BaltykSq2ips(SR0WXModule):
         datap = self.process(data)
         time = self.process_time(data)
         message = " ".join(
-            ["prognoza_na_obszar", self.regions[self.__region_id], ""]
+            ["komunikat_na_obszar", self.regions[self.__region_id], ""]
         )
-        message += " ".join(["waz_na_od_godziny", time[0], "do", time[1], "_ "])
+        message += " ".join(["waz_ny_od_godziny", time[0], "do", time[1], "_ "])
         message += "".join(["baltyk_alert_", datap[0], " _ "])
         message += self.say_data(datap[1])
         message += " _ prognoza_orientacyjna_12 _ "
