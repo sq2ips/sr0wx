@@ -70,6 +70,9 @@ import logging.config
 import logging
 import coloredlogs
 
+from datetime import datetime, timedelta
+import pause
+
 # requests for checking internet connection
 import requests
 
@@ -165,9 +168,10 @@ modules_text = None
 saveAudioOverwrite = False
 all_modules = False
 showSamplesOverwrite = False
+startTime = None
 
 argv = sys.argv[1:]
-opts, args = getopt.getopt(argv, "c:m:tsaf")
+opts, args = getopt.getopt(argv, "c:m:tsafw:")
 
 for opt, arg in opts:
     if opt in "-c":
@@ -184,6 +188,9 @@ for opt, arg in opts:
         all_modules = True
     elif opt == "-f":
         showSamplesOverwrite = True
+    elif opt == "-w":
+        startTime = arg
+
 if config is None:
     import config as config
 
@@ -467,7 +474,7 @@ if config.ctcss_tone is not None:
 else:
     logger.info(COLOR_WARNING + "CTCSS tone disabled" + COLOR_ENDC)
 
-logger.info(f"playlist elements: " + " ".join(playlist))
+logger.info("playlist elements: " + " ".join(playlist))
 
 logger.info("Checking samples...")
 
@@ -486,6 +493,30 @@ for el in message:
             else:
                 sound_samples[el] = pygame.mixer.Sound(sample)
 
+if startTime is not None:
+    time_wait_1 = time.time()
+    #try:
+    if True:
+        startTime = int(startTime)
+        if not (0 <= startTime <= 60):
+            raise Exception("Invalid value, should be betwen 0 and 60 (60 for next hour).")
+        now = datetime.now()
+        if startTime == 60:
+            dt_start = now.replace(minute=0, second=0, microsecond=0)
+            dt_start += timedelta(hours=1)
+        else:
+            dt_start = now.replace(minute=startTime, second=0, microsecond=0)
+        if dt_start < now:
+            raise Exception("Given time is in the past")
+        if (dt_start-now) > timedelta(minutes=10):
+            raise Exception("Given time is bigger than 10 minutes")
+        logger.info(f"Waiting {dt_start-now} secconds for given time {dt_start}.")
+        pause.until(dt_start)
+        logger.info("Done.")
+    #except Exception as e:
+    #    logger.warning(f"Unable to wait for given time, got error: {e}, skipping...")
+    time_wait_2 = time.time()
+
 nopi = True
 if config.rpi_pin is not None:
     try:
@@ -501,8 +532,7 @@ if config.rpi_pin is not None:
     except Exception as e:
         logger.error(f"Unable to turn GPIO ptt on, got error: {e}, skipping...")
 
-
-# Program should be able to "press PTT" via RSS232. See ``config`` for
+# Program should be able to "press PTT" via RS232. See ``config`` for
 # details.
 
 if config.serial_port is not None:
@@ -623,7 +653,7 @@ if config.saveAudio or saveAudioOverwrite:
     except Exception as e:
         logger.error(f"Couldn't save message, got error {e}")
 
-logger.info(f"Script was running for {round(time.time()-time_start, 2)} seconds total, in it:\ninitialization - {round(time_init-time_start, 2)}s\nModules - {round(time_modules-time_init, 2)}s\nLoading audio - {round(time_audio-time_modules, 2)}s\nPlaying audio - {round(time_playing-time_audio, 2)}s\nFinishing - {round(time.time()-time_playing, 2)}s")
+logger.info(f"Script was running for {round(time.time()-time_start, 2)} seconds total, in it:\ninitialization - {round(time_init-time_start, 2)}s\nModules - {round(time_modules-time_init, 2)}s\nLoading audio - {round(time_audio-time_modules-(time_wait_2-time_wait_1), 2)}s\nPlaying audio - {round(time_playing-time_audio, 2)}s\nFinishing - {round(time.time()-time_playing, 2)}s")
 logger.info(COLOR_WARNING + "goodbye" + COLOR_ENDC)
 
 # Documentation is a good thing when you need to double or triple your

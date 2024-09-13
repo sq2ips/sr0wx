@@ -126,13 +126,15 @@ check_for_updates = True
 # Adres url do sprawdzania aktualizacji
 upstream_url = "https://github.com/sq2ips/sr0wx"
 
-# wiadomość początkowa i końcowa jest pliku .env
+# czytanie informacji o źródłach danych
+read_sources_msg = False
+
+# wiadomość początkowa i końcowa
 hello_msg = ["_","tu_eksperymentalna_automatyczna_stacja_pogodowa", "sr0wx"]
 goodbye_msg = ["_", "tu_sr0wx", "kolejny_komunikat", "_", "beep2"]
 # informacja gdy nie ma internetu
 data_sources_error_msg = ["_", "internetowe_zrodlo_danych_niedostepne"]
-# czytanie informacji o źródłach danych
-read_sources_msg = False
+
 
 #####################
 
