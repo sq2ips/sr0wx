@@ -493,10 +493,11 @@ for el in message:
             else:
                 sound_samples[el] = pygame.mixer.Sound(sample)
 
+time_wait_2 = 0
+time_wait_1 = 0
 if startTime is not None:
     time_wait_1 = time.time()
-    #try:
-    if True:
+    try:
         startTime = int(startTime)
         if not (0 <= startTime <= 60):
             raise Exception("Invalid value, should be betwen 0 and 60 (60 for next hour).")
@@ -508,13 +509,13 @@ if startTime is not None:
             dt_start = now.replace(minute=startTime, second=0, microsecond=0)
         if dt_start < now:
             raise Exception("Given time is in the past")
-        if (dt_start-now) > timedelta(minutes=10):
-            raise Exception("Given time is bigger than 10 minutes")
+        if (dt_start-now) > timedelta(minutes=config.maxWaitTime):
+            raise Exception(f"Given time is bigger than {config.maxWaitTime} minutes")
         logger.info(f"Waiting {dt_start-now} secconds for given time {dt_start}.")
         pause.until(dt_start)
         logger.info("Done.")
-    #except Exception as e:
-    #    logger.warning(f"Unable to wait for given time, got error: {e}, skipping...")
+    except Exception as e:
+        logger.warning(f"Unable to wait for given time, got error: {e}, skipping...")
     time_wait_2 = time.time()
 
 nopi = True

@@ -99,6 +99,9 @@ general_timeout = 120
 lang_name = "pl_google"  # język
 pygame_bug = 0
 
+# maksymalny czas oczekiwania do komunikatu (w minutach)
+maxWaitTime = 10
+
 # czas odczekany między uruchomieniem i wyłączeniem PTT a odtwarzaniem audio
 marginDelay = 500
 
@@ -456,7 +459,11 @@ ksesq2ips = KseSq2ips(
 # ---------------
 from time_sq2ips import TimeSq2ips
 timesq2ips = TimeSq2ips(
-    language=lang, start_message=[" _ ", "raport_meteorologiczny", "z_godziny"]
+    language=lang,
+    maxwaittime=maxWaitTime,
+    start_message=[" _ ", "raport_meteorologiczny", "z_godziny"],
+    round_minutes=True,
+    round_part=15,
 )
 
 #####################
