@@ -106,6 +106,9 @@ samplerate = 22050
 # wyświetlanie nazw sampli w trakcie odtważania
 showSamples = False
 
+# maksymalny czas oczekiwania do komunikatu (w minutach)
+maxWaitTime = 10
+
 # Usatwiensia zapisu komunikatu do pliku audio
 saveAudio = False
 # Ścieżka zapisu pliku wraz z nazwą i rozszerzeniem
