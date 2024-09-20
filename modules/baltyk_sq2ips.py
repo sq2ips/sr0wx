@@ -135,6 +135,7 @@ class BaltykSq2ips(SR0WXModule):
             "możliwe burze",
             "brak danych",
             "dobra do umiarkowanej",
+            "dobra do słabej",
             "umiarkowana do słabej",
             "ryzyko oblodzenia statków",
             "przelotne opady",
@@ -159,10 +160,11 @@ class BaltykSq2ips(SR0WXModule):
 
         text = text.lower()
 
-        for i in frazy_regularne:
+        for i in sorted(frazy_regularne):
             try:
                 fraza = i.replace(" ", "_").lower()
                 text = text.replace(i.lower(), fraza)
+                print(i, fraza)
             except KeyError:
                 pass
 
