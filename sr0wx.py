@@ -218,11 +218,12 @@ if test_mode:
 if all_modules:
     modules = config.modules_all
 elif modules_text is not None:
-    modules = []
+    modules = [None for _ in modules_text]
     for m in config.modules_all:
         if inspect.getfile(m.__class__).split("/")[-1][:-3] in modules_text:
-            modules.append(m)
-    if len(modules) == 0:
+            modules[modules_text.index(inspect.getfile(m.__class__).split("/")[-1][:-3])] = m
+    modules = [m for m in modules if m is not None]
+    if modules == []:
         logger.error("No valid modules given in commandline, exiting...")
         exit(1)
 else:
