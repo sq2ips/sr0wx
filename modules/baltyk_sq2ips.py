@@ -164,7 +164,6 @@ class BaltykSq2ips(SR0WXModule):
             try:
                 fraza = i.replace(" ", "_").lower()
                 text = text.replace(i.lower(), fraza)
-                print(i, fraza)
             except KeyError:
                 pass
 
