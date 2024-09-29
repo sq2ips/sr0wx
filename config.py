@@ -107,7 +107,7 @@ marginDelay = 500
 
 # ustawienie wartości pygame.time.Clock().tick()
 clockTick = 250
-timeDelay = 300
+timeDelay = 200
 # długość ciszy dla tekstu "_"
 delayValue = 500
 # pygame samplerate
