@@ -178,6 +178,6 @@ baltyksq2ips = BaltykSq2ips(
 )
 
 # WŁĄCZONE MODUŁY
-modules = [baltyksq2ips]
+modules = [activitymap, baltyksq2ips]
 offline_modules = []
 aux_modules = {}
