@@ -117,7 +117,7 @@ class BaltykSq2ips(SR0WXModule):
     def say_data(self, text):
         frazy = {
             "°C": " stopni_celsjusza",
-            ", ": " oraz ",
+            ", ": " ",
             " -": " minus ",
         }
         frazy_regularne = [
@@ -138,6 +138,7 @@ class BaltykSq2ips(SR0WXModule):
             "dobra do słabej",
             "umiarkowana do słabej",
             "ryzyko oblodzenia statków",
+            "przelotne opady deszczu",
             "przelotne opady",
             "temperatura powietrza",
             "w cyrkulacji",
@@ -159,8 +160,7 @@ class BaltykSq2ips(SR0WXModule):
                 pass
 
         text = text.lower()
-
-        for i in sorted(frazy_regularne):
+        for i in sorted(frazy_regularne, key=lambda x: (len(x.split())))[::-1]:
             try:
                 fraza = i.replace(" ", "_").lower()
                 text = text.replace(i.lower(), fraza)
