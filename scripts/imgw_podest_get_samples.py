@@ -55,7 +55,7 @@ for opt, arg in opts:
         all = True
     if opt == "-u":
         update = True
-        filr = None
+        file = None
     if opt == "-z":
         zlewnie += [int(z) for z in arg.split(",")]
     elif opt == "-w":
