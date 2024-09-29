@@ -368,7 +368,7 @@ if config.multi_processing:
             else:
                 func_modules += "\n"
 
-        # check returned data and append to `message` varible
+        # check returned data and append to `messages` varible
         if module_data is not None:
             module_message = module_data.get("message", "")
             module_source = module_data.get("source", "")
@@ -396,6 +396,7 @@ else:
             sources.append(module_source)
 time_modules = time.time()
 
+# checking and removing `_` form star and end of module message
 modules_messages = []
 for msg in messages:
     msg = msg.split()
@@ -407,6 +408,7 @@ for msg in messages:
 
     modules_messages.append(" ".join(msg))
 
+# appending all module messages to `message`
 message = " _ ".join(modules_messages)
 
 logger.info(
