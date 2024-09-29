@@ -504,7 +504,7 @@ offline_modules = [
 
 # WSZYSTKIE MODUŁY
 modules_all = [
-#    activitymap,                # marker na mapie wx.vhf.com.pl
+    activitymap,                # marker na mapie wx.vhf.com.pl
     timesq2ips,                 # godzina
     meteoalertsq2ips,           # ostrzeżenia meteorologiczne IMGW
     antistormsq2ips,            # radar pogodowy
