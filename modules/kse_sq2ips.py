@@ -16,7 +16,7 @@ class KseSq2ips(SR0WXModule):
         data = self.requestData(self.__service_url, self.__logger, 15, 3).json()[
             "data"
         ]
-        self.__logger.info("::: Przetwarazznie dancyh...")
+        self.__logger.info("::: Przetwarzanie dancyh...")
         message = "stan_sieci_energetycznej"
         message += " ".join(
             [

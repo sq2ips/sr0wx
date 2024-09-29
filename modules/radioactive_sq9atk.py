@@ -84,11 +84,10 @@ class RadioactiveSq9atk(SR0WXModule):
         )
         message = " ".join(
             [
-                " _ poziom_promieniowania _ ",
+                "poziom_promieniowania _ ",
                 averageValue,
                 " _ ",
                 currentValue,
-                " _ ",
             ]
         )
         return(

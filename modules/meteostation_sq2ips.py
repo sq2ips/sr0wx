@@ -175,7 +175,6 @@ class MeteoStationSq2ips(SR0WXModule):
                 message += (
                     self.__language.read_speed(round(data[3] * 3.6), "kmph") + " "
                 )
-        message += " _ "
         return(
             {
                 "message": message,

@@ -42,7 +42,6 @@ class AirlySq9atk(SR0WXModule):
         self.__logger.info("::: Przetwarzam dane...")
         message = "".join(
             [
-                " _ ",
                 " informacja_o_skaz_eniu_powietrza ",
                 # " _ ",
                 # " godzina ",
@@ -50,7 +49,6 @@ class AirlySq9atk(SR0WXModule):
                 " _ stan_ogolny ",
                 self.__levels[jsonData["current"]["indexes"][0]["level"]],
                 self.getPollutionLevel(jsonData["current"]["values"]),
-                " _ ",
             ]
         )
         return(

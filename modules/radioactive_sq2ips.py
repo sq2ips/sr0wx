@@ -95,7 +95,7 @@ class RadioactiveSq2ips(SR0WXModule):
             averageValue = ""
             self.__logger.warning("Nieprawidłowe średnie dane, pomijanie...")
         message = " ".join(
-            [" _ poziom_promieniowania _ ", curentValue, " _ ", averageValue, " _ "]
+            ["poziom_promieniowania _ ", curentValue, " _ ", averageValue, ""]
         )
         return(
             {

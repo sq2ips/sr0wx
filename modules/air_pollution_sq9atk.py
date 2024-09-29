@@ -70,7 +70,7 @@ class AirPollutionSq9atk(SR0WXModule):
         if len(sensors) > 0:
             return sensors
         else:
-            raise Exception("brak danych pomiarowych")
+            raise Exception("Brak danych pomiarowych")
 
     def prepareMessage(self, data):
         levels = {
@@ -96,12 +96,8 @@ class AirPollutionSq9atk(SR0WXModule):
         sensorsData = self.getSensorsData()
         self.__logger.info("::: Przetwarzam dane...")
         valuesMessage = self.prepareMessage(sensorsData)
-        message = " "
-        message = " _ informacja_o_skaz_eniu_powietrza _ "
-        message += (
-            " stacja_pomiarowa " + self.__language.trim_pl(self.getStationName()) + " _ "
-        )
-        message += valuesMessage
+        
+        message = " ".join(["informacja_o_skaz_eniu_powietrza", "stacja_pomiarowa", self.__language.trim_pl(self.getStationName()), "_", valuesMessage])
         return(
             {
                 "message": message,

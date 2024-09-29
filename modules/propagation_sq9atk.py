@@ -78,7 +78,7 @@ class PropagationSq9atk(SR0WXModule):
         self.__logger.info("::: Przetwarzam dane...")
         message = " ".join(
             [
-                " _ informacje_o_propagacji ",
+                "informacje_o_propagacji ",
                 " _ dzien _ ",
                 # " _ pasma _ ",
                 " _ ".join(self.collectBandConditionsFromImage(image, "day")),

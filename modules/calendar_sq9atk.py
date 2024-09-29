@@ -56,7 +56,7 @@ class CalendarSq9atk(SR0WXModule):
                 " ",
             ]
         )
-        message = " ".join([" _ kalendarium _ ", sunrise, " _ ", sunset, " _ "])
+        message = " ".join(["kalendarium _ ", sunrise, " _ ", sunset])
         return(
             {
                 "message": message,

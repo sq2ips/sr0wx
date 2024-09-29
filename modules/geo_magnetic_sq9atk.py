@@ -125,7 +125,7 @@ class GeoMagneticSq9atk(SR0WXModule):
                 )
         return(
             {
-                "message": message + "_",
+                "message": message,
                 "source": "gis_meteo",
             }
         )

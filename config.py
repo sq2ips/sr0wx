@@ -133,8 +133,8 @@ upstream_url = "https://github.com/sq2ips/sr0wx"
 read_sources_msg = False
 
 # wiadomość początkowa i końcowa
-hello_msg = ["_","tu_eksperymentalna_automatyczna_stacja_pogodowa", "sr0wx"]
-goodbye_msg = ["_", "tu_sr0wx", "kolejny_komunikat", "_", "beep2"]
+hello_msg = ["tu_eksperymentalna_automatyczna_stacja_pogodowa", "sr0wx"]
+goodbye_msg = ["tu_sr0wx", "kolejny_komunikat", "_", "beep2"]
 # informacja gdy nie ma internetu
 data_sources_error_msg = ["_", "internetowe_zrodlo_danych_niedostepne"]
 
@@ -427,6 +427,7 @@ meteostationsq2ips = MeteoStationSq2ips(
 # ---------------
 # meteo_aprs_sq2ips
 # ---------------
+#!!!MODUŁ NIE DZIAŁA!!!
 from meteo_aprs_sq2ips import MeteoAprsSq2ips
 meteoaprssq2ips = MeteoAprsSq2ips(
     language=lang,
@@ -503,7 +504,7 @@ offline_modules = [
 
 # WSZYSTKIE MODUŁY
 modules_all = [
-    activitymap,                # marker na mapie wx.vhf.com.pl
+#    activitymap,                # marker na mapie wx.vhf.com.pl
     timesq2ips,                 # godzina
     meteoalertsq2ips,           # ostrzeżenia meteorologiczne IMGW
     antistormsq2ips,            # radar pogodowy

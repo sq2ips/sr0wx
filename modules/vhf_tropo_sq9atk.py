@@ -240,7 +240,7 @@ class VhfTropoSq9atk(SR0WXModule):
         self.__logger.info("::: Przygotowywanie komunikatu...")
         message = " ".join(
             [
-                " _ vhf_propagacja_w_pasmie_vhf _ ",
+                "vhf_propagacja_w_pasmie_vhf _ ",
                 "   ".join(
                     [
                         self.prepareMessage(
@@ -248,7 +248,6 @@ class VhfTropoSq9atk(SR0WXModule):
                         )
                     ]
                 ),
-                " _ ",
             ]
         )
         return(

@@ -8,6 +8,7 @@ import logging
 from sr0wx_module import SR0WXModule
 
 class MeteoAprsSq2ips(SR0WXModule):
+    """!!!MODUŁ NIE DZIAŁA!!!"""
     def __init__(self, language, path, move_after):
         self.__language = language
         self.__logger = logging.getLogger(__name__)

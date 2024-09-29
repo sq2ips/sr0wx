@@ -148,8 +148,6 @@ def run_module(args):
 # All datas returned by SR0WX modules will be stored in ``data`` variable.
 
 
-message = " "
-
 # Information about which modules are to be executed is written in SR0WX
 # config file. Program starts every single of them and appends it's return
 # value in ``data`` variable. As you can see every module is started with
@@ -246,7 +244,6 @@ except (requests.ConnectionError, requests.ReadTimeout) as e:
     )
     offline_mode = True
     modules = config.offline_modules
-    message += " ".join(config.data_sources_error_msg)
 else:
     logger.info(COLOR_OKGREEN + "Connection OK" + COLOR_ENDC)
 
@@ -298,6 +295,7 @@ sources = [
 
 time_init = time.time()
 # modules launching
+messages = []
 if config.multi_processing:
     logger.info("multiprocessing is ON\n")
 
@@ -376,7 +374,7 @@ if config.multi_processing:
             module_source = module_data.get("source", "")
             if module_message is not None:
                 any_func_modules = True
-                message = " ".join((message, module_message))
+                messages.append(module_message)
                 sources.append(module_data["source"])
 
 else:
@@ -393,10 +391,23 @@ else:
         else:
             any_func_modules = True
             func_modules += COLOR_OKGREEN + str(module) + COLOR_ENDC + "\n"
-            message = " ".join((message, module_message))
+            messages.append(module_message)
         if module_message != "" and module_source != "":
             sources.append(module_source)
 time_modules = time.time()
+
+modules_messages = []
+for msg in messages:
+    msg = msg.split()
+
+    if msg[-1] == "_":
+        del msg[-1]
+    if msg[0] == "_":
+        del msg[0]
+
+    modules_messages.append(" ".join(msg))
+
+message = " _ ".join(modules_messages)
 
 logger.info(
     COLOR_BOLD
@@ -424,14 +435,18 @@ if not any_func_modules:
 # When all the modules finished its' work it's time to ``.split()`` returned
 # data. Every element of returned list is actually a filename of a sample.
 
-message = config.hello_msg + message.split()
+if offline_mode:
+    message = config.data_sources_error_msg + ["_"] + message.split()
+else:
+    message = config.hello_msg + ["_"] + message.split()
+
 if hasattr(config, "read_sources_msg"):
     if config.read_sources_msg:
         if len(sources) > 1:
             message += sources
 else:
     message += sources
-message += config.goodbye_msg
+message += ["_"] + config.goodbye_msg
 
 if test_mode:
     logger.warning("Test mode active, exiting...")

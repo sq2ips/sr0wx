@@ -108,7 +108,7 @@ class PropagationSq2ips(SR0WXModule):
 
             message = " ".join(
                 [
-                    " _ informacje_o_propagacji ",
+                    "informacje_o_propagacji ",
                     " _ dzien _ ",
                     text_day,
                     " _ noc _ ",

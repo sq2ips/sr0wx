@@ -173,7 +173,7 @@ class OpenWeatherSq9atk(SR0WXModule):
         message = self.__start_message
         if self.__current:
             if self.__saytime:
-                message += "".join([" stan_pogody_z_godziny ", self.getHour()])
+                message += " ".join([" stan_pogody_z_godziny", self.getHour()])
             message += "".join(
                 [
                     self.getWeather(weatherJson["weather"]),

@@ -88,11 +88,11 @@ class MeteoSq9atk(SR0WXModule):
                     self.parsePressure(now),
                     "wilgotnosc",
                     self.parseHumidity(now),
+                    " _ ",
                 ]
             )
         message += " ".join(
             [
-                " _ ",
                 "prognoza_na_nastepne",
                 "cztery",
                 "godziny",

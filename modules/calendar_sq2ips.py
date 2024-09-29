@@ -58,7 +58,7 @@ class CalendarSq2ips(SR0WXModule):
                 " ",
             ]
         )
-        message = " ".join(["_", "kalendarium", "_", sunrise, "_", sunset, "_"])
+        message = " ".join(["kalendarium", "_", sunrise, "_", sunset])
         Gdynia.next_antitransit
         self.__logger.info(f"Wschód: {ephem.localtime(Gdynia.next_rising(sun))}")
         self.__logger.info(f"Zachód: {ephem.localtime(Gdynia.next_setting(sun))}")
