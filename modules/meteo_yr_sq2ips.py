@@ -47,21 +47,21 @@ class MeteoYrSq2ips(SR0WXModule):
         msg = ""
         if 0 <= angle <= 23:
             msg += "polnocny"
-        elif 23 <= angle <= 67:
+        elif 23 < angle <= 67:
             msg += "polnocno wschodni"
-        elif 67 <= angle <= 112:
+        elif 67 < angle <= 112:
             msg += "wschodni"
-        elif 112 <= angle <= 157:
+        elif 112 < angle <= 157:
             msg += "poludniowo wschodni"
-        elif 157 <= angle <= 202:
+        elif 157 < angle <= 202:
             msg += "poludniowy"
-        elif 202 <= angle <= 247:
+        elif 202 < angle <= 247:
             msg += "poludniowo zachodni"
-        elif 247 <= angle <= 292:
+        elif 247 < angle <= 292:
             msg += "zachodni"
-        elif 292 <= angle <= 337:
+        elif 292 < angle <= 337:
             msg += "polnocno zachodni"
-        elif 337 <= angle <= 360:
+        elif 337 < angle <= 360:
             msg += "polnocny"
         return msg
 
@@ -107,8 +107,7 @@ class MeteoYrSq2ips(SR0WXModule):
                 [
                     " wiatr",
                     self.getWind(wind_dir),
-                    self.__language.read_speed(wind_speed),
-                    "kmph",
+                    self.__language.read_speed(wind_speed, "kmph")
                 ]
             )
 

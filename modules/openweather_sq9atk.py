@@ -115,32 +115,48 @@ class OpenWeatherSq9atk(SR0WXModule):
         return msg
 
     def getWind(self, json):
+        print(json)
         msg = ""
         if "deg" in json:
             msg += " _ wiatr "
-            if 0 <= json["deg"] <= 23:
+            if 0 < json["deg"] <= 23:
                 msg += " polnocny "
-            if 23 <= json["deg"] <= 67:
+            elif 23 < json["deg"] <= 67:
                 msg += " polnocno wschodni "
-            if 67 <= json["deg"] <= 112:
+            elif 67 < json["deg"] <= 112:
                 msg += " wschodni "
-            if 112 <= json["deg"] <= 157:
+            elif 112 < json["deg"] <= 157:
                 msg += " poludniowo wschodni "
-            if 157 <= json["deg"] <= 202:
+            elif 157 <= json["deg"] <= 202:
                 msg += " poludniowy "
-            if 202 <= json["deg"] <= 247:
+            elif 202 < json["deg"] <= 247:
                 msg += " poludniowo zachodni "
-            if 247 <= json["deg"] <= 292:
+            elif 247 < json["deg"] <= 292:
                 msg += " zachodni "
-            if 292 <= json["deg"] <= 337:
+            elif 292 < json["deg"] <= 337:
                 msg += " polnocno zachodni "
-            if 337 <= json["deg"] <= 360:
+            elif 337 < json["deg"] <= 360:
                 msg += " polnocny "
             # msg += self.__language.read_degrees( int(json['deg']) )
-        # msg += ' ' + self.__language.read_speed( int(json['speed']) )
-        msg += " " + self.__language.read_speed(
-            round(json["speed"] / 1000 * 3600), "kmph"
-        )
+
+        wind_speed = round(json["speed"] / 1000 * 3600)
+        wind_gust = None
+        if "gust" in json:
+            wind_gust = round(json["gust"] / 1000 * 3600)
+
+        if wind_gust is not None and wind_speed != wind_gust:
+            msg += " ".join(
+                [
+                    self.__language.read_number(wind_speed),
+                ]
+            )
+            msg += " ".join([" w_porywach", "do", self.__language.read_gust(wind_gust)])
+        else:
+            msg += " ".join(
+                [
+                    self.__language.read_speed(wind_speed, "kmph")
+                ]
+            )
         return msg
 
     def get_data(self):
