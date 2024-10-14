@@ -23,7 +23,7 @@ def requestData(url, timeout, repeat):
         try:
             data = requests.get(url, timeout=timeout)
             if not data.ok:
-                raise Exception("Got wrong response")
+                raise Exception(f"Nieprawidłowa odpowiedź serwera: otrzymano {data}")
             else:
                 break
         except Exception as e:
@@ -223,7 +223,7 @@ if regenerate:
     print("Removing old samples...")
     shutil.rmtree(samples_dir)
     print("OK", end="")
-    os.path.mkdir(samples_dir)
+    os.mkdir(samples_dir)
 
 if move:
     files = glob.glob("./ogg/*")
