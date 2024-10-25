@@ -560,11 +560,11 @@ if config.serial_port is not None:
     try:
         ser = serial.Serial(config.serial_port, config.serial_baud_rate)
         if config.serial_signal == "DTR":
-            logger.info(COLOR_OKGREEN + "DTR/PTT set to ON" + COLOR_ENDC)
+            logger.info(COLOR_OKGREEN + "Serial PTT: DTR: ON" + COLOR_ENDC)
             ser.setDTR(1)
             ser.setRTS(0)
         else:
-            logger.info(COLOR_OKGREEN + "RTS/PTT set to ON" + COLOR_ENDC)
+            logger.info(COLOR_OKGREEN + "Serial PTT: RTS: ON" + COLOR_ENDC)
             ser.setDTR(0)
             ser.setRTS(1)
     except Exception as e:
@@ -627,7 +627,7 @@ logger.info(COLOR_WARNING + "finishing...\n" + COLOR_ENDC)
 try:
     if config.serial_port is not None:
         ser.close()
-        logger.info(COLOR_OKGREEN + "RTS/PTT set to OFF" + COLOR_ENDC)
+        logger.info(COLOR_OKGREEN + "Serial PTT: OFF" + COLOR_ENDC)
 except NameError:
     # sudo gpasswd --add ${USER} dialout
     logger.exception("Couldn't close serial port")
