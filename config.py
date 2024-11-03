@@ -481,7 +481,7 @@ modules = [
     # meteoyrsq2ips,        # pogoda z yr
     openweathersq9atk,      # pogoda openweathermap
     # meteosq9atk,          # pogoda alternatywa
-    # imgwpodestsq2ips,     # wodowskazy z hydro.imgw.pl
+    imgwpodestsq2ips,       # wodowskazy z hydro.imgw.pl
     # airpollutionsq9atk,   # zanieczyszczenia powietrza z GIOŚ
     airlysq9atk,            # zanieczyszczenia powietrza z Airly
     # firessq2ips,          # informacja o stopniu zagrożenia pożarowego lasów

@@ -63,7 +63,7 @@ import os
 from pathlib import Path
 
 # this i a trick that changes system dir to dir of this file for fixing problems with locating other files
-os.chdir("/".join(str(Path(__file__)).split("/")[:-1]))
+os.chdir("/".join(str(os.path.realpath(__file__)).split("/")[:-1]))
 
 # logging libraries
 import logging.config
