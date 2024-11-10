@@ -1,5 +1,4 @@
 import requests
-from urllib.parse import urlparse, parse_qs, quote_plus
 import bs4 as bs
 import shutil
 from tqdm import tqdm
@@ -33,25 +32,27 @@ def requestData(url, timeout, repeat):
                 raise e
     return data
 
-def getApiKey():
-    print("Uzyskiwanie klucza API... ", end="")
-    sys.stdout.flush()
-    url = "https://responsivevoice.org/"
-    data = requestData(url, 15, 4)
-    soup = bs.BeautifulSoup(data.text, "lxml")
-    elem = soup.find("script", attrs={"id": "responsive-voice-js"})
-    src = elem.get("src")
-    query = urlparse(src).query
-    query_elements = parse_qs(query)
-    key = query_elements["key"][0]
-    print("OK")
-    return key
+def GetMp3(word, filename):
+    headers = {
+        'accept-language': 'pl-PL,pl;q=0.5',
+        'content-type': 'application/json',
+    }
 
-def GetMp3(word, filename, key):
-    url = f"https://texttospeech.responsivevoice.org/v1/text:synthesize?lang={lang}&engine=g1&name=&pitch=0.5&rate=0.5&volume=1&key={key}&gender={gender}&text={quote_plus(word)}"
+    json_data = {
+        'userId': 'public-access',
+        'platform': 'landing_demo',
+        'ssml': f'<speak><p>{word}</p></speak>',
+        'voice': 'pl-PL-Wavenet-E',
+        'narrationStyle': 'Neural',
+        'method': 'file',
+    }
 
-    data = requestData(url, 15, 5)
+    sample_response = requests.post('https://play.ht/api/transcribe', headers=headers, json=json_data).json()
+    sample_url = sample_response['file']
+
+    data = requestData(sample_url, 15, 5)
     open(f"mp3/{filename}.mp3", "wb").write(data.content)
+
 
 def convert(filename):
     if not os.path.exists("ogg/"):
@@ -61,13 +62,13 @@ def convert(filename):
         raise Exception("ffmpeg returned non zero exit code.")
     os.remove(f"mp3/{filename}.mp3")
 
-def GetOgg(phrase, key):
+def GetOgg(phrase):
     filename, word = phrase
     if filename in ["", None]:
         raise ValueError("Pusta nazwa pliku")
     if word in ["", None]:
         raise ValueError("Puste słowo")
-    GetMp3(word, filename, key)
+    GetMp3(word, filename)
     convert(filename)
     if not os.path.exists(f"ogg/{filename}.ogg"):
         raise FileExistsError(f"Plik sampla {filename} nie wygenerowany.")
@@ -76,10 +77,10 @@ def GetOgg(phrase, key):
     elif os.system(f"ffmpeg -i ogg/{filename}.ogg -f null -err_detect +crccheck+bitstream+buffer+explode+careful+compliant+aggressive -v error -xerror -") != 0:
         raise Exception(f"Plik sampla {filename} jest uszkodzony.")
 
-def generate(slownik, key):
+def generate(slownik):
     for slowo in tqdm(slownik, unit="samples"):
         try:
-            GetOgg(slowo, key)
+            GetOgg(slowo)
         except Exception as e:
             print(f"Podczas generowania sampla {slowo} otrzymano błąd: {e}")
             if os.path.exists(f"ogg/{slowo[0]}.ogg"):
@@ -192,11 +193,9 @@ else:
     print("Brak sampli do wygenerowania")
     exit()
 
-key = getApiKey()
-
 print("Uruchamianie genertora...")
 
-generate(slownik, key)
+generate(slownik)
 
 print("usuwanie katalogu mp3/...")
 os.removedirs("mp3/")
