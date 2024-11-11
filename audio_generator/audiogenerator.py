@@ -13,7 +13,7 @@ sys.path.append("../")
 
 from pl_google import trim_pl
 
-slownik_filename = "slownik.json"
+dictionary_filename = "slownik.json"
 samples_dir = "../pl_google/samples/"
 lang = "pl"
 gender = "female"
@@ -24,7 +24,7 @@ def requestData(url, timeout, repeat):
         try:
             data = requests.get(url, timeout=timeout)
             if not data.ok:
-                raise Exception(f"Nieprawidłowa odpowiedź serwera: otrzymano {data}")
+                raise Exception(f"Wrong server response: received {data}")
             else:
                 break
         except Exception as e:
@@ -77,27 +77,27 @@ def convert(filename):
 def GetOgg(phrase):
     filename, word = phrase
     if filename in ["", None]:
-        raise ValueError("Pusta nazwa pliku")
+        raise ValueError("Empty file name")
     if word in ["", None]:
-        raise ValueError("Puste słowo")
+        raise ValueError("Empty sample")
     GetMp3(word, filename)
     convert(filename)
     if not os.path.exists(f"ogg/{filename}.ogg"):
-        raise FileExistsError(f"Plik sampla {filename} nie wygenerowany.")
+        raise FileExistsError(f"Sample file {filename} not generated.")
     elif os.path.getsize(f"ogg/{filename}.ogg") == 0:
-        raise Exception(f"Plik sampla {filename} jest pusty.")
+        raise Exception(f"Sample file {filename} is empty.")
     elif os.system(f"ffmpeg -i ogg/{filename}.ogg -f null -err_detect +crccheck+bitstream+buffer+explode+careful+compliant+aggressive -v error -xerror -") != 0:
-        raise Exception(f"Plik sampla {filename} jest uszkodzony.")
+        raise Exception(f"Sample file {filename} corrupted.")
 
-def generate(slownik):
-    for slowo in tqdm(slownik, unit="samples"):
+def generate(dictionary):
+    for sample in tqdm(dictionary, unit="samples"):
         try:
-            GetOgg(slowo)
+            GetOgg(sample)
         except Exception as e:
-            print(f"Podczas generowania sampla {slowo} otrzymano błąd: {e}")
-            if os.path.exists(f"ogg/{slowo[0]}.ogg"):
-                print(f"Usuwanie pliku ogg/{slowo[0]}.ogg...")
-                os.remove(f"ogg/{slowo[0]}.ogg")
+            print(f"While generating sample {sample} got error: {e}")
+            if os.path.exists(f"ogg/{sample[0]}.ogg"):
+                print(f"Removing file ogg/{sample[0]}.ogg...")
+                os.remove(f"ogg/{sample[0]}.ogg")
 
 def getExistingSamples(path):
     files = glob.glob(path)
@@ -108,35 +108,35 @@ def getExistingSamples(path):
     return samples
 
 def loadSlownik(filename):
-    print(f"Ładowanie danych z pliku {filename}... ", end="")
+    print(f"Loading dictionary from file {filename}... ", end="")
     with open(filename, "r") as f:
         data = json.load(f)
-    slownik_custom = data["slownik"]
-    slownik_auto = data["slownik_auto"]
+    dictionary_custom = data["slownik"]
+    dictionary_auto = data["slownik_auto"]
     print("OK")
 
-    return slownik_custom, slownik_auto
+    return dictionary_custom, dictionary_auto
 
-def makeSamplesList(slownik_custom, slownik_auto):
-    print("Tworzenie listy sampli... ", end="")
+def makeSamplesList(dictionary_custom, dictionary_auto):
+    print("Creating samples list... ", end="")
     
-    slownik = []
-    if len(slownik_custom) > 0:
-        for slowo in list(slownik_custom.keys()):
-            slownik.append([slowo, slownik_custom[slowo]])
-    if len(slownik_auto) > 0:
-        for slowo in slownik_auto:
-            slownik.append([trim_pl(slowo), slowo])
+    dictionary = []
+    if len(dictionary_custom) > 0:
+        for sample in list(dictionary_custom.keys()):
+            dictionary.append([sample, dictionary_custom[sample]])
+    if len(dictionary_auto) > 0:
+        for sample in dictionary_auto:
+            dictionary.append([trim_pl(sample), sample])
     print("OK")
     
-    print(f"Liczba wszystkich sampli w słowniku: {len(slownik)}")
-    return slownik
+    print(f"Number of all samples in dictionary: {len(dictionary)}")
+    return dictionary
 
-def saveSlownikData(filename, slownik_custom, slownik_auto):
-    print(f"Zapisywanie danych do pliku {filename}... ", end="")
+def saveSlownikData(filename, dictionary_custom, dictionary_auto):
+    print(f"Saving samples to file {filename}... ", end="")
 
     with open(filename, "w") as f:
-        json.dump({"slownik": slownik_custom, "slownik_auto": slownik_auto}, f, ensure_ascii=False, indent=4)
+        json.dump({"slownik": dictionary_custom, "slownik_auto": dictionary_auto}, f, ensure_ascii=False, indent=4)
     print("OK")
 
 print("Uruchamiane...")
@@ -169,66 +169,66 @@ for opt, arg in opts:
         regenerate = True
         move = True
 
-print("Sprawdzanie katalogu mp3/...")
+print("Checking directory mp3/...")
 if os.path.exists("mp3/"):
-    print("Katalog istnieje, usuwanie...")
+    print("Directory exists, usuwanie...")
     shutil.rmtree("mp3")
-print("Tworzenie nowego katalogu mp3/")
+print("Creating new directory mp3/")
 os.mkdir("mp3")
 
-slownik = []
+dictionary = []
 
 if (len(phrases_auto) + len(phrases_custom)) > 0:
     if len(phrases_auto) > 0:
-        for slowo in phrases_auto:
-            slownik.append([trim_pl(slowo), slowo])
+        for sample in phrases_auto:
+            dictionary.append([trim_pl(sample), sample])
     if len(phrases_custom) > 0:
-        slownik += phrases_custom
+        dictionary += phrases_custom
 else:
-    slownik_custom, slownik_auto = loadSlownik(slownik_filename)
-    slownik = makeSamplesList(slownik_custom, slownik_auto)
+    dictionary_custom, dictionary_auto = loadSlownik(dictionary_filename)
+    dictionary = makeSamplesList(dictionary_custom, dictionary_auto)
 
 slowa_files = getExistingSamples("".join([samples_dir, "*"]))
 
-slownik_new = []
+dictionary_new = []
 
 if not regenerate:
-    for i, slowo in enumerate(slownik):
-        if not slowo[0] in slowa_files:
-            slownik_new.append(slowo)
+    for i, sample in enumerate(dictionary):
+        if not sample[0] in slowa_files:
+            dictionary_new.append(sample)
 
-    slownik = slownik_new
+    dictionary = dictionary_new
 
-if len(slownik) > 0:
-    print(f"Liczba sampli do wygenerowania: {len(slownik)}")
+if len(dictionary) > 0:
+    print(f"Number of samples to generate: {len(dictionary)}")
 else:
-    print("Brak sampli do wygenerowania")
+    print("No samples to generate")
     exit()
 
-print("Uruchamianie genertora...")
+print("Starting generator...")
 
-generate(slownik)
+generate(dictionary)
 
-print("usuwanie katalogu mp3/...")
+print("removing directory mp3/...")
 os.removedirs("mp3/")
 
 if saveSlownik:
     if (len(phrases_auto) + len(phrases_custom)) > 0:
-        slownik_custom, slownik_auto = loadSlownik(slownik_filename)
+        dictionary_custom, dictionary_auto = loadSlownik(dictionary_filename)
         if len(phrases_auto) > 0:
-            slownik_auto += phrases_auto
+            dictionary_auto += phrases_auto
         if len(phrases_custom) > 0:
-            slownik_custom.update(phrases_custom)
+            dictionary_custom.update(phrases_custom)
         
-        print("Sortowanie... ", end="")
-        slownik_custom = dict(sorted(slownik_custom.items()))
-        slownik_auto = list(set(list(slownik_auto)))
-        slownik_auto = sorted(slownik_auto)
+        print("Sorting... ", end="")
+        dictionary_custom = dict(sorted(dictionary_custom.items()))
+        dictionary_auto = list(set(list(dictionary_auto)))
+        dictionary_auto = sorted(dictionary_auto)
         print("OK")
 
-        saveSlownikData(slownik_filename, slownik_custom, slownik_auto)
+        saveSlownikData(dictionary_filename, dictionary_custom, dictionary_auto)
     else:
-        print("Brak sampli do zapisania.")
+        print("No samples to save.")
 
 if regenerate:
     print("Removing old samples...")
@@ -239,7 +239,7 @@ if regenerate:
 if move:
     files = glob.glob("./ogg/*")
     if len(files) > 0:
-        print(f"Przenoszenie sampli do {samples_dir}...")
+        print(f"Moving samples to {samples_dir}...")
         for file in tqdm(files, unit="files"):
             shutil.move(file, "".join([samples_dir]))
     else:
