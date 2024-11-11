@@ -204,9 +204,9 @@ meteosq9atk = MeteoSq9atk(
 from imgw_podest_sq2ips import ImgwPodestSq2ips
 imgwpodestsq2ips = ImgwPodestSq2ips(
     language=lang,
-    service_url="https://hydro-back.imgw.pl/list/hydrologic",
+    service_url="https://hydro-back.imgw.pl/list/hydro",
     wodowskazy=[],  # id poszczegulnych wodowskazów
-    zlewnie=[47, 48],  # id całej zlewni
+    zlewnie=["47", "48"],  # id całej zlewni (w cudzysłowach)
     use_outdated=False,
     read_level=False,
     read_diff_level=True,

@@ -45,7 +45,7 @@ class ImgwPodestSq2ips(SR0WXModule):
     def toDict(self, data):
         stations = {}
         for station in data:
-            stations[int(station["code"])] = station
+            stations[station["code"]] = station
         return stations
 
     def getStations(self, stations):
@@ -53,7 +53,7 @@ class ImgwPodestSq2ips(SR0WXModule):
         # wodowskazy ze zlewni
         for id in stations:
             if stations[id]["catchment"] is not None:
-                if int(stations[id]["catchment"]) in self.__zlewnie:
+                if stations[id]["catchment"] in self.__zlewnie:
                     stations_id.append(id)
         if len(stations_id) == 0:
             self.__logger.warning(f"Brak wodowskazów w zlewni {self.__zlewnia}")
