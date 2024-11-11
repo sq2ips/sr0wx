@@ -7,6 +7,7 @@ import glob
 import sys
 import os
 import getopt
+from time import sleep
 
 sys.path.append("../")
 
@@ -16,6 +17,7 @@ slownik_filename = "slownik.json"
 samples_dir = "../pl_google/samples/"
 lang = "pl"
 gender = "female"
+delay_time = 60
 
 def requestData(url, timeout, repeat):
     for i in range(repeat):
@@ -47,11 +49,21 @@ def GetMp3(word, filename):
         'method': 'file',
     }
 
-    sample_response = requests.post('https://play.ht/api/transcribe', headers=headers, json=json_data).json()
-    sample_url = sample_response['file']
-
-    data = requestData(sample_url, 15, 5)
-    open(f"mp3/{filename}.mp3", "wb").write(data.content)
+    sample_response = requests.post('https://play.ht/api/transcribe', headers=headers, json=json_data)
+    status_code = sample_response.status_code
+    if status_code == 200:
+        sample_url = sample_response.json()['file']
+        data = requestData(sample_url, 15, 5)
+        open(f"mp3/{filename}.mp3", "wb").write(data.content)
+    elif status_code == 429:
+        print(f"Got Too Many Requests error code, waiting {delay_time}s...")
+        sleep(delay_time)
+        GetMp3(word, filename)
+    elif status_code == 403:
+        print("Got error 403 probably IP is banned, try again later.")
+        exit(1)
+    else:
+        raise Exception(f"Got response code {status_code}")
 
 
 def convert(filename):

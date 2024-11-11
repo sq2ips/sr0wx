@@ -7,7 +7,7 @@ sys.path.append("../")
 
 from pl_google import trim_pl
 
-url = "https://hydro-back.imgw.pl/list/hydrologic"
+url = "https://hydro-back.imgw.pl/list/hydro"
 slownik_file = "../audio_generator/slownik.json"
 
 def parseName(name):
@@ -57,9 +57,9 @@ for opt, arg in opts:
         update = True
         file = None
     if opt == "-z":
-        zlewnie += [int(z) for z in arg.split(",")]
+        zlewnie += [z for z in arg.split(",")]
     elif opt == "-w":
-        wodowskazy += [int(w) for w in arg.split(",")]
+        wodowskazy += [w for w in arg.split(",")]
 
 if not all and zlewnie == [] and wodowskazy == []:
     raise Exception("Brak sampli do wyszukania, użyj -a, -z lub -w")
@@ -71,12 +71,7 @@ print("OK")
 
 samples = []
 for s in stations:
-    if (
-        s["catchment"] is not None
-        and int(s["catchment"]) in zlewnie
-        or s["code"] is not None
-        and int(s["code"]) in wodowskazy
-    ) or all:
+    if (s["catchment"] is not None and s["catchment"] in zlewnie or s["code"] is not None and s["code"] in wodowskazy) or all:
         samples.append(parseName(s["river"]))
         samples.append(parseName(s["name"]))
 
