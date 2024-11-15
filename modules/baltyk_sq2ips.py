@@ -124,6 +124,8 @@ class BaltykSq2ips(SR0WXModule):
             "w skali B",
             "w porywach",
             "w części",
+            "w nocy",
+            "w rejonie",
             "stan morza",
             "temperatura około",
             "przelotny deszcz",
