@@ -21,6 +21,7 @@ Nagranie komunikatu stacji [SR2WXG](https://github.com/user-attachments/assets/8
 - Dodanie modułu pobierający pogodę z yr.no (meteo_yr_sq2ips.py) (testowy)
 - Dodanie modułu informującego o stopniu zagrożenia pożarowego lasów (fires_sq2ips.py)
 - Dodanie modułu radaru pogodowego (antistorm_sq2ips.py)
+- Dodanie modułu stanu sieci energetycznej (kse_sq2ips.py)
 - Napisanie od nowa modułu informującego o stanie wody z wodowskazów ze strony hydro.imgw.pl (imgw_podest_sq2ips.py)
 - Przepisanie całej aplikacji z python 2 na 3
 - Dodanie generatora sampli napisanego w pythonie i wygenerowanie od nowa wszystkich sampli
