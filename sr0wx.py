@@ -396,7 +396,7 @@ else:
             sources.append(module_source)
 time_modules = time.time()
 
-# checking and removing `_` form star and end of module message
+# checking and removing `_` from start and end of module message
 modules_messages = []
 for msg in messages:
     msg = msg.split()
