@@ -375,7 +375,8 @@ if config.multi_processing:
             if module_message is not None:
                 any_func_modules = True
                 messages.append(module_message)
-                sources.append(module_data["source"])
+                if module_message != "" and module_source != "":
+                    sources.append(module_source)
 
 else:
     logger.info("multiprocessing is OFF\n")
@@ -394,6 +395,7 @@ else:
             messages.append(module_message)
         if module_message != "" and module_source != "":
             sources.append(module_source)
+
 time_modules = time.time()
 
 # checking and removing `_` from start and end of module message
@@ -401,12 +403,19 @@ modules_messages = []
 for msg in messages:
     msg = msg.split()
 
-    if msg[-1] == "_":
-        del msg[-1]
-    if msg[0] == "_":
-        del msg[0]
+    start = 0
+    for i, m in enumerate(msg):
+        if m != "_":
+            start = i
+            break
+    
+    end = 0
+    for i, m in enumerate(msg[::-1]):
+        if m != "_":
+            end = len(msg) - i
+            break
 
-    modules_messages.append(" ".join(msg))
+    modules_messages.append(" ".join(msg[start:end]))
 
 # appending all module messages to `message`
 message = " _ ".join(modules_messages)
@@ -442,17 +451,9 @@ if offline_mode:
 else:
     message = config.hello_msg + ["_"] + message.split()
 
-if hasattr(config, "read_sources_msg"):
-    if config.read_sources_msg:
-        if len(sources) > 1:
-            message += sources
-else:
-    message += sources
+if config.read_sources_msg:
+    message += ["_"] + sources
 message += ["_"] + config.goodbye_msg
-
-if test_mode:
-    logger.warning("Test mode active, exiting...")
-    exit(0)
 
 # It's time to init ``pygame``'s mixer (and ``pygame``). Possibly defined
 # sound quality is far-too-good (44kHz 16bit, stereo), so you can change it.
@@ -492,7 +493,7 @@ if config.ctcss_tone is not None:
 else:
     logger.info(COLOR_WARNING + "CTCSS tone disabled" + COLOR_ENDC)
 
-logger.info("playlist elements: " + " ".join(playlist))
+logger.info(f"playlist elements: {playlist}")
 
 logger.info("Checking samples...")
 
@@ -510,6 +511,10 @@ for el in message:
                 )
             else:
                 sound_samples[el] = pygame.mixer.Sound(sample)
+
+if test_mode:
+    logger.warning("Test mode active, exiting...")
+    exit(0)
 
 time_wait_2 = 0
 time_wait_1 = 0

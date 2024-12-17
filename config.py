@@ -451,7 +451,7 @@ from time_sq2ips import TimeSq2ips
 timesq2ips = TimeSq2ips(
     language=lang,
     maxwaittime=maxWaitTime,
-    start_message=[" _ ", "raport_meteorologiczny", "z_godziny"],
+    start_message=["raport_meteorologiczny", "z_godziny"],
     round_minutes=True,
     round_part=15,
 )
