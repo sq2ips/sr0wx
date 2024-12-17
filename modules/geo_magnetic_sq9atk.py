@@ -47,10 +47,7 @@ class GeoMagneticSq9atk(SR0WXModule):
         }
 
     def downloadDataFromUrl(self, url):
-        headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 5.1; rv:10.0.1) Gecko/20100101 Firefox/10.0.1",
-        }
-        data = self.requestData(url, self.__logger, 10, 3, headers=headers)
+        data = self.requestData(url, self.__logger, 10, 3)
         return data.text
 
     def getDataParsedHtmlData(self):
