@@ -43,7 +43,8 @@ class SR0WXModule:
         msg = "This method should be implemented in child class"
         raise NotImplementedError(msg)
 
-    def requestData(self, url, logger, timeout, repeat, headers=None):
+    def requestData(self, url, logger, timeout, repeat, headers={}):
+        headers.update({'User-Agent': 'SR0WX/1.0'})
         for i in range(repeat):
             try:
                 logger.info("::: Requesting data from address: " + url)
