@@ -9,7 +9,7 @@ from sr0wx_module import SR0WXModule
 class VhfTropoSq9atk(SR0WXModule):
     """Moduł pobierający dane o propagacji troposferycznej"""
 
-    def __init__(self, language, service_url, qthLon, qthLat):
+    def __init__(self, language, service_url, qthLon, qthLat, onlyAlerts):
         self.__service_url = service_url
         self.__language = language
         self.__logger = logging.getLogger(__name__)
@@ -25,6 +25,8 @@ class VhfTropoSq9atk(SR0WXModule):
 
         self.__mapLatStart = float(56)
         self.__mapLatEnd = float(27)
+
+        self.__onlyAlerts = onlyAlerts
 
     def findMapUrlInHtml(self, html, target_id):
         pattern = (
@@ -201,27 +203,32 @@ class VhfTropoSq9atk(SR0WXModule):
     def prepareMessage(self, mainConditionValue, directionalConditionsValues):
         message = "vhf_brak_szans_na_lacznosc_troposferyczna"
 
+        if mainConditionValue > 3:
+            message = " vhf_uwaga vhf_warunki_podwyzszone _ "
+        elif self.__onlyAlerts:
+            return None
+
         if mainConditionValue > 0.3:
             message = "vhf_minimalne_szanse_na_lacznosc_troposferyczna"
-        if mainConditionValue > 0.5:
+        elif mainConditionValue > 0.5:
             message = "vhf_niewielkie_szanse_na_lacznosc_troposferyczna"
-        if mainConditionValue > 1:
+        elif mainConditionValue > 1:
             message = "vhf_spore_szanse_na_lacznosc_troposferyczna"
-        if mainConditionValue > 2:
+        elif mainConditionValue > 2:
             message = "vhf_duze_szanse_na_lacznosc_troposferyczna"
-        if mainConditionValue > 5:
+        elif mainConditionValue > 5:
             message = "vhf_bardzo_duze_szanse_na_lacznosc_troposferyczna"
-        if mainConditionValue > 8:
+        elif mainConditionValue > 8:
             message = "vhf_wyjatkowo_duze_szanse_na_lacznosc_troposferyczna"
-        if mainConditionValue > 3:
-            message = " vhf_uwaga vhf_warunki_podwyzszone _ " + message
+        
+
         if mainConditionValue > 0.5:
             message += " _ vhf_najlepsze_warunki_w_kierunku "
             message += " ".join(
                 self.getTopDirectionsValues(directionalConditionsValues)
             )
-
-        return message
+        
+        return None
 
     def get_data(self):
         self.__logger.info("::: Pobieranie kodu html...")
@@ -238,14 +245,20 @@ class VhfTropoSq9atk(SR0WXModule):
         self.__logger.info("::: Przetwarzanie warunków kierunkowych...")
         directionalConditionsValues = self.getDirectionalConditions(mapImg, x, y)
         self.__logger.info("::: Przygotowywanie komunikatu...")
+        pMessage = self.prepareMessage(mainConditionValue, directionalConditionsValues)
+        if pMessage == None:
+            return (
+                {
+                    "message": None,
+                    "source": ""
+                }
+            )
         message = " ".join(
             [
                 "vhf_propagacja_w_pasmie_vhf _ ",
                 "   ".join(
                     [
-                        self.prepareMessage(
-                            mainConditionValue, directionalConditionsValues
-                        )
+                        pMessage
                     ]
                 ),
             ]

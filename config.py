@@ -71,8 +71,8 @@ if os.path.exists(".env"):
     openweather_key = os.getenv("OPENWEATHER_KEY")
     meteostation_ip = os.getenv("METEOSTATION_IP").split(",")
     map_call = os.getenv("MAP_CALL")
-    map_lat = os.getenv("MAP_LAT")
-    map_lon = os.getenv("MAP_LON")
+    lat = os.getenv("LAT") # Global LAT
+    lon = os.getenv("LON")  # Global LON
     map_info = os.getenv("MAP_INFO")
 else:
     raise FileNotFoundError("No .env file present.")
@@ -161,8 +161,8 @@ from activity_map import ActivityMap
 activitymap = ActivityMap(
     service_url="http://wx.vhf.com.pl/map_requests?base=",
     callsign=map_call,
-    latitude=map_lat,
-    longitude=map_lon,
+    latitude=lat,
+    longitude=lon,
     hour_quarter=10,
     above_sea_level=35,
     above_ground_level=20,
@@ -179,8 +179,8 @@ from openweather_sq9atk import OpenWeatherSq9atk
 openweathersq9atk = OpenWeatherSq9atk(
     language=lang,
     api_key=openweather_key,
-    lat=54.5238,
-    lon=18.5135,
+    lat=lat,
+    lon=lon,
     service_url="http://api.openweathermap.org/data/2.5/",
     current=True,
     saytime=False,
@@ -225,8 +225,8 @@ airlysq9atk = AirlySq9atk(
     api_key=airly_key,
     service_url="https://airapi.airly.eu/v2/measurements",  # location
     mode="nearest",  # point|nearest|installationId
-    lat=54.523833,
-    lon=18.5135,
+    lat=lat,
+    lon=lon,
     maxDistanceKM=5,
     installationId=3476,  # Gdynia
 )
@@ -329,8 +329,10 @@ from vhf_tropo_sq9atk import VhfTropoSq9atk
 vhftroposq9atk = VhfTropoSq9atk(
     language=lang,
     service_url="https://www.dxinfocentre.com/tropo_eur.html",
-    qthLon=18.5135,
-    qthLat=54.523833,
+    qthLon=lon,
+    qthLat=lat,
+    onlyAlerts=True
+
 )
 # ---------------
 # calendar_sq9atk
@@ -364,11 +366,11 @@ calendarsq9atk = CalendarSq9atk(
 from calendar_sq2ips import CalendarSq2ips
 calendarsq2ips = CalendarSq2ips(
     language=lang,
-    lat=54.523833,
-    lon=18.5135,
+    lat=lat,
+    lon=lon,
     ele=15,
-    pre=1010,
-    temp=20,
+    pre=1013,
+    temp=10,
     hori=0,
 )
 
@@ -441,7 +443,8 @@ meteoyrsq2ips = MeteoYrSq2ips(
 # ---------------
 from kse_sq2ips import KseSq2ips
 ksesq2ips = KseSq2ips(
-    language=lang, service_url="https://www.pse.pl/transmissionMapService"
+    language=lang,
+    service_url="https://www.pse.pl/transmissionMapService"
 )
 
 # ---------------
