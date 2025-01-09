@@ -332,7 +332,6 @@ vhftroposq9atk = VhfTropoSq9atk(
     qthLon=lon,
     qthLat=lat,
     onlyAlerts=True
-
 )
 # ---------------
 # calendar_sq9atk
