@@ -167,8 +167,9 @@ class ImgwPodestSq2ips(SR0WXModule):
             )
 
         if (
-            None not in [station[x] for x in self.__codes_diff.values()]
-            and self.__read_diff_level
+            self.__read_diff_level
+            and None not in [station[x] for x in self.__codes_diff.values()]
+            and int(station[self.__codes_diff[station["statusCode"]]]) != 0
         ):
             msg += " przekroczenie_o "
             msg += self.__language.read_number(
