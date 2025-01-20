@@ -117,9 +117,9 @@ class PLGoogle(SR0WXLanguage):
         return retval
 
     @remove_accents
-    def read_gust(self, f):
-        f = str(f)
+    def read_number_higher_degree(self, f):
         d = {
+            "0": "zera",
             "1": "jeden",
             "2": "dwoch",
             "3": "trzech",
@@ -157,42 +157,57 @@ class PLGoogle(SR0WXLanguage):
             "800": "osmiuset",
             "900": "dziewieciuset",
         }
+        text = ""
+        if int(f)<0:
+            f = abs(f)
+            text+="minus "
+        f = str(f)
         if len(f) == 1:
             if f == "1":
-                return "jednego kilometra_na_godzine"
+                text += "jednego"
             else:
-                return d[f] + " kilometrow_na_godzine"
+                text += d[f]
         elif len(f) == 2:
             if f[1] == "0" or f[0] == "1":
-                return d[f] + " kilometrow_na_godzine"
+                text += d[f]
             else:
-                return d[f[0] + "0"] + " " + d[f[1]] + " kilometrow_na_godzine"
+                text += d[f[0] + "0"] + " " + d[f[1]]
         elif len(f) == 3:
             if f[1] == "0" and f[2] == "0":
-                return d[f] + " kilometrow_na_godzine"
+                text += d[f]
             else:
                 if f[2] != "0":
                     if f[1] == "0":
-                        return d[f[0] + "00"] + " " + d[f[2]] + " kilometrow_na_godzine"
+                        text += d[f[0] + "00"] + " " + d[f[2]]
                     else:
-                        return (
+                        text += (
                             d[f[0] + "00"]
                             + " "
                             + d[f[1] + "0"]
                             + " "
                             + d[f[2]]
-                            + " kilometrow_na_godzine"
                         )
                 else:
                     if f[1] == "0":
-                        return d[f[0] + "00"] + " kilometrow_na_godzine"
+                        text += d[f[0] + "00"]
                     else:
-                        return (
+                        text += (
                             d[f[0] + "00"]
                             + " "
                             + d[f[1] + "0"]
-                            + " kilometrow_na_godzine"
                         )
+        return text
+
+    def read_higher_degree(self, f, units):
+        text = self.read_number_higher_degree(f)
+        unit = None
+        if abs(f) == 1:
+            unit = units[0]
+        else:
+            unit = units[1]
+        return " ".join(text.split() + [ra(unit)])
+    
+    read_gust = lambda self, n: read_higher_degree(n, [_(u("kilometra na godzinę")), _(u("kilometrów na godzinę"))])
 
     @remove_accents
     def read_pressure(self, value):
@@ -585,3 +600,4 @@ read_validity_hour = pl.read_validity_hour
 read_datetime = pl.read_datetime
 read_callsign = pl.read_callsign
 read_power = pl.read_power
+read_higher_degree = pl.read_higher_degree

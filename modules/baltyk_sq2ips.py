@@ -153,7 +153,19 @@ class BaltykSq2ips(SR0WXModule):
             "śnieg z deszczem",
             "burzowe porywy wiatru",
             "z przewagą",
+            "z sektora"
         ]
+
+        # wymowa temperatury
+        text = text.split()
+        for i, t in enumerate(text):
+            if "°C" in t:
+                t = t.replace("°C", "")
+                if text[i-1] in ["od", "do"]:
+                    text[i] = self.__language.read_higher_degree(int(t), ["stopnia_Celsjusza", "stopni_Celsjusza"])
+                else:
+                    text[i] = self.__language.read_temperature(int(t))
+        text = " ".join(text)
 
         for i in frazy:
             try:
