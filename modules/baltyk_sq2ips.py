@@ -161,10 +161,15 @@ class BaltykSq2ips(SR0WXModule):
         for i, t in enumerate(text):
             if "°C" in t:
                 t = t.replace("°C", "")
-                if text[i-1] in ["od", "do"]:
-                    text[i] = self.__language.read_higher_degree(int(t), ["stopnia_Celsjusza", "stopni_Celsjusza"])
+                t = t.replace(".", "")
+                t = t.replace(",", "")
+                if t.isdigit():
+                    if text[i-1] in ["od", "do"]:
+                        text[i] = self.__language.read_higher_degree(int(t), ["stopnia_Celsjusza", "stopni_Celsjusza"])
+                    else:
+                        text[i] = self.__language.read_temperature(int(t))
                 else:
-                    text[i] = self.__language.read_temperature(int(t))
+                    self.__logger.warning(f"Unable to convert temperature: \'{t}\' is not a number, skipping...")
         text = " ".join(text)
 
         for i in frazy:
