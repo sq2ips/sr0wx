@@ -163,7 +163,7 @@ class BaltykSq2ips(SR0WXModule):
                 t = t.replace("°C", "")
                 t = t.replace(".", "")
                 t = t.replace(",", "")
-                if t.startswith('-') and t[1:].isdigit():
+                if t.startswith('-') and t[1:].isdigit() or t.isdigit():
                     if text[i-1] in ["od", "do"]:
                         text[i] = self.__language.read_higher_degree(int(t), ["stopnia_Celsjusza", "stopni_Celsjusza"])
                     else:
