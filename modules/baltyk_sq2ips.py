@@ -142,6 +142,7 @@ class BaltykSq2ips(SR0WXModule):
             "ryzyko oblodzenia statków",
             "przelotne opady deszczu",
             "przelotne opady",
+            "opady deszczu",
             "temperatura powietrza",
             "w cyrkulacji",
             "z kierunków",
