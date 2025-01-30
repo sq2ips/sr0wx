@@ -30,7 +30,7 @@ class MeteoSq9atk(SR0WXModule):
 
     def parseForecastDesc(self, html):
         match = html.find_all("div", {"class": "forecastDesc"})[0].text
-        return self.__language.rmv_pl_chars(
+        return self.__language.trim_pl(
             match.strip().replace(" ", "_").replace(",", "_")
         )
 
