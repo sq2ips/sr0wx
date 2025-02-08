@@ -65,21 +65,20 @@ dict_log_config = {
 # dane z pliku .env
 if os.path.exists(".env"):
     load_dotenv()
-    #hello_msg = os.getenv("HELLO_MSG").split(",")
-    #goodbye_msg = os.getenv("GOODBYE_MSG").split(",")
     airly_key = os.getenv("AIRLY_KEY")
     openweather_key = os.getenv("OPENWEATHER_KEY")
     meteostation_ip = os.getenv("METEOSTATION_IP").split(",")
-    map_call = os.getenv("MAP_CALL")
-    lat = os.getenv("LAT") # Global LAT
-    lon = os.getenv("LON")  # Global LON
-    map_info = os.getenv("MAP_INFO")
 else:
     raise FileNotFoundError("No .env file present.")
 
 #####################
 
 # KONFIGURACJA OGÓLNA
+
+# POZYCJA
+# centrum Gdyni
+lat = 54.508519
+lon = 18.540870
 
 # CTCSS
 ctcss_tone = None
@@ -160,14 +159,14 @@ sys.path.append("modules/")
 from activity_map import ActivityMap
 activitymap = ActivityMap(
     service_url="http://wx.vhf.com.pl/map_requests?base=",
-    callsign=map_call,
+    callsign="TEST",
     latitude=lat,
     longitude=lon,
     hour_quarter=10,
     above_sea_level=35,
     above_ground_level=20,
     station_range=25,
-    additional_info=map_info,
+    additional_info="test",
 )
 
 # ---------------
@@ -464,7 +463,7 @@ timesq2ips = TimeSq2ips(
 
 # WŁĄCZONE MODUŁY
 modules = [
-    activitymap,            # marker na mapie wx.vhf.com.pl
+#    activitymap,            # marker na mapie wx.vhf.com.pl
     timesq2ips,             # godzina
     meteoalertsq2ips,       # ostrzeżenia meteorologiczne IMGW
     # antistormsq2ips,      # radar pogodowy

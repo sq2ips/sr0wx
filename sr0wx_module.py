@@ -50,7 +50,7 @@ class SR0WXModule:
                 logger.info("::: Requesting data from address: " + url)
                 data = requests.get(url, timeout=timeout, headers=headers)
                 if not data.ok:
-                    raise Exception("::: Got wrong response")
+                    raise Exception(f"::: Got not OK response: {data.text}")
                 else:
                     break
             except Exception as e:

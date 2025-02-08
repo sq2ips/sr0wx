@@ -4,7 +4,6 @@
 # Main config file for sr0wx.py
 
 # biblioteki
-from dotenv import load_dotenv
 import os
 import logging
 import logging.handlers
@@ -62,21 +61,13 @@ dict_log_config = {
     },
 }
 
-# dane z pliku .env
-if os.path.exists(".env"):
-    load_dotenv()
-    #hello_msg = os.getenv("HELLO_MSG_BALTYK").split(",")
-    #goodbye_msg = os.getenv("GOODBYE_MSG_BALTYK").split(",")
-    map_call = os.getenv("MAP_CALL")
-    map_lat = os.getenv("MAP_LAT")
-    map_lon = os.getenv("MAP_LON")
-    map_info_baltyk = os.getenv("MAP_INFO_BALTYK")
-else:
-    raise FileNotFoundError("No .env file present.")
-
 #####################
 
 # KONFIGURACJA OGÓLNA
+
+# POZYCJA
+lat = 00.000000
+lon = 00.000000
 
 # CTCSS
 ctcss_tone = None
@@ -148,14 +139,14 @@ from activity_map import ActivityMap
 
 activitymap = ActivityMap(
     service_url="http://wx.vhf.com.pl/map_requests?base=",
-    callsign=map_call,
-    latitude=map_lat,
-    longitude=map_lon,
+    callsign="TEST",
+    latitude=lat,
+    longitude=lon,
     hour_quarter=10,
     above_sea_level=35,
     above_ground_level=20,
     station_range=25,
-    additional_info=map_info_baltyk,
+    additional_info="test",
 )
 
 # ---------------
