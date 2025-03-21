@@ -425,6 +425,17 @@ meteostationsq2ips = MeteoStationSq2ips(
 )
 
 # ---------------
+# metar_sq2ips
+# ---------------
+from metar_sq2ips import MetarSq2ips
+metarsq2ips = MetarSq2ips(
+    language = lang,
+    service_url = "https://awiacja.imgw.pl",
+    service_urns = [f"metar00.php", f"metar30.php", f"metarmil.php"],
+    airport = 'EPGD'
+)
+
+# ---------------
 # meteo_yr_sq2ips
 # ---------------
 from meteo_yr_sq2ips import MeteoYrSq2ips
@@ -468,6 +479,7 @@ modules = [
     meteoalertsq2ips,       # ostrzeżenia meteorologiczne IMGW
     # antistormsq2ips,      # radar pogodowy
     # meteostationsq2ips,   # dane ze stacji meteo
+    # metarsq2ips,          # pogoda z METAR
     # meteoyrsq2ips,        # pogoda z yr
     openweathersq9atk,      # pogoda openweathermap
     # meteosq9atk,          # pogoda alternatywa
@@ -499,6 +511,7 @@ modules_all = [
     meteoalertsq2ips,           # ostrzeżenia meteorologiczne IMGW
     antistormsq2ips,            # radar pogodowy
     meteostationsq2ips,         # dane ze stacji meteo
+    metarsq2ips,                 # pogoda z METAR
     meteoyrsq2ips,              # pogoda z yr
     openweathersq9atk,          # pogoda openweathermap
     meteosq9atk,                # pogoda alternatywa
