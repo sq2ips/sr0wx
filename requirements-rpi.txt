@@ -20,4 +20,4 @@ soupsieve>=2.6
 tqdm>=4.66.5
 urllib3>=2.2.2
 pause>=0.3
-RPi.GPIO>=20.7.0
+RPi.GPIO>=0.7.0
