@@ -4,6 +4,8 @@ from sr0wx_module import SR0WXModule
 
 from datetime import datetime, timedelta
 
+from wind_utils import wind_direction_name
+
 
 class MeteoYrSq2ips(SR0WXModule):
     """Klasa pobierająca informacje o pogodzie z yr.no"""
@@ -43,28 +45,6 @@ class MeteoYrSq2ips(SR0WXModule):
         forecast = self.requestData(url_forecast, self.__logger, 10, 3)
         return (current.json(), forecast.json())
 
-    def getWind(self, angle):
-        msg = ""
-        if 0 <= angle <= 23:
-            msg += "polnocny"
-        elif 23 < angle <= 67:
-            msg += "polnocno wschodni"
-        elif 67 < angle <= 112:
-            msg += "wschodni"
-        elif 112 < angle <= 157:
-            msg += "poludniowo wschodni"
-        elif 157 < angle <= 202:
-            msg += "poludniowy"
-        elif 202 < angle <= 247:
-            msg += "poludniowo zachodni"
-        elif 247 < angle <= 292:
-            msg += "zachodni"
-        elif 292 < angle <= 337:
-            msg += "polnocno zachodni"
-        elif 337 < angle <= 360:
-            msg += "polnocny"
-        return msg
-
     def getCurrent(self, data):
         msg = ""
 
@@ -97,7 +77,7 @@ class MeteoYrSq2ips(SR0WXModule):
             msg += " ".join(
                 [
                     " wiatr",
-                    self.getWind(wind_dir),
+                    wind_direction_name(wind_dir),
                     self.__language.read_number(wind_speed),
                 ]
             )
@@ -106,7 +86,7 @@ class MeteoYrSq2ips(SR0WXModule):
             msg += " ".join(
                 [
                     " wiatr",
-                    self.getWind(wind_dir),
+                    wind_direction_name(wind_dir),
                     self.__language.read_speed(wind_speed, "kmph")
                 ]
             )
@@ -165,7 +145,7 @@ class MeteoYrSq2ips(SR0WXModule):
             msg += " ".join(
                 [
                     " wiatr",
-                    self.getWind(wind_dir),
+                    wind_direction_name(wind_dir),
                     self.__language.read_number(wind_speed),
                 ]
             )
@@ -174,7 +154,7 @@ class MeteoYrSq2ips(SR0WXModule):
             msg += " ".join(
                 [
                     " wiatr",
-                    self.getWind(wind_dir),
+                    wind_direction_name(wind_dir),
                     self.__language.read_speed(wind_speed),
                     "kmph",
                 ]

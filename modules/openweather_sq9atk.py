@@ -3,6 +3,8 @@ from datetime import datetime
 
 from sr0wx_module import SR0WXModule
 
+from wind_utils import wind_direction_name
+
 
 class OpenWeatherSq9atk(SR0WXModule):
     """Klasa pobierająca dane o pogodzie z openweathermap"""
@@ -118,25 +120,8 @@ class OpenWeatherSq9atk(SR0WXModule):
         msg = ""
         if "deg" in json:
             msg += " _ wiatr "
-            if 0 < json["deg"] <= 23:
-                msg += " polnocny "
-            elif 23 < json["deg"] <= 67:
-                msg += " polnocno wschodni "
-            elif 67 < json["deg"] <= 112:
-                msg += " wschodni "
-            elif 112 < json["deg"] <= 157:
-                msg += " poludniowo wschodni "
-            elif 157 <= json["deg"] <= 202:
-                msg += " poludniowy "
-            elif 202 < json["deg"] <= 247:
-                msg += " poludniowo zachodni "
-            elif 247 < json["deg"] <= 292:
-                msg += " zachodni "
-            elif 292 < json["deg"] <= 337:
-                msg += " polnocno zachodni "
-            elif 337 < json["deg"] <= 360:
-                msg += " polnocny "
-            # msg += self.__language.read_degrees( int(json['deg']) )
+            msg += wind_direction_name(json["deg"])
+            msg += " "
 
         wind_speed = round(json["speed"] / 1000 * 3600)
         wind_gust = None
