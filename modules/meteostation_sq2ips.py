@@ -5,6 +5,8 @@ from sr0wx_module import SR0WXModule
 
 import logging
 
+from wind_utils import wind_direction_name
+
 
 class MeteoStationSq2ips(SR0WXModule):
     """Moduł pobierający dane o pogodzie ze stacji przez UDP"""
@@ -124,24 +126,6 @@ class MeteoStationSq2ips(SR0WXModule):
             self.__logger.info(f"Using station {self.__ip[prefered_index]}")
             return dataf[prefered_index]
 
-    def angleProcess(self, ang):
-        if ang >= 337.5 or ang < 22.5:
-            return "polnocny"
-        elif ang >= 22.5 and ang < 67.5:
-            return "po_l_nocno wschodni"
-        elif ang >= 67.5 and ang < 112.5:
-            return "wschodni"
-        elif ang >= 112.5 and ang < 157.5:
-            return "pol_udniowo wschodni"
-        elif ang >= 157.5 and ang < 202.5:
-            return "poludniowy"
-        elif ang >= 202.5 and ang < 247.5:
-            return "pol_udniowo zachodni"
-        elif ang >= 247.5 and ang < 292.5:
-            return "zachodni"
-        elif ang >= 292.5 and ang < 337.5:
-            return "po_l_nocno zachodni"
-
     def get_data(self):
         data = self.compare()
         message = "aktualny_stan_pogody _ "
@@ -159,9 +143,9 @@ class MeteoStationSq2ips(SR0WXModule):
             message += " brak_wiatru "
         else:
             if data[6] > 0.7:
-                message += f"wiatr {self.angleProcess(data[2])} "
+                message += f"wiatr {wind_direction_name(data[2])} "
             else:
-                message += f"wiatr zmienny {self.angleProcess(data[2])} "
+                message += f"wiatr zmienny {wind_direction_name(data[2])} "
             if data[4] - data[3] > 2.0:
                 message += (
                     self.__language.read_speed(
