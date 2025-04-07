@@ -10,8 +10,7 @@ USER sr0wx
 
 WORKDIR /home/sr0wx
 
-RUN mkdir ./sr0wx/ && \
-    mkdir -p ./logs/pogoda
+RUN mkdir ./sr0wx
 
 WORKDIR /home/sr0wx/sr0wx
 

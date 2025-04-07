@@ -10,3 +10,5 @@ audio_generator/mp3
 .env
 sr0wx.wav
 wxenv
+
+logs/*.log
