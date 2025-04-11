@@ -4,8 +4,6 @@ from sr0wx_module import SR0WXModule
 
 from datetime import datetime, timedelta
 
-from wind_utils import wind_direction_name
-
 
 class MeteoYrSq2ips(SR0WXModule):
     """Klasa pobierająca informacje o pogodzie z yr.no"""
@@ -36,7 +34,7 @@ class MeteoYrSq2ips(SR0WXModule):
 
     def downloadData(self, service_url, id):
         links_url = "/".join([service_url, "api/v0/locations", id])
-        links = self.requestData(links_url, self.__logger, 10, 3)
+        links = self.requestData(links_url, self.__logger)
         links_data = links.json()["_links"]
 
         url_current = "".join([service_url, links_data["currenthour"]["href"]])
@@ -77,7 +75,7 @@ class MeteoYrSq2ips(SR0WXModule):
             msg += " ".join(
                 [
                     " wiatr",
-                    wind_direction_name(wind_dir),
+                    self.wind_direction_name(wind_dir),
                     self.__language.read_number(wind_speed),
                 ]
             )
@@ -86,7 +84,7 @@ class MeteoYrSq2ips(SR0WXModule):
             msg += " ".join(
                 [
                     " wiatr",
-                    wind_direction_name(wind_dir),
+                    self.wind_direction_name(wind_dir),
                     self.__language.read_speed(wind_speed, "kmph")
                 ]
             )

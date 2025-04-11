@@ -3,9 +3,6 @@ from datetime import datetime
 
 from sr0wx_module import SR0WXModule
 
-from wind_utils import wind_direction_name
-
-
 class OpenWeatherSq9atk(SR0WXModule):
     """Klasa pobierająca dane o pogodzie z openweathermap"""
 
@@ -80,7 +77,7 @@ class OpenWeatherSq9atk(SR0WXModule):
         }
 
     def downloadFile(self, url):
-        data = self.requestData(url, self.__logger, 10, 3)
+        data = self.requestData(url, self.__logger)
         return data.json()
 
     def getHour(self):
@@ -120,7 +117,7 @@ class OpenWeatherSq9atk(SR0WXModule):
         msg = ""
         if "deg" in json:
             msg += " _ wiatr "
-            msg += wind_direction_name(json["deg"])
+            msg += self.wind_direction_name(json["deg"])
             msg += " "
 
         wind_speed = round(json["speed"] / 1000 * 3600)

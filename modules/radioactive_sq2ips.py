@@ -17,7 +17,7 @@ class RadioactiveSq2ips(SR0WXModule):
     def request(self, url, id):
         self.__logger.info("::: Pobieranie danych...")
 
-        data = self.requestData(url, self.__logger, 20, 3).json()
+        data = self.requestData(url, self.__logger, timeout=20).json()
 
         dataw = ""
         try:

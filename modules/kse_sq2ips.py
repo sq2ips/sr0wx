@@ -13,7 +13,7 @@ class KseSq2ips(SR0WXModule):
 
     def get_data(self):
         self.__logger.info("::: Pobieranie danych stanu sieci energetycznej...")
-        data = self.requestData(self.__service_url, self.__logger, 15, 3).json()[
+        data = self.requestData(self.__service_url, self.__logger).json()[
             "data"
         ]
         self.__logger.info("::: Przetwarzanie dancyh...")

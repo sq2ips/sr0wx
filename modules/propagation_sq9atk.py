@@ -33,12 +33,6 @@ class PropagationSq9atk(SR0WXModule):
     def rgb2hex(self, rgb):
         return "#%02x%02x%02x" % rgb
 
-    def downloadImage(self, url):
-        self.__logger.info("::: Odpytuję adres: " + url)
-        webFile = urllib.request.URLopener()
-        webFile.retrieve(url, "cache/propagacja.png")
-        return Image.open("cache/propagacja.png", "r")
-
     def collectBandConditionsFromImage(self, image, dayTime):
         try:
             imageData = image.load()
@@ -74,7 +68,7 @@ class PropagationSq9atk(SR0WXModule):
             return list()
 
     def get_data(self):
-        image = self.downloadImage(self.__service_url)
+        image = self.requestData(self.__service_url, self.__logger)
         self.__logger.info("::: Przetwarzam dane...")
         message = " ".join(
             [

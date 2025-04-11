@@ -21,7 +21,7 @@ class AirPollutionSq9atk(SR0WXModule):
         self.__index_url = "aqindex/getIndex/"
 
     def getJson(self, url):
-        data = self.requestData(url, self.__logger, 10, 3)
+        data = self.requestData(url, self.__logger)
         return data.json()
 
     def getStationName(self):

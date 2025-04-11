@@ -203,23 +203,24 @@ class VhfTropoSq9atk(SR0WXModule):
     def prepareMessage(self, mainConditionValue, directionalConditionsValues):
         message = "vhf_brak_szans_na_lacznosc_troposferyczna"
 
-        if mainConditionValue > 3:
+        if mainConditionValue > 0.3:
             message = " vhf_uwaga vhf_warunki_podwyzszone _ "
         elif self.__onlyAlerts:
+            self.__logger.warning("Flaga onlyAlerts aktywna, brak podwyższonych warunków, pomijanie komunikatu.")
             return None
 
-        if mainConditionValue > 0.3:
-            message = "vhf_minimalne_szanse_na_lacznosc_troposferyczna"
-        elif mainConditionValue > 0.5:
-            message = "vhf_niewielkie_szanse_na_lacznosc_troposferyczna"
-        elif mainConditionValue > 1:
-            message = "vhf_spore_szanse_na_lacznosc_troposferyczna"
-        elif mainConditionValue > 2:
-            message = "vhf_duze_szanse_na_lacznosc_troposferyczna"
+        if mainConditionValue > 8:
+            message = "vhf_wyjatkowo_duze_szanse_na_lacznosc_troposferyczna"
         elif mainConditionValue > 5:
             message = "vhf_bardzo_duze_szanse_na_lacznosc_troposferyczna"
-        elif mainConditionValue > 8:
-            message = "vhf_wyjatkowo_duze_szanse_na_lacznosc_troposferyczna"
+        elif mainConditionValue > 2:
+            message = "vhf_duze_szanse_na_lacznosc_troposferyczna"
+        elif mainConditionValue > 1:
+            message = "vhf_spore_szanse_na_lacznosc_troposferyczna"
+        elif mainConditionValue > 0.5:
+            message = "vhf_niewielkie_szanse_na_lacznosc_troposferyczna"
+        elif mainConditionValue > 0.3:
+            message = "vhf_minimalne_szanse_na_lacznosc_troposferyczna"
         
 
         if mainConditionValue > 0.5:
@@ -227,8 +228,7 @@ class VhfTropoSq9atk(SR0WXModule):
             message += " ".join(
                 self.getTopDirectionsValues(directionalConditionsValues)
             )
-        
-        return None
+        return message
 
     def get_data(self):
         self.__logger.info("::: Pobieranie kodu html...")

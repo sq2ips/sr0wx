@@ -198,11 +198,11 @@ class MeteoAlertSq2ips(SR0WXModule):
         url_alerts = self.__service_url + "osmet/latest/osmet-teryt?lc="
         url_alerts_hydro = self.__service_url + "warnhydro/latest/warn"
         self.__logger.info("::: Pobieranie dane o ostrzeżeniach...")
-        komets = self.requestData(url_komets, self.__logger, 10, 3).json()
-        alerts = self.requestData(url_alerts, self.__logger, 10, 3).json()
-        alerts_hydro = self.requestData(
-            url_alerts_hydro, self.__logger, 10, 3
-        ).json()
+
+        komets = self.requestData(url_komets, self.__logger).json()
+        alerts = self.requestData(url_alerts, self.__logger).json()
+        alerts_hydro = self.requestData(url_alerts_hydro, self.__logger).json()
+        
         self.__logger.info("::: Przetważanie danych...")
         self.__logger.info(
             f"id meteo: {self.__city_id}, hydronames: {self.__hydronames}"

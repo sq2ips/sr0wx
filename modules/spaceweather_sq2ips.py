@@ -18,7 +18,7 @@ class SpaceWeatherSq2ips(SR0WXModule):
         self.__logger = logging.getLogger(__name__)
 
     def DownloadData(self, url):
-        data = self.requestData(url, self.__logger, 10, 3)
+        data = self.requestData(url, self.__logger)
         return data.json()
 
     def ProcessG(self, data):

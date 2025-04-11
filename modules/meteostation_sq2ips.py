@@ -5,9 +5,6 @@ from sr0wx_module import SR0WXModule
 
 import logging
 
-from wind_utils import wind_direction_name
-
-
 class MeteoStationSq2ips(SR0WXModule):
     """Moduł pobierający dane o pogodzie ze stacji przez UDP"""
 
@@ -143,9 +140,9 @@ class MeteoStationSq2ips(SR0WXModule):
             message += " brak_wiatru "
         else:
             if data[6] > 0.7:
-                message += f"wiatr {wind_direction_name(data[2])} "
+                message += f"wiatr {self.wind_direction_name(data[2])} "
             else:
-                message += f"wiatr zmienny {wind_direction_name(data[2])} "
+                message += f"wiatr zmienny {self.wind_direction_name(data[2])} "
             if data[4] - data[3] > 2.0:
                 message += (
                     self.__language.read_speed(

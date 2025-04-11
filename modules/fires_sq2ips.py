@@ -65,7 +65,7 @@ class FiresSq2ips(SR0WXModule):
 
     def get_data(self):
         self.__logger.info("::: Pobieranie danych o zagrożeniu pożarowym lasów...")
-        html = self.requestData(self.__service_url, self.__logger, 20, 3).text
+        html = self.requestData(self.__service_url, self.__logger, timeout=20).text
         self.__logger.info("::: Przetwarzanie danych...")
         soup = BeautifulSoup(html, "html.parser")
         table = soup.find_all("table")[0]

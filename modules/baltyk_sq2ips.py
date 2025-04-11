@@ -40,7 +40,7 @@ class BaltykSq2ips(SR0WXModule):
         return text
 
     def request(self, url):
-        r = self.requestData(url, self.__logger, 15, 3)
+        r = self.requestData(url, self.__logger)
         r.encoding = r.apparent_encoding  # kodowanie polskich znaków
         data = r.json()
         return data

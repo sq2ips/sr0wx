@@ -191,7 +191,7 @@ class ImgwPodestSq2ips(SR0WXModule):
 
     def get_data(self):
         # pobieranie wszystkich danych
-        data = self.requestData(self.__service_url, self.__logger, 15, 3).json()
+        data = self.requestData(self.__service_url, self.__logger, timeout=15).json()
         self.__logger.info("::: Przetwarzanie danych...")
 
         # konwersja na dict

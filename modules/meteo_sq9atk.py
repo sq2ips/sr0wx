@@ -19,7 +19,7 @@ class MeteoSq9atk(SR0WXModule):
         self.__logger = logging.getLogger(__name__)
 
     def downloadFile(self, url):
-        data = self.requestData(url, self.__logger, 10, 3)
+        data = self.requestData(url, self.__logger)
         return data.text
 
     def getHour(self):

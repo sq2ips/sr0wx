@@ -44,7 +44,7 @@ class AntistormSq2ips(SR0WXModule):
     def get_data(self):
         self.__logger.info("::: Pobieranie danych radaru pogodowego...")
         url = "".join([self.__service_url, "?id=", self.__city_id])
-        data = self.requestData(url, self.__logger, 15, 3)
+        data = self.requestData(url, self.__logger)
         self.__logger.info("::: Przetwarzanie danych...")
         data = self.checkData(data)
         data_dict = self.parseData(data)

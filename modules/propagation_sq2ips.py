@@ -4,7 +4,6 @@ import logging
 
 from sr0wx_module import SR0WXModule
 
-
 class PropagationSq2ips(SR0WXModule):
     """Klasa pobierająca informacje o propagacji z hamqsl.org"""
 
@@ -15,7 +14,7 @@ class PropagationSq2ips(SR0WXModule):
         self.__logger = logging.getLogger(__name__)
 
     def DownloadData(self, url):
-        data = self.requestData(url, self.__logger, 10, 3)
+        data = self.requestData(url, self.__logger)
 
         root = ElementTree.fromstring(data.content)
         if root.tag == "solar".encode:
