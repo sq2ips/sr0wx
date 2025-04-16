@@ -430,9 +430,8 @@ meteostationsq2ips = MeteoStationSq2ips(
 from metar_sq2ips import MetarSq2ips
 metarsq2ips = MetarSq2ips(
     language = lang,
-    service_url = "https://awiacja.imgw.pl",
-    service_urns = [f"metar00.php", f"metar30.php", f"metarmil.php"],
-    airport = 'EPGD'
+    service_url = "https://aviation-api.imgw.pl/data/last?params=metar&format=json&count=1",
+    airport = 'EPSC'
 )
 
 # ---------------
