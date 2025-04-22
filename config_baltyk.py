@@ -4,6 +4,7 @@
 # Main config file for sr0wx.py
 
 # biblioteki
+from dotenv import load_dotenv
 import os
 import logging
 import logging.handlers
@@ -61,13 +62,17 @@ dict_log_config = {
     },
 }
 
+# dane z pliku .env
+if os.path.exists(".env"):
+    load_dotenv()
+    latitude = float(os.getenv("LATITUDE"))
+    longitude = float(os.getenv("LONGITUDE"))
+else:
+    raise FileNotFoundError("No .env file present.")
+
 #####################
 
 # KONFIGURACJA OGÓLNA
-
-# POZYCJA
-lat = 00.000000
-lon = 00.000000
 
 # CTCSS
 ctcss_tone = None
@@ -140,8 +145,8 @@ from activity_map import ActivityMap
 activitymap = ActivityMap(
     service_url="http://wx.vhf.com.pl/map_requests?base=",
     callsign="TEST",
-    latitude=lat,
-    longitude=lon,
+    latitude=latitude,
+    longitude=longitude,
     hour_quarter=10,
     above_sea_level=35,
     above_ground_level=20,
