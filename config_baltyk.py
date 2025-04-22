@@ -65,8 +65,8 @@ dict_log_config = {
 # dane z pliku .env
 if os.path.exists(".env"):
     load_dotenv()
-    latitude = float(os.getenv("LATITUDE"))
-    longitude = float(os.getenv("LONGITUDE"))
+    LATITUDE = float(os.getenv("LATITUDE"))
+    LONGITUDE = float(os.getenv("LONGITUDE"))
 else:
     raise FileNotFoundError("No .env file present.")
 
@@ -145,8 +145,6 @@ from activity_map import ActivityMap
 activitymap = ActivityMap(
     service_url="http://wx.vhf.com.pl/map_requests?base=",
     callsign="TEST",
-    latitude=latitude,
-    longitude=longitude,
     hour_quarter=10,
     above_sea_level=35,
     above_ground_level=20,

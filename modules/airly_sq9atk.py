@@ -2,7 +2,7 @@ import logging
 from datetime import datetime
 
 from sr0wx_module import SR0WXModule
-
+from config import LATITUDE, LONGITUDE
 
 class AirlySq9atk(SR0WXModule):
     """Moduł pobierający dane o zanieszczyszczeniach powietrza"""
@@ -11,8 +11,6 @@ class AirlySq9atk(SR0WXModule):
         self,
         language,
         api_key,
-        lat,
-        lon,
         service_url,
         mode,
         maxDistanceKM,
@@ -20,8 +18,6 @@ class AirlySq9atk(SR0WXModule):
     ):
         self.__language = language
         self.__api_key = api_key
-        self.__lat = str(lat)
-        self.__lon = str(lon)
         self.__service_url = service_url
         self.__mode = mode
         self.__maxDistanceKM = str(maxDistanceKM)
@@ -80,12 +76,12 @@ class AirlySq9atk(SR0WXModule):
             "installationId": api_url
             + "installation?installationId="
             + self.__installationId,
-            "point": api_url + "point?lat=" + self.__lat + "&lng=" + self.__lon,
+            "point": api_url + "point?lat=" + str(LATITUDE) + "&lng=" + str(LONGITUDE),
             "nearest": api_url
             + "nearest?lat="
-            + self.__lat
+            + str(LATITUDE)
             + "&lng="
-            + self.__lon
+            + str(LONGITUDE)
             + "&maxDistanceKM="
             + self.__maxDistanceKM,
         }

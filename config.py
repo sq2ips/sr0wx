@@ -68,8 +68,8 @@ if os.path.exists(".env"):
     airly_key = os.getenv("AIRLY_KEY")
     openweather_key = os.getenv("OPENWEATHER_KEY")
     meteostation_ip = os.getenv("METEOSTATION_IP").split(",")
-    latitude = float(os.getenv("LATITUDE"))
-    longitude = float(os.getenv("LONGITUDE"))
+    LATITUDE = float(os.getenv("LATITUDE"))
+    LONGITUDE = float(os.getenv("LONGITUDE"))
 else:
     raise FileNotFoundError("No .env file present.")
 
@@ -157,8 +157,6 @@ from activity_map import ActivityMap
 activitymap = ActivityMap(
     service_url="http://wx.vhf.com.pl/map_requests?base=",
     callsign="TEST",
-    latitude=latitude,
-    longitude=longitude,
     hour_quarter=10,
     above_sea_level=35,
     above_ground_level=20,
@@ -175,8 +173,6 @@ from openweather_sq9atk import OpenWeatherSq9atk
 openweathersq9atk = OpenWeatherSq9atk(
     language=lang,
     api_key=openweather_key,
-    lat=latitude,
-    lon=longitude,
     service_url="http://api.openweathermap.org/data/2.5/",
     current=True,
     saytime=False,
@@ -221,8 +217,6 @@ airlysq9atk = AirlySq9atk(
     api_key=airly_key,
     service_url="https://airapi.airly.eu/v2/measurements",  # location
     mode="nearest",  # point|nearest|installationId
-    lat=latitude,
-    lon=longitude,
     maxDistanceKM=5,
     installationId=3476,  # Gdynia
 )
@@ -325,8 +319,6 @@ from vhf_tropo_sq9atk import VhfTropoSq9atk
 vhftroposq9atk = VhfTropoSq9atk(
     language=lang,
     service_url="https://www.dxinfocentre.com/tropo_eur.html",
-    qthLon=longitude,
-    qthLat=latitude,
     onlyAlerts=True
 )
 # ---------------
@@ -361,8 +353,6 @@ calendarsq9atk = CalendarSq9atk(
 from calendar_sq2ips import CalendarSq2ips
 calendarsq2ips = CalendarSq2ips(
     language=lang,
-    lat=latitude,
-    lon=longitude,
     ele=15,
     pre=1013,
     temp=10,
