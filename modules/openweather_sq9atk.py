@@ -2,16 +2,15 @@ import logging
 from datetime import datetime
 
 from sr0wx_module import SR0WXModule
+from config import LATITUDE, LONGITUDE
 
 class OpenWeatherSq9atk(SR0WXModule):
     """Klasa pobierająca dane o pogodzie z openweathermap"""
 
     def __init__(
-        self, language, api_key, lat, lon, service_url, current, saytime, start_message
+        self, language, api_key, service_url, current, saytime, start_message
     ):
         self.__service_url = service_url
-        self.__lat = lat
-        self.__lon = lon
         self.__api_key = api_key
         self.__current = current
         self.__saytime = saytime
@@ -145,9 +144,9 @@ class OpenWeatherSq9atk(SR0WXModule):
         weather_service_url = (
             self.__service_url
             + "weather?lat="
-            + str(self.__lat)
+            + str(LATITUDE)
             + "&lon="
-            + str(self.__lon)
+            + str(LONGITUDE)
             + "&units=metric&appid="
             + self.__api_key
         )
@@ -157,9 +156,9 @@ class OpenWeatherSq9atk(SR0WXModule):
         forecast_service_url = (
             self.__service_url
             + "forecast?lat="
-            + str(self.__lat)
+            + str(LATITUDE)
             + "&lon="
-            + str(self.__lon)
+            + str(LONGITUDE)
             + "&units=metric&appid="
             + self.__api_key
         )

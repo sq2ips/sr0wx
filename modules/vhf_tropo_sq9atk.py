@@ -4,21 +4,18 @@ import logging
 from PIL import Image
 
 from sr0wx_module import SR0WXModule
-
+from config import LATITUDE, LONGITUDE
 
 class VhfTropoSq9atk(SR0WXModule):
     """Moduł pobierający dane o propagacji troposferycznej"""
 
-    def __init__(self, language, service_url, qthLon, qthLat, onlyAlerts):
+    def __init__(self, language, service_url, onlyAlerts):
         self.__service_url = service_url
         self.__language = language
         self.__logger = logging.getLogger(__name__)
 
         self.__areaSize = 70
         self.__colorSampleScatter = 5
-
-        self.__qthLon = float(qthLon)
-        self.__qthLat = float(qthLat)
 
         self.__mapLonStart = float(-10)
         self.__mapLonEnd = float(40)
@@ -239,7 +236,7 @@ class VhfTropoSq9atk(SR0WXModule):
         self.downloadMapFile(mapUrl, "cache/vhf_map.png")
         mapImg = self.readMapImageFile("cache/vhf_map.png")
         mapWidth, mapHeight = mapImg.size
-        x, y = self.lonLatToMapXY(self.__qthLon, self.__qthLat, mapWidth, mapHeight)
+        x, y = self.lonLatToMapXY(LONGITUDE, LATITUDE, mapWidth, mapHeight)
         self.__logger.info("::: Przetwarzanie warunków lokalizacji...")
         mainConditionValue = self.getLocationCondition(mapImg, x, y)
         self.__logger.info("::: Przetwarzanie warunków kierunkowych...")
