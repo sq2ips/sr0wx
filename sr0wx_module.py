@@ -16,7 +16,9 @@
 
 import warnings
 
-import requests
+#import requests
+from curl_cffi import requests
+
 from colorcodes import *
 
 
@@ -43,7 +45,7 @@ class SR0WXModule:
         msg = "This method should be implemented in child class"
         raise NotImplementedError(msg)
 
-    def requestData(self, url, logger, timeout=15, repeat=3, headers={}):
+    def requestData(self, url, logger, timeout=15, repeat=3, headers={}, impersonate="chrome"):
         headers.update({'User-Agent': 'SR0WX/1.0'})
         for i in range(repeat):
             try:

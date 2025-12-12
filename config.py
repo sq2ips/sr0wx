@@ -285,11 +285,9 @@ radioactivesq9atk = RadioactiveSq9atk(
 from radioactive_sq2ips import RadioactiveSq2ips
 radioactivesq2ips = RadioactiveSq2ips(
     language=lang,
-    service_url="https://monitoring.paa.gov.pl/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=paa:kcad_siec_pms_moc_dawki_mapa&outputFormat=application/json",
+    service_url="https://monitoring.paa.gov.pl/_api/maps/MapLayer/15d20873-f8a7-8899-5d69-960cc9ebbbb6/DetailsTable/f5af6ec4-d759-3163-344e-cbf147d28e28/Data",
     sensor_id="d2e87d20-28e2-47ea-860d-98a4e98d8726",
-    service_url_sr="https://monitoring.paa.gov.pl/_api/maps/MapLayer/15d20873-f8a7-8899-5d69-960cc9ebbbb6/DetailsTable/f5af6ec4-d759-3163-344e-cbf147d28e28/Data/",
 )
-
 from fires_sq2ips import FiresSq2ips
 firessq2ips = FiresSq2ips(
     language=lang,
@@ -485,7 +483,7 @@ modules_all = [
     timesq2ips,                 # godzina
     meteoalertsq2ips,           # ostrzeżenia meteorologiczne IMGW
     antistormsq2ips,            # radar pogodowy
-    meteostationsq2ips,         # dane ze stacji meteo
+    #meteostationsq2ips,         # dane ze stacji meteo
     meteoyrsq2ips,              # pogoda z yr
     openweathersq9atk,          # pogoda openweathermap
     meteosq9atk,                # pogoda alternatywa

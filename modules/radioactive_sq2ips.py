@@ -3,58 +3,28 @@ from datetime import datetime, timedelta
 
 from sr0wx_module import SR0WXModule
 
+# https://monitoring.paa.gov.pl/_api/maps/MapLayer/15d20873-f8a7-8899-5d69-960cc9ebbbb6/DetailsTable/f5af6ec4-d759-3163-344e-cbf147d28e28/Data/d2e87d20-28e2-47ea-860d-98a4e98d8726?dateFrom=2025-11-12T00:00:00.000Z&dateTo=2025-12-12T00:00:00.000Z
+# https://monitoring.paa.gov.pl/_api/maps/MapLayer/15d20873-f8a7-8899-5d69-960cc9ebbbb6/DetailsTable/f5af6ec4-d759-3163-344e-cbf147d28e28/Data/d2e87d20-28e2-47ea-860d-98a4e98d8726?dateFrom=2025-12-12T00:00:00.000Z&dateTo=2025-12-12T00:00:00.000Z
 
 class RadioactiveSq2ips(SR0WXModule):
     """Klasa pobierająca dane o promieniowaniu z PAA"""
 
-    def __init__(self, language, service_url, sensor_id, service_url_sr):
+    def __init__(self, language, service_url, sensor_id):
         self.__service_url = service_url
         self.__sensor_id = sensor_id
-        self.__service_url_sr = service_url_sr
         self.__language = language
         self.__logger = logging.getLogger(__name__)
 
-    def request(self, url, id):
+    def request(self):
+        date = datetime.now().strftime("%Y-%m-%dT00:00:00.000Z")
+        url = f"{self.__service_url}/{self.__sensor_id}?dateFrom={date}&dateTo={date}"
         self.__logger.info("::: Pobieranie danych...")
-
-        data = self.requestData(url, self.__logger, timeout=20).json()
-
-        dataw = ""
-        try:
-            for i in range(0, len(data["features"])):
-                n = data["features"][i]["properties"]["id"]
-                if n.find(id) == False:
-                    dataw = data["features"][i]["properties"]
-                    break
-        except KeyError as e:
-            if str(e) == "'features'":
-                raise ValueError("Źródło zwraca puste dane.")
-            else:
-                raise KeyError(e)
-        if dataw == "":
-            raise KeyError("No sensor with id " + id)
-        return dataw
-
-    def request_sr(self, url):
-        start = datetime.now().strftime("%Y-%m-%dT00:00:01.000Z")
-        end = datetime.now().strftime("%Y-%m-%dT%H:%M:%S.000Z")
-        url = f"{url}{self.__sensor_id}?dateFrom={str(start)}&dateTo={str(end)}"
-        self.__logger.info("::: Pobieranie średnich danych...")
         data = self.requestData(url, self.__logger, 10, 3).json()
-        prs = 0
-        try:
-            for d in data:
-                prs += float(d["moc_dawki"])
-        except KeyError:
-            raise ValueError("Nieprawidłowa odpowiedź serwera")
-        if prs == 0:
-            self.__logger.warning("Nieprawidłowe dane!")
-            return None
-        else:
-            return prs / len(data)
+
+        return data
 
     def processData(self, data):
-        datediff = datetime.now() - datetime.strptime(data["tip_date"], "%Y-%m-%d %H:%M")
+        datediff = datetime.now() - datetime.strptime(data["date_end_str"], "%Y-%m-%d %H:%M")
 
         if datediff < timedelta(days=1):
             pass
@@ -62,14 +32,23 @@ class RadioactiveSq2ips(SR0WXModule):
             self.__logger.warning(f"Dane są nieaktualne o jeden dzień, różnica czasów wynosi {datediff}")
         else:
             raise ValueError(f"Dane są nieaktualne o więcej niż jeden dzień, różnica czasów wynosi {datediff}")
+        
+        val = round(float(data["moc_dawki"]), 2)
+        self.__logger.info(f"Wartość z czujnika, data: {str(datetime.strptime(data['date_end_str'], '%Y-%m-%d %H:%M'))}: {val}")
+        return val
+    
+    def processDataSr(self, data):
+        val_sr = 0
+        for reading in data:
+            val_sr+=round(float(reading["moc_dawki"]), 2)
+        val_sr/=len(data)
+        return(val_sr)
 
-        self.__logger.info(f"Wartość z czujnika {data['stacja']}, data: {str(datetime.strptime(data['tip_date'], '%Y-%m-%d %H:%M'))}: {data['tip_value']}")
-        return round(float(data["tip_value"][0:5]), 2)
 
     def get_data(self):
-        data = self.request(self.__service_url, self.__sensor_id)
-        value = self.processData(data)
-        value_sr = self.request_sr(self.__service_url_sr)
+        data = self.request()
+        value = self.processData(data[0])
+        value_sr = self.processDataSr(data)
         self.__logger.info("Wartość przetwożona: " + str(value))
         va = round(value * 100)
         curentValue = " ".join(
