@@ -222,31 +222,6 @@ airlysq9atk = AirlySq9atk(
 )
 
 # ---------------
-# air_pollution_sq9atk
-# ---------------
-from air_pollution_sq9atk import AirPollutionSq9atk
-airpollutionsq9atk = AirPollutionSq9atk(
-    language=lang,
-    service_url="http://api.gios.gov.pl/pjp-api/rest/",
-    station_id=732,
-    city_id=219,
-    # LISTA STACJI Z NUMERAMI Z CAŁEJ POLSKI
-    # http://api.gios.gov.pl/pjp-api/rest/station/findAll
-    # poniższe TYLKO DLA KRAKOWA!!!!!
-    # do station_id wpada co 20 minut inna cyfra z przedziału 0,1,2
-    # dzięki czemu za każdym razem wybieramy inną stację pomiarową
-    # station_id = 400 + (int(datetime.now().strftime('%M')))/20,
-    # 400 Kraków, Aleja Krasińskiego
-    # 401 Kraków, ul. Bujaka
-    # 402 Kraków, ul. Bulwarowa
-    # 10121 Kraków, ul. Dietla
-    # 10123 Kraków, ul. Złoty Róg
-    # 10139 Kraków, os. Piastów
-    # 10435 Kraków, ul. Telimeny
-    # 10447 Kraków, os. Wadów
-)
-
-# ---------------
 # geomagnetic_sq9atk
 # ---------------
 from geo_magnetic_sq9atk import GeoMagneticSq9atk
@@ -446,7 +421,6 @@ modules = [
     openweathersq9atk,      # pogoda openweathermap
     # meteosq9atk,          # pogoda alternatywa
     imgwpodestsq2ips,       # wodowskazy z hydro.imgw.pl
-    # airpollutionsq9atk,   # zanieczyszczenia powietrza z GIOŚ
     airlysq9atk,            # zanieczyszczenia powietrza z Airly
     # firessq2ips,          # informacja o stopniu zagrożenia pożarowego lasów
     # ksesq2ips,            # dane systemowe z pse.pl
@@ -476,7 +450,6 @@ modules_all = [
     openweathersq9atk,          # pogoda openweathermap
     meteosq9atk,                # pogoda alternatywa
     imgwpodestsq2ips,           # wodowskazy z hydro.imgw.pl
-    airpollutionsq9atk,         # zanieczyszczenia powietrza z GIOŚ
     airlysq9atk,                # zanieczyszczenia powietrza z Airly
     firessq2ips,                # informacja o stopniu zagrożenia pożarowego lasów
     ksesq2ips,                  # dane systemowe z pse.pl
@@ -495,8 +468,6 @@ aux_modules = {
     openweathersq9atk: meteosq9atk,
     meteosq9atk: openweathersq9atk,
     meteoyrsq2ips: openweathersq9atk,
-    airlysq9atk: airpollutionsq9atk,
-    airpollutionsq9atk: airlysq9atk,
     spaceweathersq2ips: geomagneticsq9atk,
     geomagneticsq9atk: spaceweathersq2ips,
     calendarsq2ips: calendarsq9atk,
