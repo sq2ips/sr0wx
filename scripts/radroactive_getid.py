@@ -1,9 +1,18 @@
-import requests
+from curl_cffi import requests
 import sys
+from datetime import datetime
+
+url = "https://monitoring.paa.gov.pl/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=paa:kcad_siec_pms_moc_dawki_mapa&outputFormat=application/json&viewparams="
+
+def req():
+    date = datetime.now().strftime("%Y-%m-%dT00:00:00.000Z")
+    uri = f"{url}date_from:{date};date_to:{date}"
+    data = requests.get(uri, impersonate="chrome", headers=headers).json()
+    return data
 
 parameters = "Program szukający id stacji do modułu radioactive_sq2ips.py:\n\nParametry:\n-h wyświetlenie listy parametrów\n-a pobranie i wypisanie wszystkich obszarów\n-f pobranie i flitrowanie na podstawie wporwadzonego tekstu"
 
-url = "https://monitoring.paa.gov.pl/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=paa:kcad_siec_pms_moc_dawki_mapa&outputFormat=application/json"
+headers = {'User-Agent': 'SR0WX/1.0'}
 
 if len(sys.argv) > 1:
     if sys.argv[1] == "-h":
@@ -12,7 +21,7 @@ if len(sys.argv) > 1:
     elif sys.argv[1] == "-a":
         print("Program szukający id stacji do modułu radioactive_sq2ips.py\n")
         print("miasto: id stacji")
-        data = requests.get(url).json()
+        data = req()
         for i in range(len(data["features"])):
             print(
                 f'{data["features"][i]["properties"]["stacja"]}: {data["features"][i]["properties"]["id"]}'
@@ -21,7 +30,7 @@ if len(sys.argv) > 1:
         print("Program szukający id stacji do modułu radioactive_sq2ips.py\n")
         print(f"wyszukiwanie id na podstawie filtra: {sys.argv[2]}")
         print("miasto: id stacji")
-        data = requests.get(url).json()
+        data = req()
         any = False
         for i in range(len(data["features"])):
             if (
@@ -46,5 +55,7 @@ if len(sys.argv) > 1:
                     f'{data["features"][i]["properties"]["stacja"]}: {data["features"][i]["properties"]["id"]}'
                 )
                 any = True
-            if any == False:
-                print("Nic nie znaleziono")
+        if any == False:
+            print("Nic nie znaleziono")
+else:
+    print(parameters)
