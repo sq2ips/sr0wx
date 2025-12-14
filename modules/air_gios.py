@@ -16,7 +16,7 @@ class AirGios(SR0WXModule):
         self.__index_text = "Wartość indeksu dla wskaźnika "
         self.__index_values = {0: "poziom_bardzo_dobry", 1: "poziom_dobry", 2: "poziom_dostateczny", 3: "poziom_umiarkowany", 4: "poziom_zl_y", 5: "poziom_bardzo_zl_y"}
         self.__main_index_values = {0: "bardzo_dobry", 1: "dobry", 2: "dostateczny", 3: "umiarkowany", 4: "zl_y", 5: "bardzo_zl_y"}
-        self.__sensors = {"S2": "dwutlenek_siarki", "NO2": "dwutlenek_azotu", "PM10": "pyl__pm10", "PM2.5": "pyl__pm25", "O3": "ozon"}
+        self.__sensors = {"SO2": "dwutlenek_siarki", "NO2": "dwutlenek_azotu", "PM10": "pyl__pm10", "PM2.5": "pyl__pm25", "O3": "ozon"}
     def processName(self, data):
         for station in data:
             if station["Identyfikator stacji"] == self.__sensor_id:
