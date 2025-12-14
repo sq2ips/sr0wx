@@ -269,17 +269,6 @@ geomagneticsq9atk = GeoMagneticSq9atk(
 # więcej miejscowości po wejściu na dowolny z powyższych adresów w przeglądarce...
 
 # ---------------
-# radioactive_sq9atk
-# ---------------
-from radioactive_sq9atk import RadioactiveSq9atk
-radioactivesq9atk = RadioactiveSq9atk(
-    language=lang,
-    service_url="http://radioactiveathome.org/map/",
-    sensor_id=47425,  # czujnik w Kołobrzegu
-    # więcej czujników na stronie http://radioactiveathome.org/map/
-)
-
-# ---------------
 # radioactive_sq2ips
 # ---------------
 from radioactive_sq2ips import RadioactiveSq2ips
@@ -466,7 +455,6 @@ modules = [
     # propagationsq9atk,    # propagacja KF
     propagationsq2ips,      # propagacja KF z hamqsl.com
     vhftroposq9atk,         # propagacja troposferyczna
-    # radioactivesq9atk,    # promieniowanie jonizujące
     radioactivesq2ips,      # promieniowanie jonizujące z PAA
     # calendarsq9atk,       # wschód i zachód słońca
     calendarsq2ips,         # wschód i zachód słońca bez internetu
@@ -497,7 +485,6 @@ modules_all = [
     propagationsq9atk,          # propagacja KF
     propagationsq2ips,          # propagacja KF z hamqsl.com
     vhftroposq9atk,             # propagacja troposferyczna
-    radioactivesq9atk,          # promieniowanie jonizujące
     radioactivesq2ips,          # promieniowanie jonizujące z PAA
     calendarsq9atk,             # wschód i zachód słońca
     calendarsq2ips,             # wschód i zachód słońca bez internetu
@@ -512,8 +499,6 @@ aux_modules = {
     airpollutionsq9atk: airlysq9atk,
     spaceweathersq2ips: geomagneticsq9atk,
     geomagneticsq9atk: spaceweathersq2ips,
-    radioactivesq2ips: radioactivesq9atk,
-    radioactivesq9atk: radioactivesq2ips,
     calendarsq2ips: calendarsq9atk,
     calendarsq9atk: calendarsq2ips,
     propagationsq2ips: propagationsq9atk,
