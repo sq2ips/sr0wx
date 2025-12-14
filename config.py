@@ -222,6 +222,18 @@ airlysq9atk = AirlySq9atk(
 )
 
 # ---------------
+# air_gios
+# ---------------
+from air_gios import AirGios
+airgios = AirGios(
+    language = lang,
+    service_url="https://api.gios.gov.pl/pjp-api/v1/rest/",
+    uri_index="aqindex/getIndex/",
+    uri_all="station/findAll?size=500",
+    sensor_id=52,
+)
+
+# ---------------
 # geomagnetic_sq9atk
 # ---------------
 from geo_magnetic_sq9atk import GeoMagneticSq9atk
@@ -422,6 +434,7 @@ modules = [
     # meteosq9atk,          # pogoda alternatywa
     imgwpodestsq2ips,       # wodowskazy z hydro.imgw.pl
     airlysq9atk,            # zanieczyszczenia powietrza z Airly
+    #airgios,                # zanieczyszczenia powietrza z GIOŚ
     # firessq2ips,          # informacja o stopniu zagrożenia pożarowego lasów
     # ksesq2ips,            # dane systemowe z pse.pl
     spaceweathersq2ips,     # pogoda kosmiczna
@@ -451,6 +464,7 @@ modules_all = [
     meteosq9atk,                # pogoda alternatywa
     imgwpodestsq2ips,           # wodowskazy z hydro.imgw.pl
     airlysq9atk,                # zanieczyszczenia powietrza z Airly
+    airgios,                    # zanieczyszczenia powietrza z GIOŚ
     firessq2ips,                # informacja o stopniu zagrożenia pożarowego lasów
     ksesq2ips,                  # dane systemowe z pse.pl
     spaceweathersq2ips,         # pogoda kosmiczna
@@ -468,6 +482,8 @@ aux_modules = {
     openweathersq9atk: meteosq9atk,
     meteosq9atk: openweathersq9atk,
     meteoyrsq2ips: openweathersq9atk,
+    airgios: airlysq9atk,
+    airlysq9atk: airgios,
     spaceweathersq2ips: geomagneticsq9atk,
     geomagneticsq9atk: spaceweathersq2ips,
     calendarsq2ips: calendarsq9atk,
