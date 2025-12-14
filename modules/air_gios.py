@@ -16,7 +16,7 @@ class AirGios(SR0WXModule):
         self.__index_text = "Wartość indeksu dla wskaźnika "
         self.__index_values = {0: "poziom_bardzo_dobry", 1: "poziom_dobry", 2: "poziom_dostateczny", 3: "poziom_umiarkowany", 4: "poziom_zl_y", 5: "poziom_bardzo_zl_y"}
         self.__main_index_values = {0: "bardzo_dobry", 1: "dobry", 2: "dostateczny", 3: "umiarkowany", 4: "zl_y", 5: "bardzo_zl_y"}
-        self.__sensors = {"SO2": "dwutlenek_siarki", "NO2": "dwutlenek_azotu", "PM10": "pyl__pm10", "PM2.5": "pyl__pm25", "O3": "ozon"}
+        self.__sensors = {"S2": "dwutlenek_siarki", "NO2": "dwutlenek_azotu", "PM10": "pyl__pm10", "PM2.5": "pyl__pm25", "O3": "ozon"}
     def processName(self, data):
         for station in data:
             if station["Identyfikator stacji"] == self.__sensor_id:
@@ -35,16 +35,20 @@ class AirGios(SR0WXModule):
             if value in self.__sensors:
                 message+=" ".join([self.__sensors[value], self.__index_values[values[value]], " _ "])
             else:
-                self.__logger.warning(f"Pomiar {value} nieznany")
+                self.__logger.warning(f"Pomiar {value} nieznany, pomijanie...")
         return message
 
     def get_data(self):
         uri_all = f"{self.__service_url}{self.__uri_all}"
+        self.__logger.info("::: Pobieranie indeksu zanieczyszczenia powietrza...")
         data = self.requestData(uri_all, self.__logger, 10, 3).json()
         name = self.processName(data["Lista stacji pomiarowych"])
 
+        self.__logger.info("::: Pobieranie nazw stacji...")
         uri_index = f"{self.__service_url}{self.__uri_index}{self.__sensor_id}"
         data = self.requestData(uri_index, self.__logger, 10, 3).json()
+
+        self.__logger.info("::: Przetwarzanie danych...")
         main_index, indexes = self.processIndex(data["AqIndex"])
 
         message = "informacja_o_skaz_eniu_powietrza _ "
