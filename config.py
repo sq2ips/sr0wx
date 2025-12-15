@@ -230,7 +230,7 @@ airgios = AirGios(
     service_url="https://api.gios.gov.pl/pjp-api/v1/rest/",
     uri_index="aqindex/getIndex/",
     uri_all="station/findAll?size=500",
-    sensor_id=52,
+    sensor_id=732,
 )
 
 # ---------------

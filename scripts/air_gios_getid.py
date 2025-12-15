@@ -34,7 +34,9 @@ def trimSpecials(text):
 url = "https://api.gios.gov.pl/pjp-api/v1/rest/station/findAll?size=500"
 params = "Skrypt wyszukujący ID stacji jakości powietrza GIOŚ:\n\nParametry:\n-h: lista parametrów\n-a: pobierz listę ID wszystkich stacji\n-f: wyszukaj ID stacji na podstawie nazwy"
 
-if sys.argv[1] == "-a":
+if len(sys.argv) == 1:
+    print(params)
+elif sys.argv[1] == "-a":
     print("Pobieranie danych... " ,end="")
     sys.stdout.flush()
     response = requests.get(url)
