@@ -30,9 +30,9 @@ class MeteoOnet(SR0WXModule):
         return time_words
 
     def parseForecastDesc(self, html):
-        match = html.find_all("div", {"class": "forecastDesc"})[0].text
+        match = html.find_all("div", {"class": "forecastDesc"})[0].text.strip()
         return self.__language.trim_pl(
-            match.strip().replace(" ", "_").replace(",", "_")
+            match.replace(" ", "_").replace(",", " ").replace("\n", " ")
         )
 
     def parseTemperature(self, html):
@@ -76,6 +76,7 @@ class MeteoOnet(SR0WXModule):
         if self.__saytime:
             message += " ".join(["stan_pogody_z_godziny", self.getHour(), " _ "])
         if self.__current:
+            print(self.parseForecastDesc(now))
             message += " ".join(
                 [
                     self.parseForecastDesc(now),
