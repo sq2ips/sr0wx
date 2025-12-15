@@ -70,7 +70,7 @@ if os.path.exists(".env"):
     meteostation_ip = os.getenv("METEOSTATION_IP").split(",")
     LATITUDE = float(os.getenv("LATITUDE"))
     LONGITUDE = float(os.getenv("LONGITUDE"))
-    CALL = os.getenv("CALL")
+    MAP_CALL = os.getenv("MAP_CALL")
     MAP_INFO = os.getenv("MAP_INFO")
 else:
     raise FileNotFoundError("No .env file present.")
@@ -158,7 +158,7 @@ sys.path.append("modules/")
 from activity_map import ActivityMap
 activitymap = ActivityMap(
     service_url="http://wx.vhf.com.pl/map_requests?base=",
-    callsign=CALL,
+    callsign=MAP_CALL,
     lat=LATITUDE,
     lon=LONGITUDE,
     hour_quarter=10,
