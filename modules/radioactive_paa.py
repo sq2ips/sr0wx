@@ -22,7 +22,7 @@ class RadioactivePaa(SR0WXModule):
         return data
 
     def processData(self, data):
-        datediff = datetime.now() - datetime.strptime(data["date_end_str"], "%Y-%m-%d %H:%M")
+        datediff = datetime.now() - datetime.strptime(data['date_end_str'], "%Y-%m-%d %H:%M")
         print(datediff)
         if datediff < timedelta(days=1):
             pass
@@ -32,7 +32,7 @@ class RadioactivePaa(SR0WXModule):
             raise ValueError(f"Dane są nieaktualne o więcej niż jeden dzień, różnica czasów wynosi {datediff}")
         
         val = round(float(data["moc_dawki"]), 2)
-        self.__logger.info(f"Wartość aktualna z czujnika, data: {data["date_end_str"]}: {val} uSv/h")
+        self.__logger.info(f"Wartość aktualna z czujnika, data: {data['date_end_str']}: {val} uSv/h")
         return val
     
     def processDataSr(self, data):
