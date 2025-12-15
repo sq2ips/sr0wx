@@ -1,3 +1,4 @@
+# by SQ2IPS
 from datetime import datetime
 
 from sr0wx_module import SR0WXModule
@@ -5,7 +6,7 @@ import logging
 from datetime import datetime
 
 
-class SpaceWeatherSq2ips(SR0WXModule):
+class SpaceWeather(SR0WXModule):
     """Moduł pobierający informacje o alertach pogody kosmicznej"""
 
     def __init__(self, language, urlG, urlR, urlS, geomagneticShort, radioNoise):

@@ -1,10 +1,11 @@
+# by SQ2IPS
 import logging
 from datetime import datetime, timedelta
 
 from sr0wx_module import SR0WXModule
 
 
-class MeteoAlertSq2ips(SR0WXModule):
+class MeteoAlertImgw(SR0WXModule):
     """Moduł pobierający dane o zagrożeniach meteorolologicznych i hydrologicznych z meteo.imgw.pl"""
 
     def __init__(

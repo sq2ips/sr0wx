@@ -1,3 +1,5 @@
+# by SQ9ATK
+
 import logging
 import re
 import time
@@ -5,7 +7,7 @@ import time
 from sr0wx_module import SR0WXModule
 
 
-class GeoMagneticSq9atk(SR0WXModule):
+class GeoMagnetic(SR0WXModule):
     """Moduł pobierająca info o sytuacji geomagnetycznej"""
 
     def __init__(self, language, service_url):

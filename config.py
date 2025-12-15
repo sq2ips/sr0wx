@@ -165,12 +165,12 @@ activitymap = ActivityMap(
 )
 
 # ---------------
-# openweather_sq9atk
+# openweather
 # ---------------
 # https://openweathermap.org/api pod tym adresem można uzyskac klucz API
 # wystarczy sie zarejestrować
-from openweather_sq9atk import OpenWeatherSq9atk
-openweathersq9atk = OpenWeatherSq9atk(
+from openweather import OpenWeather
+openweather = OpenWeather(
     language=lang,
     api_key=openweather_key,
     service_url="http://api.openweathermap.org/data/2.5/",
@@ -180,10 +180,10 @@ openweathersq9atk = OpenWeatherSq9atk(
 )
 
 # ---------------
-# meteo_sq9atk
+# meteo_onet
 # ---------------
-from meteo_sq9atk import MeteoSq9atk
-meteosq9atk = MeteoSq9atk(
+from meteo_onet import MeteoOnet
+meteoonet = MeteoOnet(
     language=lang,
     service_url="https://pogoda.onet.pl/prognoza-pogody/gdynia-287798",
     current=True,
@@ -191,10 +191,10 @@ meteosq9atk = MeteoSq9atk(
 )
 
 # ---------------
-# imgw_podest_sq2ips
+# water_imgw
 # ---------------
-from imgw_podest_sq2ips import ImgwPodestSq2ips
-imgwpodestsq2ips = ImgwPodestSq2ips(
+from water_imgw import WaterImgw
+waterimgw = WaterImgw(
     language=lang,
     service_url="https://hydro-back.imgw.pl/list/hydro",
     wodowskazy=[],  # id poszczegulnych wodowskazów
@@ -207,12 +207,12 @@ imgwpodestsq2ips = ImgwPodestSq2ips(
 )
 
 # ---------------
-# airly_sq9atk
+# airly
 # ---------------
 # https://developer.airly.org/ pod tym adresem można uzyskac klucz API
 # wystarczy sie zarejestrować
-from airly_sq9atk import AirlySq9atk
-airlysq9atk = AirlySq9atk(
+from airly import Airly
+airly = Airly(
     language=lang,
     api_key=airly_key,
     service_url="https://airapi.airly.eu/v2/measurements",  # location
@@ -234,10 +234,10 @@ airgios = AirGios(
 )
 
 # ---------------
-# geomagnetic_sq9atk
+# geo_magnetic
 # ---------------
-from geo_magnetic_sq9atk import GeoMagneticSq9atk
-geomagneticsq9atk = GeoMagneticSq9atk(
+from geo_magnetic import GeoMagnetic
+geomagnetic = GeoMagnetic(
     language=lang,
     service_url="https://www.gismeteo.pl/weather-gdynia-3041/gm/",
 )
@@ -256,50 +256,54 @@ geomagneticsq9atk = GeoMagneticSq9atk(
 # więcej miejscowości po wejściu na dowolny z powyższych adresów w przeglądarce...
 
 # ---------------
-# radioactive_sq2ips
+# radioactive_paa
 # ---------------
-from radioactive_sq2ips import RadioactiveSq2ips
-radioactivesq2ips = RadioactiveSq2ips(
+from radioactive_paa import RadioactivePaa
+radioactivepaa = RadioactivePaa(
     language=lang,
     service_url="https://monitoring.paa.gov.pl/_api/maps/MapLayer/15d20873-f8a7-8899-5d69-960cc9ebbbb6/DetailsTable/f5af6ec4-d759-3163-344e-cbf147d28e28/Data",
     sensor_id="d2e87d20-28e2-47ea-860d-98a4e98d8726",
 )
-from fires_sq2ips import FiresSq2ips
-firessq2ips = FiresSq2ips(
+
+# ---------------
+# fires
+# ---------------
+from fires import Fires
+fires = Fires(
     language=lang,
     service_url="https://www.traxelektronik.pl/pogoda/las/zbiorcza.php",
     zone="15_A",  # tutaj należy znaleźć strefę https://www.traxelektronik.pl/pogoda/las/ zaznaczając granice i numery stref oraz zagrożenie pożarowe
 )
 
 # ---------------
-# propagation_sq9atk
+# propagation_rigref
 # ---------------
-from propagation_sq9atk import PropagationSq9atk
-propagationsq9atk = PropagationSq9atk(
+from propagation_rigref import PropagationRigRef
+propagationrigref = PropagationRigRef(
     language=lang,
     service_url="https://rigreference.com/solar/img/tall",
 )
 # ---------------
-# propagation_sq2ips
+# propagation_hamqsl
 # ---------------
-from propagation_sq2ips import PropagationSq2ips
-propagationsq2ips = PropagationSq2ips(
+from propagation_hamqsl import PropagationHamqsl
+propagationhamqsl = PropagationHamqsl(
     language=lang, service_url="https://www.hamqsl.com/solarxml.php", radioNoise=True
 )
 # ---------------
-# vhf_tropo_sq9atk
+# vhf_tropo
 # ---------------
-from vhf_tropo_sq9atk import VhfTropoSq9atk
-vhftroposq9atk = VhfTropoSq9atk(
+from vhf_tropo import VhfTropo
+vhftropo = VhfTropo(
     language=lang,
     service_url="https://www.dxinfocentre.com/tropo_eur.html",
     onlyAlerts=True
 )
 # ---------------
-# calendar_sq9atk
+# calendar_zoznam
 # ---------------
-from calendar_sq9atk import CalendarSq9atk
-calendarsq9atk = CalendarSq9atk(
+from calendar_zoznam import CalendarZoznam
+calendarzoznam = CalendarZoznam(
     language=lang,
     service_url="http://calendar.zoznam.sk/sunset-pl.php?city=",
     city_id=3099424,  # Gdyna
@@ -322,10 +326,10 @@ calendarsq9atk = CalendarSq9atk(
 
 
 # ----------------
-# calendar_sq2ips
+# calendar
 # ----------------
-from calendar_sq2ips import CalendarSq2ips
-calendarsq2ips = CalendarSq2ips(
+from sun_rise_set import SunRiseSet
+sunriseset = SunRiseSet(
     language=lang,
     ele=15,
     pre=1013,
@@ -334,10 +338,10 @@ calendarsq2ips = CalendarSq2ips(
 )
 
 # ----------------
-# meteoalert_sq2ips
+# meteoalert_imgw
 # ----------------
-from meteoalert_sq2ips import MeteoAlertSq2ips
-meteoalertsq2ips = MeteoAlertSq2ips(
+from meteoalert_imgw import MeteoAlertImgw
+meteoalertimgw = MeteoAlertImgw(
     language=lang,
     service_url="https://meteo.imgw.pl/api/meteo/messages/v1/",
     city_id=["2262"],  # Gdynia
@@ -349,20 +353,20 @@ meteoalertsq2ips = MeteoAlertSq2ips(
 )
 
 # ----------------
-# antistorm_sq2ips
+# antistorm
 # ----------------
-from antistorm_sq2ips import AntistormSq2ips
-antistormsq2ips = AntistormSq2ips(
+from antistorm import Antistorm
+antistorm = Antistorm(
     language=lang,
     service_url="http://antistorm.eu/webservice.php",
     city_id=73,  # Gdynia
 )
 
 # ---------------
-# spaceweather_sq2ips
+# spaceweather
 # ---------------
-from spaceweather_sq2ips import SpaceWeatherSq2ips
-spaceweathersq2ips = SpaceWeatherSq2ips(
+from spaceweather import SpaceWeather
+spaceweather = SpaceWeather(
     language=lang,
     # burze geomagnetyczne
     urlG="https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json",
@@ -376,20 +380,20 @@ spaceweathersq2ips = SpaceWeatherSq2ips(
 )
 
 # ---------------
-# meteostation_sq2ips
+# meteostation
 # ---------------
-from meteostation_sq2ips import MeteoStationSq2ips
-meteostationsq2ips = MeteoStationSq2ips(
+from meteostation import MeteoStation
+meteostation = MeteoStation(
     language=lang,
     ip=meteostation_ip,
     port=4210,
 )
 
 # ---------------
-# meteo_yr_sq2ips
+# meteo_yr
 # ---------------
-from meteo_yr_sq2ips import MeteoYrSq2ips
-meteoyrsq2ips = MeteoYrSq2ips(
+from meteo_yr import MeteoYr
+meteoyr = MeteoYr(
     language=lang,
     service_url="https://www.yr.no",
     id="2-3099424",  # Gdynia
@@ -398,19 +402,19 @@ meteoyrsq2ips = MeteoYrSq2ips(
 )
 
 # ---------------
-# kse_sq2ips
+# kse
 # ---------------
-from kse_sq2ips import KseSq2ips
-ksesq2ips = KseSq2ips(
+from kse import Kse
+kse = Kse(
     language=lang,
     service_url="https://www.pse.pl/transmissionMapService"
 )
 
 # ---------------
-# time_sq2ips
+# time_info
 # ---------------
-from time_sq2ips import TimeSq2ips
-timesq2ips = TimeSq2ips(
+from time_info import TimeInfo
+timeinfo = TimeInfo(
     language=lang,
     maxwaittime=maxWaitTime,
     start_message=["raport_meteorologiczny", "z_godziny"],
@@ -424,70 +428,70 @@ timesq2ips = TimeSq2ips(
 
 # WŁĄCZONE MODUŁY
 modules = [
-#    activitymap,            # marker na mapie wx.vhf.com.pl
-    timesq2ips,             # godzina
-    meteoalertsq2ips,       # ostrzeżenia meteorologiczne IMGW
-    # antistormsq2ips,      # radar pogodowy
-    # meteostationsq2ips,   # dane ze stacji meteo
-    # meteoyrsq2ips,        # pogoda z yr
-    openweathersq9atk,      # pogoda openweathermap
-    # meteosq9atk,          # pogoda alternatywa
-    imgwpodestsq2ips,       # wodowskazy z hydro.imgw.pl
-    airlysq9atk,            # zanieczyszczenia powietrza z Airly
-    #airgios,                # zanieczyszczenia powietrza z GIOŚ
-    # firessq2ips,          # informacja o stopniu zagrożenia pożarowego lasów
-    # ksesq2ips,            # dane systemowe z pse.pl
-    spaceweathersq2ips,     # pogoda kosmiczna
-    # geomagneticsq9atk,    # zaburzenia geomagnetyczne
-    # propagationsq9atk,    # propagacja KF
-    propagationsq2ips,      # propagacja KF z hamqsl.com
-    vhftroposq9atk,         # propagacja troposferyczna
-    radioactivesq2ips,      # promieniowanie jonizujące z PAA
-    # calendarsq9atk,       # wschód i zachód słońca
-    calendarsq2ips,         # wschód i zachód słońca bez internetu
+#    activitymap,       # marker na mapie wx.vhf.com.pl
+    timeinfo,           # godzina
+    meteoalertimgw,     # ostrzeżenia meteorologiczne z meteo.imgw.pl
+    #antistorm,         # radar pogodowy z antistorm.eu
+    #meteostation,      # dane ze stacji meteo (lokalnie UDP)
+    #meteoyr,           # pogoda z yr.no
+    openweather,        # pogoda openweathermap.org
+    #meteoonet,         # pogoda z pogoda.onet.pl
+    waterimgw,          # wodowskazy z hydro.imgw.pl
+    #airly,             # zanieczyszczenia powietrza z airly.com
+    airgios,            # zanieczyszczenia powietrza z powietrze.gios.gov.pl
+    #fires,             # zagrożenie pożarowe lasów z traxelektronik.pl
+    #kse,               # aktualne dane energetyczne KSE z pse.pl
+    spaceweather,       # pogoda kosmiczna
+    #geomagnetic,       # zaburzenia geomagnetyczne z gismeteo.pl
+    #propagationrigref, # propagacja KF z rigreference.com
+    propagationhamqsl,  # propagacja KF z hamqsl.com
+    vhftropo,           # propagacja troposferyczna z dxinfocentre
+    radioactivepaa,     # promieniowanie jonizujące z monitoring.paa.gov.pl
+    #calendarzoznam,    # wschód i zachód słońca z calendar.zoznam.sk
+    sunriseset,         # wschód i zachód słońca obliczane przed moduł ephem
 ]
 
 # MODUŁY OFFLINE
 offline_modules = [
-    calendarsq2ips,
+    sunriseset,
 ]
 
 # WSZYSTKIE MODUŁY
 modules_all = [
-    activitymap,                # marker na mapie wx.vhf.com.pl
-    timesq2ips,                 # godzina
-    meteoalertsq2ips,           # ostrzeżenia meteorologiczne IMGW
-    antistormsq2ips,            # radar pogodowy
-    #meteostationsq2ips,         # dane ze stacji meteo
-    meteoyrsq2ips,              # pogoda z yr
-    openweathersq9atk,          # pogoda openweathermap
-    meteosq9atk,                # pogoda alternatywa
-    imgwpodestsq2ips,           # wodowskazy z hydro.imgw.pl
-    airlysq9atk,                # zanieczyszczenia powietrza z Airly
-    airgios,                    # zanieczyszczenia powietrza z GIOŚ
-    firessq2ips,                # informacja o stopniu zagrożenia pożarowego lasów
-    ksesq2ips,                  # dane systemowe z pse.pl
-    spaceweathersq2ips,         # pogoda kosmiczna
-    geomagneticsq9atk,          # zaburzenia geomagnetyczne
-    propagationsq9atk,          # propagacja KF
-    propagationsq2ips,          # propagacja KF z hamqsl.com
-    vhftroposq9atk,             # propagacja troposferyczna
-    radioactivesq2ips,          # promieniowanie jonizujące z PAA
-    calendarsq9atk,             # wschód i zachód słońca
-    calendarsq2ips,             # wschód i zachód słońca bez internetu
+    activitymap,        # marker na mapie wx.vhf.com.pl
+    timeinfo,           # godzina
+    meteoalertimgw,     # ostrzeżenia meteorologiczne z meteo.imgw.pl
+    antistorm,          # radar pogodowy z antistorm.eu
+    #meteostation,      # dane ze stacji meteo (lokalnie UDP)
+    #meteoyr,           # pogoda z yr.no
+    openweather,        # pogoda openweathermap.org
+    meteoonet,          # pogoda z pogoda.onet.pl
+    waterimgw,          # wodowskazy z hydro.imgw.pl
+    airly,              # zanieczyszczenia powietrza z airly.com
+    airgios,            # zanieczyszczenia powietrza z powietrze.gios.gov.pl
+    fires,              # zagrożenie pożarowe lasów z traxelektronik.pl
+    kse,                # aktualne dane energetyczne KSE z pse.pl
+    spaceweather,       # pogoda kosmiczna
+    geomagnetic,        # zaburzenia geomagnetyczne z gismeteo.pl
+    propagationrigref,  # propagacja KF z rigreference.com
+    propagationhamqsl,  # propagacja KF z hamqsl.com
+    vhftropo,           # propagacja troposferyczna z dxinfocentre
+    radioactivepaa,     # promieniowanie jonizujące z monitoring.paa.gov.pl
+    calendarzoznam,     # wschód i zachód słońca z calendar.zoznam.sk
+    sunriseset,         # wschód i zachód słońca obliczane przed moduł ephem
 ]
 
 # MODUŁY AWARYJNE
 aux_modules = {
-    openweathersq9atk: meteosq9atk,
-    meteosq9atk: openweathersq9atk,
-    meteoyrsq2ips: openweathersq9atk,
-    airgios: airlysq9atk,
-    airlysq9atk: airgios,
-    spaceweathersq2ips: geomagneticsq9atk,
-    geomagneticsq9atk: spaceweathersq2ips,
-    calendarsq2ips: calendarsq9atk,
-    calendarsq9atk: calendarsq2ips,
-    propagationsq2ips: propagationsq9atk,
-    propagationsq9atk: propagationsq2ips
+    openweather: meteoonet,
+    meteoonet: openweather,
+    meteoyr: openweather,
+    airgios: airly,
+    airly: airgios,
+    spaceweather: geomagnetic,
+    geomagnetic: spaceweather,
+    sunriseset: calendarzoznam,
+    calendarzoznam: sunriseset,
+    propagationhamqsl: propagationrigref,
+    propagationrigref: propagationhamqsl
 }

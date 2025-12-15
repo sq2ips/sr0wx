@@ -1,3 +1,4 @@
+# by SQ2IPS
 import logging
 
 from sr0wx_module import SR0WXModule
@@ -5,7 +6,7 @@ from sr0wx_module import SR0WXModule
 from datetime import datetime, timedelta
 
 
-class MeteoYrSq2ips(SR0WXModule):
+class MeteoYr(SR0WXModule):
     """Klasa pobierająca informacje o pogodzie z yr.no"""
 
     def __init__(self, language, service_url, id, current, intervals):

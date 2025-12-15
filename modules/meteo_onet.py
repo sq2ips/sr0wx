@@ -1,3 +1,4 @@
+# by SQ9ATK
 import re
 import logging
 
@@ -8,7 +9,7 @@ from bs4 import BeautifulSoup
 from sr0wx_module import SR0WXModule
 
 
-class MeteoSq9atk(SR0WXModule):
+class MeteoOnet(SR0WXModule):
     """Klasa pobierająca informacje o pogodzie"""
 
     def __init__(self, language, service_url, saytime, current):

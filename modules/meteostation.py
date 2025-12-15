@@ -1,3 +1,4 @@
+# by SQ2IPS
 import socket
 from multiprocessing import Process, Pipe
 
@@ -5,7 +6,7 @@ from sr0wx_module import SR0WXModule
 
 import logging
 
-class MeteoStationSq2ips(SR0WXModule):
+class MeteoStation(SR0WXModule):
     """Moduł pobierający dane o pogodzie ze stacji przez UDP"""
 
     def __init__(self, language, ip, port):

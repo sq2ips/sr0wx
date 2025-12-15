@@ -1,10 +1,11 @@
+# by SQ2IPS
 import logging
 from sr0wx_module import SR0WXModule
 
 from datetime import datetime
 
 
-class BaltykSq2ips(SR0WXModule):
+class BaltykImgw(SR0WXModule):
     """Moduł pobierający komunikat o stanie i prognizie na obszar bałtyku"""
 
     def __init__(self, service_url, language, region_id):

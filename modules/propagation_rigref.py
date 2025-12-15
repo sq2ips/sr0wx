@@ -1,3 +1,4 @@
+# by SQ9ATK
 import urllib.request
 import logging
 
@@ -6,7 +7,7 @@ from PIL import Image
 from sr0wx_module import SR0WXModule
 
 
-class PropagationSq9atk(SR0WXModule):
+class PropagationRigRef(SR0WXModule):
     """Klasa pobierająca informacje o propagacji"""
 
     def __init__(self, language, service_url):

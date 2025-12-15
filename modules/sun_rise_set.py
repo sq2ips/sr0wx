@@ -1,3 +1,4 @@
+# by SQ2IPS
 import ephem
 import datetime
 import logging
@@ -5,7 +6,7 @@ import logging
 from sr0wx_module import SR0WXModule
 from config import LATITUDE, LONGITUDE
 
-class CalendarSq2ips(SR0WXModule):
+class SunRiseSet(SR0WXModule):
     """Moduł wyliczajacy wschody i zachody słońca"""
 
     def __init__(self, language, ele, pre, temp, hori):

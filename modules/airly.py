@@ -1,10 +1,11 @@
+# by SQ9ATK
 import logging
 from datetime import datetime
 
 from sr0wx_module import SR0WXModule
 from config import LATITUDE, LONGITUDE
 
-class AirlySq9atk(SR0WXModule):
+class Airly(SR0WXModule):
     """Moduł pobierający dane o zanieszczyszczeniach powietrza"""
 
     def __init__(

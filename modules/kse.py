@@ -1,9 +1,11 @@
+# by SQ2IPS
+
 import logging
 
 from sr0wx_module import SR0WXModule
 
 
-class KseSq2ips(SR0WXModule):
+class Kse(SR0WXModule):
     """moduł pobierający dane o stanie sieci energetycznej"""
 
     def __init__(self, language, service_url):

@@ -1,10 +1,11 @@
+# by SQ9ATK
 import logging
 from datetime import datetime
 
 from sr0wx_module import SR0WXModule
 from config import LATITUDE, LONGITUDE
 
-class OpenWeatherSq9atk(SR0WXModule):
+class OpenWeather(SR0WXModule):
     """Klasa pobierająca dane o pogodzie z openweathermap"""
 
     def __init__(

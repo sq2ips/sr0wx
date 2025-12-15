@@ -1,3 +1,4 @@
+# by SQ9ATK
 import re
 import logging
 import pytz
@@ -7,7 +8,7 @@ from datetime import datetime
 from sr0wx_module import SR0WXModule
 
 
-class CalendarSq9atk(SR0WXModule):
+class CalendarZoznam(SR0WXModule):
     """Moduł pobierający dane o wschodzie i zachodzie słońca"""
 
     def __init__(self, language, service_url, city_id):

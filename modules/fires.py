@@ -1,3 +1,4 @@
+# by SQ2IPS
 import logging
 from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
@@ -5,7 +6,7 @@ from datetime import datetime, timedelta
 from sr0wx_module import SR0WXModule
 
 
-class FiresSq2ips(SR0WXModule):
+class Fires(SR0WXModule):
     """Moduł pobierający informacje o stopniu zagrożenia pożarowego lasów"""
 
     def __init__(self, language, service_url, zone):

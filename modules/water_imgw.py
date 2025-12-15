@@ -1,10 +1,11 @@
+# by SQ2IPS
 import logging
 from operator import itemgetter
 
 from sr0wx_module import SR0WXModule
 
 
-class ImgwPodestSq2ips(SR0WXModule):
+class WaterImgw(SR0WXModule):
     """Klasa pobierająca informacje stanie wody"""
 
     def __init__(

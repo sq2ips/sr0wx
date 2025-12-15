@@ -1,10 +1,11 @@
+# by SQ2IPS
 import logging
 import requests
 
 from sr0wx_module import SR0WXModule
 
 
-class AntistormSq2ips(SR0WXModule):
+class Antistorm(SR0WXModule):
     """Moduł pobierający informacje o zagrożeniu burzowym"""
 
     def __init__(self, language, service_url, city_id):

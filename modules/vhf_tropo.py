@@ -1,3 +1,4 @@
+# by SQ9ATK
 import re
 import logging
 
@@ -6,7 +7,7 @@ from PIL import Image
 from sr0wx_module import SR0WXModule
 from config import LATITUDE, LONGITUDE
 
-class VhfTropoSq9atk(SR0WXModule):
+class VhfTropo(SR0WXModule):
     """Moduł pobierający dane o propagacji troposferycznej"""
 
     def __init__(self, language, service_url, onlyAlerts):

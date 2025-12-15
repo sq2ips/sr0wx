@@ -1,10 +1,12 @@
+# by SQ2IPS
+
 from xml.etree import ElementTree
 
 import logging
 
 from sr0wx_module import SR0WXModule
 
-class PropagationSq2ips(SR0WXModule):
+class PropagationHamqsl(SR0WXModule):
     """Klasa pobierająca informacje o propagacji z hamqsl.org"""
 
     def __init__(self, language, service_url, radioNoise):

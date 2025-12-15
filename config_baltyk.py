@@ -155,9 +155,9 @@ activitymap = ActivityMap(
 # ---------------
 # baltyk_sq2ips
 # ---------------
-from baltyk_sq2ips import BaltykSq2ips
+from baltyk_imgw import BaltykImgw
 
-baltyksq2ips = BaltykSq2ips(
+baltykimgw = BaltykImgw(
     language=lang,
     service_url="https://baltyk.imgw.pl/getdata/forecast.php?type=sea&lang=pl",
     # service_url="http://91.220.17.153/index-maps/forecastGetData.php?type=sea&lang=pl", # niepewne źródło
@@ -172,6 +172,6 @@ baltyksq2ips = BaltykSq2ips(
 )
 
 # WŁĄCZONE MODUŁY
-modules = [activitymap, baltyksq2ips]
+modules = [activitymap, baltykimgw]
 offline_modules = []
 aux_modules = {}

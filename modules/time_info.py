@@ -1,10 +1,11 @@
+# by SQ2IPS
 from sr0wx_module import SR0WXModule
 import logging
 
 from datetime import datetime, timedelta
 
 
-class TimeSq2ips(SR0WXModule):
+class TimeInfo(SR0WXModule):
     def __init__(self, language, start_message, round_minutes, maxwaittime, round_part):
         self.__language = language
         self.__maxwaittime = maxwaittime

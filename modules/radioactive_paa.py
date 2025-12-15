@@ -1,9 +1,10 @@
+# by SQ2IPS
 import logging
 from datetime import datetime, timedelta
 
 from sr0wx_module import SR0WXModule
 
-class RadioactiveSq2ips(SR0WXModule):
+class RadioactivePaa(SR0WXModule):
     """Klasa pobierająca dane o promieniowaniu z PAA"""
 
     def __init__(self, language, service_url, sensor_id):
