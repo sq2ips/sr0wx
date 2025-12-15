@@ -61,6 +61,6 @@ elif sys.argv[1] == "-f":
     print("Nazwa stacji: ID stacji")
     for station in stations:
         if (sys.argv[2]).lower() in trimSpecials(station["Nazwa stacji"]):
-            print(f"{station["Nazwa stacji"]}: {station["Identyfikator stacji"]}")
+            print(f'{station["Nazwa stacji"]}: {station["Identyfikator stacji"]}')
 else:
     print(params)
