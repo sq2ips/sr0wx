@@ -3,7 +3,6 @@ import logging
 from datetime import datetime
 
 from sr0wx_module import SR0WXModule
-from config import LATITUDE, LONGITUDE
 
 class Airly(SR0WXModule):
     """Moduł pobierający dane o zanieszczyszczeniach powietrza"""
@@ -11,6 +10,8 @@ class Airly(SR0WXModule):
     def __init__(
         self,
         language,
+        lat,
+        lon,
         api_key,
         service_url,
         mode,
@@ -18,6 +19,8 @@ class Airly(SR0WXModule):
         installationId,
     ):
         self.__language = language
+        self.__lat = lat
+        self.__lon = lon
         self.__api_key = api_key
         self.__service_url = service_url
         self.__mode = mode
@@ -72,19 +75,10 @@ class Airly(SR0WXModule):
         return message
 
     def prepareApiServiceUrl(self):
-        api_url = "https://airapi.airly.eu/v2/measurements/"
         urls = {
-            "installationId": api_url
-            + "installation?installationId="
-            + self.__installationId,
-            "point": api_url + "point?lat=" + str(LATITUDE) + "&lng=" + str(LONGITUDE),
-            "nearest": api_url
-            + "nearest?lat="
-            + str(LATITUDE)
-            + "&lng="
-            + str(LONGITUDE)
-            + "&maxDistanceKM="
-            + self.__maxDistanceKM,
+            "installationId": f"{self.__service_url}installation?installationId={self.__installationId}",
+            "point": f"{self.__service_url}point?lat={self.__lat}&lng={self.__lon}",
+            "nearest": f"{self.__service_url}nearest?lat={self.__lat}&lng={self.__lon}&maxDistanceKM={self.__maxDistanceKM}",
         }
         return urls[self.__mode]
 

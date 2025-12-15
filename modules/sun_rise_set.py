@@ -4,13 +4,14 @@ import datetime
 import logging
 
 from sr0wx_module import SR0WXModule
-from config import LATITUDE, LONGITUDE
 
 class SunRiseSet(SR0WXModule):
     """Moduł wyliczajacy wschody i zachody słońca"""
 
-    def __init__(self, language, ele, pre, temp, hori):
+    def __init__(self, language, lat, lon, ele, pre, temp, hori):
         self.__language = language
+        self.__lat = lat
+        self.__lon = lon
         self.__ele = ele
         self.__pre = pre
         self.__temp = temp
@@ -25,8 +26,8 @@ class SunRiseSet(SR0WXModule):
     def get_data(self):
         self.__logger.info("::: Przeliczam dane...")
         Gdynia = ephem.Observer()
-        Gdynia.lat = str(LATITUDE)
-        Gdynia.lon = str(LONGITUDE)
+        Gdynia.lat = self.__lat
+        Gdynia.lon = self.__lon
         Gdynia.elevation = self.__ele
         Gdynia.pressure = self.__pre
         Gdynia.temp = self.__temp

@@ -155,6 +155,7 @@ sys.path.append("modules/")
 # ---------------
 # activity_map
 # ---------------
+# Marker na mapie http://wx.vhf.com.pl/
 from activity_map import ActivityMap
 activitymap = ActivityMap(
     service_url="http://wx.vhf.com.pl/map_requests?base=",
@@ -171,11 +172,14 @@ activitymap = ActivityMap(
 # ---------------
 # openweather
 # ---------------
+# pogoda z openweathermap.org
 # https://openweathermap.org/api pod tym adresem można uzyskac klucz API
 # wystarczy sie zarejestrować
 from openweather import OpenWeather
 openweather = OpenWeather(
     language=lang,
+    lat=LATITUDE,
+    lon=LONGITUDE,
     api_key=openweather_key,
     service_url="http://api.openweathermap.org/data/2.5/",
     current=True,
@@ -186,6 +190,7 @@ openweather = OpenWeather(
 # ---------------
 # meteo_onet
 # ---------------
+# pogoda z pogoda.onet.pl
 from meteo_onet import MeteoOnet
 meteoonet = MeteoOnet(
     language=lang,
@@ -193,10 +198,12 @@ meteoonet = MeteoOnet(
     current=True,
     saytime=False,
 )
+# TODO get ID
 
 # ---------------
 # water_imgw
 # ---------------
+# wodowzkazy z hydro.imgw.pl
 from water_imgw import WaterImgw
 waterimgw = WaterImgw(
     language=lang,
@@ -209,21 +216,26 @@ waterimgw = WaterImgw(
     custom_names={},
     custom_rivers={},
 )
+# TODO get ID
 
 # ---------------
 # airly
 # ---------------
+# Zanieczyszczenia powietrza z airly.com
 # https://developer.airly.org/ pod tym adresem można uzyskac klucz API
 # wystarczy sie zarejestrować
 from airly import Airly
 airly = Airly(
     language=lang,
+    lat=LATITUDE,
+    lon=LONGITUDE,
     api_key=airly_key,
-    service_url="https://airapi.airly.eu/v2/measurements",  # location
+    service_url="https://airapi.airly.eu/v2/measurements/",  # location
     mode="nearest",  # point|nearest|installationId
     maxDistanceKM=5,
     installationId=3476,  # Gdynia
 )
+# TODO get ID
 
 # ---------------
 # air_gios
@@ -336,6 +348,8 @@ calendarzoznam = CalendarZoznam(
 from sun_rise_set import SunRiseSet
 sunriseset = SunRiseSet(
     language=lang,
+    lat=LATITUDE,
+    lon=LONGITUDE,
     ele=15,
     pre=1013,
     temp=10,
