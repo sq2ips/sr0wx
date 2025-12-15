@@ -41,7 +41,7 @@ try:
     opts, args = getopt.getopt(argv, "z:w:s:acu")
 except getopt.GetoptError:
     print(
-        "Program generujący sample nazw rzek i wodowskazów do modułu imgw_podest_sq2ips, parametry:\n-a pobieranie wszystkich sampli\n-z pobieranie sampli z danej zlewni (na podstawie id zlewni)\n-w pobieranie sampli danego wodowskazu (na podstawie id wodowskazu)\n-f plik json do zapisu nazw sampli\n-u aktualizacja słownika (zamienne z -f)\n-c sprawdzenie istniejących sampli w słowniku"
+        "Program generujący sample nazw rzek i wodowskazów do modułu water_imgw, parametry:\n-a pobieranie wszystkich sampli\n-z pobieranie sampli z danej zlewni (na podstawie id zlewni)\n-w pobieranie sampli danego wodowskazu (na podstawie id wodowskazu)\n-f plik json do zapisu nazw sampli\n-u aktualizacja słownika (zamienne z -f)\n-c sprawdzenie istniejących sampli w słowniku"
     )
     exit()
 
@@ -66,7 +66,7 @@ if not all and zlewnie == [] and wodowskazy == []:
 
 print("Pobieranie danych... ", end="")
 sys.stdout.flush()
-stations = requests.get(url).json()
+stations = requests.get(url, headers={'User-Agent': 'SR0WX/1.0'}).json()
 print("OK")
 
 samples = []

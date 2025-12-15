@@ -2,7 +2,7 @@ import requests
 from urllib.parse import quote
 import sys
 
-parameters = "Program szukający id zlewni i wodowskazów do modułu imgw_podest_sq2ips.py:\n\nParametry:\n-h wyświetlenie listy parametrów\n-z wyszukiwanie id zlewni na podstawie nazwy miasta\n-s wyszukiwanie id zlewni i wodowskazu na podstawie nazwy wodowskazu\n-r wyszukiwanie id zlewni i wodowskazów na podstawie nazwy rzeki/akwenu\n-w wyszukiwanie id zlewni na podstawie id wodowskazu"
+parameters = "Program szukający id zlewni i wodowskazów do modułu water_imgw:\n\nParametry:\n-h wyświetlenie listy parametrów\n-z wyszukiwanie id zlewni na podstawie nazwy miasta\n-s wyszukiwanie id zlewni i wodowskazu na podstawie nazwy wodowskazu\n-r wyszukiwanie id zlewni i wodowskazów na podstawie nazwy rzeki/akwenu\n-w wyszukiwanie id zlewni na podstawie id wodowskazu"
 
 if len(sys.argv) == 1 or sys.argv[1] == "-h":
     print(parameters)
@@ -10,7 +10,7 @@ if len(sys.argv) == 1 or sys.argv[1] == "-h":
 elif sys.argv[1] == "-z":
     url = f"https://meteo.imgw.pl/api/geo/v3/search/{quote(sys.argv[2])}"
     print(
-        "Wyszukiwanie id zlewni na podstawie nazwy miasta do modułu imgw_podest_sq2ips.py"
+        "Wyszukiwanie id zlewni na podstawie nazwy miasta"
     )
     print("Pobieranie danych... ",end="")
     sys.stdout.flush()
@@ -25,7 +25,7 @@ elif sys.argv[1] == "-z":
 elif sys.argv[1] == "-s":
     url = "https://hydro-back.imgw.pl/list/hydrologic"
     print(
-        "Wyszukiwanie id zlewni i wodowskazu na podstawie nazwy wodowskazu do modułu imgw_podest_sq2ips.py"
+        "Wyszukiwanie id zlewni i wodowskazu na podstawie nazwy wodowskazu"
     )
     print("Pobieranie danych... ",end="")
     sys.stdout.flush()
