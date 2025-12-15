@@ -4,12 +4,13 @@ from sr0wx_module import SR0WXModule
 
 class AirGios(SR0WXModule):
     """Moduł pobierający info o zanieczyszczeniach powietrza z GIOŚ"""
-    def __init__(self, language, service_url, uri_index, uri_all, sensor_id):
+    def __init__(self, language, service_url, uri_index, uri_all, sensor_id, onlyAlerts):
         self.__language = language
         self.__service_url = service_url
         self.__uri_index = uri_index
         self.__uri_all = uri_all
         self.__sensor_id = sensor_id
+        self.__only_alerts = onlyAlerts
 
         self.__logger = logging.getLogger(__name__)
 
@@ -26,14 +27,18 @@ class AirGios(SR0WXModule):
         values = {}
         for key in data.keys():
             if self.__index_text in key:
-                values[key.replace(self.__index_text, "")] = data[key]
+                sens = key.replace(self.__index_text, "")
+                if data[key] == None:
+                    self.__logger.warning(f"Brak danych o poziomie {sens} z czujnika")
+                else:
+                    values[sens] = data[key]
         
         return (data["Wartość indeksu"], values)
     def getText(self, values):
         message = ""
         for value in values.keys():
             if value in self.__sensors:
-                message+=" ".join([self.__sensors[value], self.__index_values[values[value]], " _ "])
+                message+=" ".join([self.__sensors[value], self.__index_values[values[value]], "_ "])
             else:
                 self.__logger.warning(f"Pomiar {value} nieznany, pomijanie...")
         return message
@@ -54,11 +59,15 @@ class AirGios(SR0WXModule):
         message = "informacja_o_skaz_eniu_powietrza _ "
         message += "stacja_pomiarowa "
         message += self.__language.trim_pl(name)
-        
+
         message += " _ stan_ogolny "
         message += self.__main_index_values[main_index]
         message += " _ "
-        message += self.getText(indexes)
+        
+        if self.__only_alerts and set(indexes.values()) == {0}:
+            message += "brak_skaz_enia"
+        else:
+            message += self.getText(indexes)
         
         return(
             {

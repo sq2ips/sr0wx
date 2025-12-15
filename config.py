@@ -231,6 +231,7 @@ airgios = AirGios(
     uri_index="aqindex/getIndex/",
     uri_all="station/findAll?size=500",
     sensor_id=732,
+    onlyAlerts=True
 )
 
 # ---------------
