@@ -297,7 +297,7 @@ from vhf_tropo import VhfTropo
 vhftropo = VhfTropo(
     language=lang,
     service_url="https://www.dxinfocentre.com/tropo_eur.html",
-    onlyAlerts=True
+    onlyAlerts=False
 )
 # ---------------
 # calendar_zoznam
