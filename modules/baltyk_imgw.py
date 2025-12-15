@@ -42,7 +42,7 @@ class BaltykImgw(SR0WXModule):
 
     def request(self, url):
         r = self.requestData(url, self.__logger)
-        r.encoding = r.apparent_encoding  # kodowanie polskich znaków
+        #r.encoding = r.apparent_encoding  # kodowanie polskich znaków
         data = r.json()
         return data
 

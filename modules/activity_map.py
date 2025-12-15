@@ -21,7 +21,6 @@ import json
 import requests
 
 from sr0wx_module import SR0WXModule
-from config import LATITUDE, LONGITUDE
 
 
 class ActivityMap(SR0WXModule):
@@ -43,6 +42,8 @@ class ActivityMap(SR0WXModule):
     def __init__(
         self,
         callsign,
+        lat,
+        lon,
         hour_quarter,
         above_sea_level,
         above_ground_level,
@@ -51,6 +52,8 @@ class ActivityMap(SR0WXModule):
         service_url="",
     ):
         self.__callsign = callsign
+        self.__lat = lat
+        self.__lon = lon
         self.__hour_quarter = hour_quarter
         self.__above_sea_level = above_sea_level
         self.__above_ground_level = above_ground_level
@@ -66,8 +69,8 @@ class ActivityMap(SR0WXModule):
         self.__logger.info("::: Przetwarzam dane...")
         station_info = {
             "callsign": self.__callsign,
-            "lat": LATITUDE,
-            "lon": LONGITUDE,
+            "lat": self.__lat,
+            "lon": self.__lon,
             "q": self.__hour_quarter,
             "asl": self.__above_sea_level,
             "agl": self.__above_ground_level,

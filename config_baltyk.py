@@ -67,6 +67,9 @@ if os.path.exists(".env"):
     load_dotenv()
     LATITUDE = float(os.getenv("LATITUDE"))
     LONGITUDE = float(os.getenv("LONGITUDE"))
+    MAP_INFO_BALTYK=os.getenv("MAP_INFO_BALTYK")
+    CALL = os.getenv("CALL")
+    
 else:
     raise FileNotFoundError("No .env file present.")
 
@@ -144,12 +147,14 @@ from activity_map import ActivityMap
 
 activitymap = ActivityMap(
     service_url="http://wx.vhf.com.pl/map_requests?base=",
-    callsign="TEST",
+    callsign=CALL,
+    lat=LATITUDE,
+    lon=LONGITUDE,
     hour_quarter=10,
     above_sea_level=35,
     above_ground_level=20,
     station_range=25,
-    additional_info="test",
+    additional_info=MAP_INFO_BALTYK,
 )
 
 # ---------------
