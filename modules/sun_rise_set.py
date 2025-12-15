@@ -26,8 +26,8 @@ class SunRiseSet(SR0WXModule):
     def get_data(self):
         self.__logger.info("::: Przeliczam dane...")
         Gdynia = ephem.Observer()
-        Gdynia.lat = self.__lat
-        Gdynia.lon = self.__lon
+        Gdynia.lat = str(self.__lat)
+        Gdynia.lon = str(self.__lon)
         Gdynia.elevation = self.__ele
         Gdynia.pressure = self.__pre
         Gdynia.temp = self.__temp
