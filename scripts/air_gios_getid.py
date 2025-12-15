@@ -47,7 +47,7 @@ elif sys.argv[1] == "-a":
     stations = {}
     print("ID stacji: nazwa stacji")
     for station in response["Lista stacji pomiarowych"]:
-        print(f"{station["Identyfikator stacji"]}: {station["Nazwa stacji"]}")
+        print(f'{station["Identyfikator stacji"]}: {station["Nazwa stacji"]}')
 elif sys.argv[1] == "-f":
     print("Pobieranie danych... " ,end="")
     sys.stdout.flush()
