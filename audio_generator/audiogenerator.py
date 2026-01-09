@@ -1,4 +1,4 @@
-import requests
+from curl_cffi import requests
 import bs4 as bs
 import shutil
 from tqdm import tqdm
@@ -8,6 +8,8 @@ import sys
 import os
 import getopt
 from time import sleep
+import urllib.parse
+from bs4 import BeautifulSoup
 
 sys.path.append("../")
 
@@ -19,10 +21,10 @@ lang = "pl"
 gender = "female"
 delay_time = 60
 
-def requestData(url, timeout, repeat):
+def requestData(url, timeout, repeat, headers, params):
     for i in range(repeat):
         try:
-            data = requests.get(url, timeout=timeout)
+            data = requests.get(url, timeout=timeout, headers=headers, params=params)
             if not data.ok:
                 raise Exception(f"Wrong server response: received {data}")
             else:
@@ -34,31 +36,55 @@ def requestData(url, timeout, repeat):
                 raise e
     return data
 
-def GetMp3(word, filename):
+def getKey():
+    url = "https://responsivevoice.org/"  # replace with the target URL
+
+    response = requests.get(url)
+    response.raise_for_status()
+
+    soup = BeautifulSoup(response.text, "html.parser")
+
+    script_tag = soup.find("script", id="responsive-voice-js")
+
+    if script_tag:
+        src = script_tag.get("src")
+        if src:
+            key = src.split("=")[1]
+            return key
+        else:
+            print("Error getting key: Script found, but it has no src attribute.")
+    else:
+        raise Exception("Error getting key: Script with id 'responsive-voice-js' not found.")
+
+
+def GetMp3(word, filename, key):
     headers = {
-        'accept-language': 'pl-PL,pl;q=0.5',
-        'content-type': 'application/json',
+    'sec-ch-ua-platform': '"Linux"',
+    'Referer': 'https://responsivevoice.org/',
     }
 
-    json_data = {
-        'userId': 'public-access',
-        'platform': 'landing_demo',
-        'ssml': f'<speak><p>{word}</p></speak>',
-        'voice': 'pl-PL-Wavenet-E',
-        'narrationStyle': 'Neural',
-        'method': 'file',
+    params = {
+        'text': word,
+        'lang': 'pl',
+        'engine': 'g1',
+        'name': '',
+        'pitch': '0.5',
+        'rate': '0.5',
+        'volume': '1',
+        'key': key,
+        'gender': 'female',
     }
 
-    sample_response = requests.post('https://play.ht/api/transcribe', headers=headers, json=json_data)
+    url = 'https://texttospeech.responsivevoice.org/v1/text:synthesize'
+
+    sample_response = requestData(url, 15, 3, params=params, headers=headers)
     status_code = sample_response.status_code
     if status_code == 200:
-        sample_url = sample_response.json()['file']
-        data = requestData(sample_url, 15, 5)
-        open(f"mp3/{filename}.mp3", "wb").write(data.content)
+        open(f"mp3/{filename}.mp3", "wb").write(sample_response.content)
     elif status_code == 429:
         print(f"Got Too Many Requests error code, waiting {delay_time}s...")
         sleep(delay_time)
-        GetMp3(word, filename)
+        GetMp3(word, filename, key)
     elif status_code == 403:
         print("Got error 403 probably IP is banned, try again later.")
         exit(1)
@@ -74,13 +100,13 @@ def convert(filename):
         raise Exception("ffmpeg returned non zero exit code.")
     os.remove(f"mp3/{filename}.mp3")
 
-def GetOgg(phrase):
+def GetOgg(phrase, key):
     filename, word = phrase
     if filename in ["", None]:
         raise ValueError("Empty file name")
     if word in ["", None]:
         raise ValueError("Empty sample")
-    GetMp3(word, filename)
+    GetMp3(word, filename, key)
     convert(filename)
     if not os.path.exists(f"ogg/{filename}.ogg"):
         raise FileExistsError(f"Sample file {filename} not generated.")
@@ -89,10 +115,10 @@ def GetOgg(phrase):
     elif os.system(f"ffmpeg -i ogg/{filename}.ogg -f null -err_detect +crccheck+bitstream+buffer+explode+careful+compliant+aggressive -v error -xerror -") != 0:
         raise Exception(f"Sample file {filename} corrupted.")
 
-def generate(dictionary):
+def generate(dictionary, key):
     for sample in tqdm(dictionary, unit="samples"):
         try:
-            GetOgg(sample)
+            GetOgg(sample, key)
         except Exception as e:
             print(f"While generating sample {sample} got error: {e}")
             if os.path.exists(f"ogg/{sample[0]}.ogg"):
@@ -176,6 +202,9 @@ if os.path.exists("mp3/"):
 print("Creating new directory mp3/")
 os.mkdir("mp3")
 
+print("Getting key...")
+key = getKey()
+
 dictionary = []
 
 if (len(phrases_auto) + len(phrases_custom)) > 0:
@@ -207,7 +236,7 @@ else:
 
 print("Starting generator...")
 
-generate(dictionary)
+generate(dictionary, key)
 
 print("removing directory mp3/...")
 os.removedirs("mp3/")
