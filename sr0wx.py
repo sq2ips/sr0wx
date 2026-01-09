@@ -53,7 +53,7 @@
 # so it will be possible to find out how long script was running.
 
 # Imports
-
+print("Importing modules...")
 # time measuring
 import time
 time_start = time.time()
