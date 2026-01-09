@@ -414,10 +414,22 @@ meteostation = MeteoStation(
 from meteo_yr import MeteoYr
 meteoyr = MeteoYr(
     language=lang,
-    service_url="https://www.yr.no",
-    id="2-3099424",  # Gdynia
-    current=True,
-    intervals=[6, 12],
+    service_url="https://api.met.no/weatherapi/locationforecast/2.0/compact",
+    lat=LATITUDE,
+    lon=LONGITUDE,
+    alt=56,
+    forecast_intervals=[4,12]
+)
+# ---------------
+# meteo_imgw # TODO
+# ---------------
+from meteo_imgw import MeteoImgw
+meteoimgw = MeteoImgw(
+    language=lang,
+    service_url="https://danepubliczne.imgw.pl/api/data/meteo/",
+    lat=LATITUDE,
+    lon=LONGITUDE,
+    station_name="",
 )
 
 # ---------------
@@ -482,7 +494,8 @@ modules_all = [
     meteoalertimgw,     # ostrzeżenia meteorologiczne z meteo.imgw.pl
     antistorm,          # radar pogodowy z antistorm.eu
     #meteostation,      # dane ze stacji meteo (lokalnie UDP)
-    #meteoyr,           # pogoda z yr.no
+    #meteoimgw,         # TODO
+    meteoyr,            # pogoda z yr.no
     openweather,        # pogoda openweathermap.org
     meteoonet,          # pogoda z pogoda.onet.pl
     waterimgw,          # wodowskazy z hydro.imgw.pl

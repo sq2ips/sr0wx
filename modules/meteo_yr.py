@@ -3,204 +3,70 @@ import logging
 
 from sr0wx_module import SR0WXModule
 
-from datetime import datetime, timedelta
-
+from datetime import datetime, timezone, timedelta
 
 class MeteoYr(SR0WXModule):
-    """Klasa pobierająca informacje o pogodzie z yr.no"""
+    """Klasa pobierająca informacje o prognozie pogody z yr.no"""
 
-    def __init__(self, language, service_url, id, current, intervals):
+    def __init__(self, language, service_url, lat, lon, alt, forecast_intervals):
         self.__service_url = service_url
         self.__language = language
-        self.__id = id
-        self.__current = current
-        self.__intervals = intervals
-        self.codes = {
-            "lightrain": "lekkie_opady_deszczu",
-            "partlycloudy": "czesciowe_zachmurzenie",
-            "clearsky": "bezchmurnie",
-            "fog": "mgla",
-            "cloudy": "pochmurno",
-            "rain": "opady_deszczu",
-            "fair": "lekkie_zachmurzenie",
-            "rainshowers": "ulewa",
-            "lightrainshowers": "lekka_ulewa",
-            "heavyrain": "intensywne_opady_deszczu",
-            "heavyrainshowers": "silna_ulewa",
-            "rainshowersandthunder": "burza",
-            "heavyrainshowersandthunder": "burza_z_silna__ulewa_",
-            "heavyrainandthunder": "burza_z_intensywnymi_opadami_deszczu",
-        }
+        self.__lat = lat
+        self.__lon = lon
+        self.__alt = alt
         self.__logger = logging.getLogger(__name__)
 
-    def downloadData(self, service_url, id):
-        links_url = "/".join([service_url, "api/v0/locations", id])
-        links = self.requestData(links_url, self.__logger)
-        links_data = links.json()["_links"]
+        self.__times = forecast_intervals
+        self.__codes = {"clearsky:":"bezchmurnie","fair":"lekkie_zachmurzenie","partlycloudy":"czesciowe_zachmurzenie","cloudy":"pochmurno","rainshowers":"przelotne_opady_deszczu","rainshowersandthunder":"przelotna_burza","sleetshowers":"przelotne_opady_s_niegu_z_deszczem","snowshowers":"przelotne_opady_s_niegu","rain":"opady_deszczu","heavyrain":"intensywne_opady_deszczu","heavyrainandthunder":"burza_z_intensywnymi_opadami_deszczu","sleet":"snieg_z_deszczem","snow":"opady_sniegu","snowandthunder":"burza_z_opadami_s_niegu","fog":"zamglenia","sleetshowersandthunder":"przelotna_burza_z_opadami_deszczu_ze_s_niegiem","rainandthunder":"burza","sleetandthunder":"burza_z_opadami_deszczu_ze_s_niegiem","lightrainshowersandthunder":"burza_z_lekkimi_opadami_deszczu","heavyrainshowersandthunder":"przelotna_burza_z_intensywnymi_opadami_deszczu","lightssleetshowersandthunder":"przelotna_burza_z_lekkimi_opadami_deszczu_ze_s_niegiem","heavysleetshowersandthunder":"przelotna_burza_z_intensywnymi_opadami_deszczu_ze_s_niegiem","lightssnowshowersandthunder":"przelotna_burza_z_lekkimi_opadami_s_niegu","heavysnowshowersandthunder":"przelotna_burza_z_intensywnymi_opadami_s_niegu","lightrainandthunder":"burza_z_lekkimi_opadami_deszczu","lightsleetandthunder":"burza_z_lekkimi_opadami_deszczu_ze_s_niegiem","heavysleetandthunder":"burza_z_intensywnymi_opadami_deszczu_ze_s_niegiem","lightsnowandthunder":"burza_z_lekkimi_opadami_deszczu","heavysnowandthunder":"burza_z_intensywnymi_opadami_s_niegu","lightrainshowers":"lekka_mzawka","heavyrainshowers":"silna_mzawka","lightsleetshowers":"lekkie_przelotne_opady_deszczu_ze_s_niegiem","heavysleetshowers":"intensywne_przelotne_opady_deszczu_ze_s_niegiem","lightsnowshowers":"przelotne_lekkie_opady_s_niegu","heavysnowshowers":"./_opady_s_niegu","lightrain":"lekkie_opady_deszczu","lightsleet":"lekkie_opady_deszczu_ze_s_niegiem","heavysleet":"intensywne_opady_deszczu_ze_s_niegiem","lightsnow":"lekkie_opady_s_niegu","heavysnow":"intensywne_opady_sniegu"}
+    
+    def getForecasts(self, timeseries):
+        mesurements = []
+        for mes in timeseries:
+            date = datetime.strptime(mes["time"], "%Y-%m-%dT%H:%M:%SZ")
+            date = date.replace(tzinfo=timezone.utc)
+            mesurements.append((date,mes))
+        
+        forecasts = []
+        for time in self.__times:
+            td = []
+            for mes in [m[0] for m in mesurements]:
+                td.append(abs(abs(mes-(datetime.now(timezone.utc)+timedelta(hours=time)))))
+            self.__logger.info(f"Prognoza na nastepne {time}h z {mesurements[td.index(min(td))][0]}")
+            forecasts.append((time, mesurements[td.index(min(td))][1]))
+        return forecasts
 
-        url_current = "".join([service_url, links_data["currenthour"]["href"]])
-        url_forecast = "".join([service_url, links_data["forecast"]["href"]])
-        current = self.requestData(url_current, self.__logger, 10, 3)
-        forecast = self.requestData(url_forecast, self.__logger, 10, 3)
-        return (current.json(), forecast.json())
+    def getMessage(self, forecasts):
+        message = ""
 
-    def getCurrent(self, data):
-        msg = ""
+        for i, forecast in enumerate(forecasts):
+            time = forecast[0]
 
-        # stan pogody
-        code = data["symbolCode"]["next1Hour"].split("_")
-        code = code[0]
-        msg += " ".join([self.codes[code], "_ "])
+            code = self.__codes[forecast[1]["data"]["next_1_hours"]["summary"]["symbol_code"].split('_')[0]]
+            
+            meteo = forecast[1]["data"]["instant"]["details"]
+            
+            temp = self.__language.read_temperature(round(meteo["air_temperature"]))
+            wind = self.__language.read_speed(round(meteo["wind_speed"]*3.6), "kmph")
+            wind_dir = self.wind_direction_name(int(meteo["wind_from_direction"]))
+            hum = self.__language.read_percent(round(meteo["relative_humidity"]))
+            clouds = self.__language.read_percent(round(meteo["cloud_area_fraction"]))
+            press = self.__language.read_pressure(round(meteo["air_pressure_at_sea_level"]))
 
-        # opady
-        rain = round(data["precipitation"]["value"])
-        if rain != 0:
-            msg += " ".join([" opady", self.__language.read_precipitation(rain)])
+            message += f"prognoza_na_nastepne {self.__language.read_validity_hour(time)} _ {code} _ pokrywa_chmur {clouds} _ temperatura {temp} cisnienie {press} wilgotnosc {hum}  _ wiatr {wind_dir} {wind} _ "
 
-        # temperatura
-        temp = round(data["temperature"]["value"])
-        temp_fl = round(data["temperature"]["feelsLike"])
-
-        if temp != temp_fl:
-            msg += " ".join([" temperatura", self.__language.read_number(temp)])
-            msg += " ".join([" odczuwalna", self.__language.read_temperature(temp_fl)])
-        else:
-            msg += " ".join([" temperatura", self.__language.read_temperature(temp)])
-
-        # wiatr
-        wind_speed = round(data["wind"]["speed"] * 3.6)
-        wind_gust = round(data["wind"]["gust"] * 3.6)
-        wind_dir = data["wind"]["direction"]
-
-        if wind_speed != wind_gust:
-            msg += " ".join(
-                [
-                    " wiatr",
-                    self.wind_direction_name(wind_dir),
-                    self.__language.read_number(wind_speed),
-                ]
-            )
-            msg += " ".join([" w_porywach", "do", self.__language.read_gust(wind_gust)])
-        else:
-            msg += " ".join(
-                [
-                    " wiatr",
-                    self.wind_direction_name(wind_dir),
-                    self.__language.read_speed(wind_speed, "kmph")
-                ]
-            )
-
-        return msg
-
-    def processValidity(self, date_end):
-        # ds = datetime.strptime(date_start[:-6], "%Y-%m-%dT%H:%M:%S")
-        de = datetime.strptime(date_end[:-6], "%Y-%m-%dT%H:%M:%S")
-        return de - datetime.now()
-
-    def processForecast(self, data):
-        # date_start = data["start"]
-        date_end = data["end"]
-
-        validity = self.processValidity(date_end).seconds // 3600
-
-        # prognoza na następne x godzin
-        if validity == 1:
-            msg = " _ prognoza_na_nastepna "
-        else:
-            msg = " _ prognoza_na_nastepne "
-        msg += " ".join([self.__language.read_validity_hour(validity), "_ "])
-
-        # stan pogody
-        msg += " ".join(
-            [self.codes[data["symbolCode"]["next1Hour"].split("_")[0]], "_ "]
-        )
-
-        # pokrywa chmur
-        cloud = round(data["cloudCover"]["value"])
-        if cloud != 0:
-            msg += " ".join([" pokrywa_chmur", self.__language.read_percent(cloud)])
-
-        # opady
-        rain = round(data["precipitation"]["value"])
-        if rain != 0:
-            msg += " ".join([" _ opady", self.__language.read_precipitation(rain)])
-
-        # temperatura
-        temp = round(data["temperature"]["value"])
-        temp_fl = round(data["feelsLike"]["value"])
-
-        if temp != temp_fl:
-            msg += " ".join([" _ temperatura", self.__language.read_number(temp)])
-            msg += " ".join([" odczuwalna", self.__language.read_temperature(temp_fl)])
-        else:
-            msg += " ".join([" _ temperatura", self.__language.read_temperature(temp)])
-
-        # wiatr
-        wind_speed = round(data["wind"]["speed"] * 3.6)
-        wind_gust = round(data["wind"]["gust"] * 3.6)
-        wind_dir = data["wind"]["direction"]
-
-        if wind_speed != wind_gust:
-            msg += " ".join(
-                [
-                    " wiatr",
-                    wind_direction_name(wind_dir),
-                    self.__language.read_number(wind_speed),
-                ]
-            )
-            msg += " ".join([" w_porywach", "do", self.__language.read_gust(wind_gust)])
-        else:
-            msg += " ".join(
-                [
-                    " wiatr",
-                    wind_direction_name(wind_dir),
-                    self.__language.read_speed(wind_speed),
-                    "kmph",
-                ]
-            )
-
-        # ciśnienie
-        # pres = round(data["pressure"]["value"])
-        # msg += " ".join([" _ cisnienie", self.__language.read_pressure(pres)])
-
-        # wilgotność
-        # hum = round(data["humidity"]["value"])
-        # msg += " ".join([" wilgotnosc", self.__language.read_percent(hum)])
-
-        return msg
-
-    def getInterval(self, data, time):
-        intervals = []
-        for i in data["longIntervals"]:
-            intervals.append(abs(self.processValidity(i["end"]) - time))
-        self.__logger.info(
-            f"::: Wartość interwału na {time} godzin: {min(intervals)+time}, indeks {intervals.index(min(intervals))}"
-        )
-        return intervals.index(min(intervals))
-
-    def getForecast(self, data):
-        msg = ""
-        intervals = []
-        for i in self.__intervals:
-            intervals.append(self.getInterval(data, timedelta(hours=i)))
-        for i in intervals:
-            msg += self.processForecast(data["longIntervals"][i])
-        return msg
+        return message[0:-2]
 
     def get_data(self):
-        message = "aktualny_stan_pogody _ "
-        self.__logger.info("::: Pobieranie danych pogodowych...")
-        current, forecast = self.downloadData(self.__service_url, self.__id)
-        self.__logger.info("::: Przetwarzanie danych...")
-        if self.__current:
-            message += " ".join(
-                [self.getCurrent(current), self.getForecast(forecast)]
-            )
-        else:
-            message += " ".join([self.getCurrent(current)])
+        url = f"{self.__service_url}?lat={self.__lat}&lon={self.__lon}&altitude={self.__alt}"
+        data = self.requestData(url, self.__logger, 15, 3).json()
+
+        self.__logger.info(f"Dane prognozy z {data["properties"]["meta"]["updated_at"]}")
+        forecasts = self.getForecasts(data["properties"]["timeseries"])
+        message = self.getMessage(forecasts)
+
         return(
             {
                 "message": message,
-                "source": "yr",
+                "source": "open_weather_map",
             }
         )
