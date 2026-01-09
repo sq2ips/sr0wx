@@ -31,7 +31,7 @@ elif sys.argv[1] == "-f":
     any = True
     for i in data:
         if i["properties"]["NAZWA"].lower().find(sys.argv[2].lower()) != -1:
-            print(f'{i["properties"]["NAZWA"]}: {i["properties"]["KOD"]}')
+            print(f'{i["properties"]["NAZWA"]}: {i["properties"]["KOD"]} ({i["geometry"]['coordinates'][0][0]})')
     if any == False:
         print("Nic nie znaleziono")
 else:
