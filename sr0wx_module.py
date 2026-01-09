@@ -47,14 +47,13 @@ class SR0WXModule:
 
     def requestData(self, url, logger, timeout=15, repeat=3, headers={}, impersonate="chrome"):
         headers.update({'User-Agent': 'SR0WX/1.0'})
+        data = None
         for i in range(repeat):
             try:
                 logger.info("::: Requesting data from address: " + url)
                 data = requests.get(url, timeout=timeout, headers=headers)
-                if not data.ok:
-                    raise Exception(f"::: Got not OK response: {data.text}")
-                else:
-                    break
+                data.raise_for_status()
+                break
             except Exception as e:
                 if i < repeat - 1:
                     logger.exception(f"Exception getting data: {e}, trying again...")
