@@ -23,7 +23,6 @@ class RadioactivePaa(SR0WXModule):
 
     def processData(self, data):
         datediff = datetime.now() - datetime.strptime(data['date_end_str'], "%Y-%m-%d %H:%M")
-        print(datediff)
         if datediff < timedelta(days=1):
             pass
         elif datediff >= timedelta(days=1) and datediff < timedelta(days=2):
