@@ -20,7 +20,7 @@ class MeteoImgw(SR0WXModule):
         for station in stations:
             dist.append(sqrt((self.__lat-float(station["lat"]))**2+(self.__lon-float(station["lon"]))**2))
         station = stations[dist.index(min(dist))]
-        self.__logger.info(f"Wybrano stację {station["nazwa_stacji"]}")
+        self.__logger.info(f'Wybrano stację {station["nazwa_stacji"]}')
         return station
     
     def extractData(self, station):
