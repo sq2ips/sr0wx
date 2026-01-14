@@ -72,6 +72,7 @@ if os.path.exists(".env"):
     LONGITUDE = float(os.getenv("LONGITUDE"))
     MAP_CALL = os.getenv("MAP_CALL")
     MAP_INFO = os.getenv("MAP_INFO")
+    HEALTHCHECK_UUID = os.getenv("HEALTHCHECK_UUID")
 else:
     raise FileNotFoundError("No .env file present.")
 
@@ -167,6 +168,14 @@ activitymap = ActivityMap(
     above_ground_level=20,
     station_range=25,
     additional_info=MAP_INFO,
+)
+# ---------------
+# healthchecks_io
+# ---------------
+from healthchecks_io import HealthChecksIo
+healthchecksio = HealthChecksIo(
+    service_url="https://hc-ping.com/",
+    uuid=HEALTHCHECK_UUID
 )
 
 # ---------------
@@ -459,6 +468,7 @@ timeinfo = TimeInfo(
 
 # WŁĄCZONE MODUŁY
 modules = [
+    #healthchecksio,     # healthcheck ping
 #    activitymap,       # marker na mapie wx.vhf.com.pl
     timeinfo,           # godzina
     meteoalertimgw,     # ostrzeżenia meteorologiczne z meteo.imgw.pl
@@ -489,6 +499,7 @@ offline_modules = [
 
 # WSZYSTKIE MODUŁY
 modules_all = [
+    healthchecksio,     # healthcheck ping
     activitymap,        # marker na mapie wx.vhf.com.pl
     timeinfo,           # godzina
     meteoalertimgw,     # ostrzeżenia meteorologiczne z meteo.imgw.pl
