@@ -60,7 +60,7 @@ class MeteoYr(SR0WXModule):
         url = f"{self.__service_url}?lat={self.__lat}&lon={self.__lon}&altitude={self.__alt}"
         data = self.requestData(url, self.__logger, 15, 3).json()
 
-        self.__logger.info(f"Dane prognozy z {data["properties"]["meta"]["updated_at"]}")
+        self.__logger.info(f'Dane prognozy z {data["properties"]["meta"]["updated_at"]}')
         forecasts = self.getForecasts(data["properties"]["timeseries"])
         message = self.getMessage(forecasts)
 
