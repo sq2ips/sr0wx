@@ -73,6 +73,9 @@ if os.path.exists(".env"):
     MAP_CALL = os.getenv("MAP_CALL")
     MAP_INFO = os.getenv("MAP_INFO")
     HEALTHCHECK_UUID = os.getenv("HEALTHCHECK_UUID")
+    APRS_CALL = os.getenv("APRS_CALL")
+    APRS_PASSWD = os.getenv("APRS_PASSWD")
+    APRS_COMMENT = os.getenv("APRS_COMMENT")
 else:
     raise FileNotFoundError("No .env file present.")
 
@@ -176,6 +179,17 @@ from healthchecks_io import HealthChecksIo
 healthchecksio = HealthChecksIo(
     service_url="https://hc-ping.com/",
     uuid=HEALTHCHECK_UUID
+)
+# ---------------
+# aprs_id
+# ---------------
+from aprs_is import AprsIs
+aprsis = AprsIs(
+    passwd=APRS_PASSWD,
+    call=APRS_CALL,
+    lat=LATITUDE,
+    lon=LONGITUDE,
+    comment=APRS_COMMENT
 )
 
 # ---------------
@@ -468,6 +482,7 @@ timeinfo = TimeInfo(
 
 # WŁĄCZONE MODUŁY
 modules = [
+    aprsis,              # APRS-IS position report
     #healthchecksio,     # healthcheck ping
 #    activitymap,       # marker na mapie wx.vhf.com.pl
     timeinfo,           # godzina
@@ -499,6 +514,7 @@ offline_modules = [
 
 # WSZYSTKIE MODUŁY
 modules_all = [
+    aprsis,              # APRS-IS position report
     healthchecksio,     # healthcheck ping
     activitymap,        # marker na mapie wx.vhf.com.pl
     timeinfo,           # godzina

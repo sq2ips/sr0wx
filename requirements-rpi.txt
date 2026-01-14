@@ -23,3 +23,4 @@ urllib3>=2.2.2
 pause>=0.3
 RPi.GPIO>=0.7.0
 pycryptodome>=3.23.0
+aprslib>=0.7.2
