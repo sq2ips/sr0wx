@@ -19,7 +19,7 @@ class PropagationHamqsl(SR0WXModule):
         data = self.requestData(url, self.__logger)
 
         root = ElementTree.fromstring(data.content)
-        if root.tag == "solar".encode:
+        if root.tag != "solar":
             raise Exception(
                 f"Nieprawidłowy nagłówek, otrzymano {root.tag}, oczekiwano 'solar'"
             )

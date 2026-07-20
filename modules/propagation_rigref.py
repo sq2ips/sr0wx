@@ -1,6 +1,7 @@
 # by SQ9ATK
 import urllib.request
 import logging
+from io import BytesIO
 
 from PIL import Image
 
@@ -65,12 +66,14 @@ class PropagationRigRef(SR0WXModule):
             if equal:
                 data = ["na_wszystkich_pasmach " + self.__levels[color]]
             return data
-        except:
+        except Exception as e:
+            self.__logger.error(f"::: Błąd podczas przetwarzania obrazu: {e}")
             return list()
 
     def get_data(self):
-        image = self.requestData(self.__service_url, self.__logger)
+        response = self.requestData(self.__service_url, self.__logger)
         self.__logger.info("::: Przetwarzam dane...")
+        image = Image.open(BytesIO(response.content))
         message = " ".join(
             [
                 "informacje_o_propagacji ",
@@ -86,6 +89,6 @@ class PropagationRigRef(SR0WXModule):
         return(
             {
                 "message": message,
-                "source": "noaa",
+                "source": "rigreference",
             }
         )

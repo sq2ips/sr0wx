@@ -237,7 +237,7 @@ else:
 offline_mode = False
 try:
     logger.info("Checking internet connection...")
-    requests.get("http://google.com", timeout=15)
+    requests.get("https://google.com", timeout=15)
 except (requests.ConnectionError, requests.ReadTimeout) as e:
     logger.error(
         COLOR_FAIL + f"No internet connection, got error {e}, offline mode active" + COLOR_ENDC + "\n"
@@ -259,7 +259,6 @@ if config.check_for_updates and not offline_mode:
                 break
 
         local_hash = subprocess.check_output('git --no-pager log --format="%H" -n 1'.split()).decode().replace("\"", "")
-        local_hash.replace("\n", "")
         local_hash = "".join(local_hash.split())
 
         global_hash = subprocess.check_output(f"git ls-remote {config.upstream_url}".split() + [branch]).decode().split()[0]
@@ -274,6 +273,7 @@ if config.check_for_updates and not offline_mode:
 
 # cache
 logger.info("Checking cache...")
+os.makedirs("cache", exist_ok=True)
 if os.path.exists("cache/"):
     cache_dir = glob.glob("cache/*")
     if len(cache_dir) > 0:
@@ -383,6 +383,8 @@ else:
     func_modules = ""
     any_func_modules = False
     for module in modules:
+        module_message = None
+        module_source = ""
         module_data = run_module((module, logger, False))
         if module_data[module][0] is None:
             module_message = module_data[module][1].get("message", "")
@@ -393,8 +395,8 @@ else:
             any_func_modules = True
             func_modules += COLOR_OKGREEN + str(module) + COLOR_ENDC + "\n"
             messages.append(module_message)
-        if module_message != "" and module_source != "":
-            sources.append(module_source)
+            if module_message != "" and module_source != "":
+                sources.append(module_source)
 
 time_modules = time.time()
 
@@ -482,8 +484,8 @@ if config.ctcss_tone is not None:
     arr = numpy.array(
         [
             config.ctcss_volume
-            * numpy.sin(2.0 * numpy.pi * round(config.ctcss_tone) * x / 16000)
-            for x in range(0, 16000)
+            * numpy.sin(2.0 * numpy.pi * round(config.ctcss_tone) * x / config.samplerate)
+            for x in range(0, config.samplerate)
         ]
     ).astype(numpy.int16)
     arr2 = numpy.c_[arr, arr]
@@ -610,7 +612,7 @@ for el in message:
             if config.pygame_bug == 1:
                 sound = pygame.sndarray.make_sound(
                     pygame.sndarray.array(sound)[
-                        : len(pygame.sndarray.array(sound)) / 2
+                        : int(len(pygame.sndarray.array(sound)) / 2)
                     ]
                 )
             voice_channel = sound.play()
@@ -657,11 +659,12 @@ if config.saveAudio or saveAudioOverwrite:
             elif "upper" in dir(el):
                 if el[0:7] == "file://":
                     sample_full = el[7:]
-                sample = "".join([config.lang_name, "/samples/", el, ".ogg"])
-                if not os.path.isfile(sample):
-                    sample_full = config.lang_name + "/samples/beep.ogg"
                 else:
-                    sample_full = sample
+                    sample = "".join([config.lang_name, "/samples/", el, ".ogg"])
+                    if not os.path.isfile(sample):
+                        sample_full = config.lang_name + "/samples/beep.ogg"
+                    else:
+                        sample_full = sample
                 samples.append(AudioSegment.from_file(sample_full))
                 samples.append(AudioSegment.silent(duration=config.timeDelay))
 

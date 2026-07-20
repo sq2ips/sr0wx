@@ -53,7 +53,7 @@ dict_log_config = {
             "level": "INFO",
             "class": "logging.handlers.RotatingFileHandler",
             "formatter": "format_for_file",
-            "filename": "./logs/baltyk/"
+            "filename": "logs/baltyk_"
             + str(datetime.now().strftime("%Y-%m-%d_%H:%M"))
             + ".log",
             "maxBytes": 500000,
@@ -124,6 +124,8 @@ check_for_updates = True
 hello_msg = ['_', 'tu_eksperymentalna_automatyczna_stacja_pogodowa', 'sr0wx']
 goodbye_msg = ['_', 'tu_sr0wx', "_", "kolejny_komunikat_m", "beep2"]
 read_sources_msg = False
+# informacja gdy nie ma internetu
+data_sources_error_msg = ["_", "internetowe_zrodlo_danych_niedostepne"]
 
 #####################
 
@@ -178,5 +180,9 @@ baltykimgw = BaltykImgw(
 
 # WŁĄCZONE MODUŁY
 modules = [activitymap, baltykimgw]
+
+# WSZYSTKIE MODUŁY
+modules_all = [activitymap, baltykimgw]
+
 offline_modules = []
 aux_modules = {}

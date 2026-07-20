@@ -97,7 +97,7 @@ class Fires(SR0WXModule):
                 sk = 0
                 for i in range(len(dictmsg)):
                     if sk > 0:
-                        sk -= 0
+                        sk -= 1
                         continue
                     ind = []
                     for j in range(i, len(dictmsg)):

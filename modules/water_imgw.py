@@ -57,7 +57,7 @@ class WaterImgw(SR0WXModule):
                 if stations[id]["catchment"] in self.__zlewnie:
                     stations_id.append(id)
         if len(stations_id) == 0:
-            self.__logger.warning(f"Brak wodowskazów w zlewni {self.__zlewnia}")
+            self.__logger.warning(f"Brak wodowskazów w zlewni {self.__zlewnie}")
         # wodowskazy z id
         for w in self.__wodowskazy:
             if w in stations:

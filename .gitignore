@@ -4,7 +4,8 @@ __pycache__
 
 .ruff_cache
 
-cache/
+cache/*
+!cache/.keep
 audio_generator/ogg
 audio_generator/mp3
 .env
