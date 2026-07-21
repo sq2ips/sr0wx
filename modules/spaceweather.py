@@ -27,7 +27,7 @@ class SpaceWeather(SR0WXModule):
         if self.__geomagneticShort:
             val = float(data[-1]["Kp"])
             self.__logger.info(
-                f"Burze geomagnetyczne geomagnetyczne (chwilowe): Kp={val}, data: {data[-1]["time_tag"]}"
+                f"Burze geomagnetyczne geomagnetyczne (chwilowe): Kp={val}, data: {data[-1]['time_tag']}"
             )
         else:
             val_list = []
