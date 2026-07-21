@@ -67,6 +67,6 @@ class MeteoYr(SR0WXModule):
         return(
             {
                 "message": message,
-                "source": "open_weather_map",
+                "source": "yr",
             }
         )

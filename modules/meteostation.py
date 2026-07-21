@@ -103,19 +103,19 @@ class MeteoStation(SR0WXModule):
 
         prefered_index = 0
         prefered_atime = dataf[0][self.__coms.index("atime\n")]
-        for i in range(1, len(dataf) - 1):
+        for i in range(1, len(dataf)):
             if dataf[i][self.__coms.index("atime\n")] < prefered_atime:
                 prefered_index = i
                 prefered_atime = dataf[i][self.__coms.index("atime\n")]
         apress = 0
         c = 0
         for d in dataf:
-            if d != 0.0:
+            if d[self.__coms.index("apress\n")] != 0.0:
                 apress += d[self.__coms.index("apress\n")]
                 c += 1
         apress = apress / c
         for i in range(len(dataf)):
-            if d == 0.0:
+            if dataf[i][self.__coms.index("apress\n")] == 0.0:
                 dataf[i][self.__coms.index("apress\n")] = apress
 
         if dataf == []:

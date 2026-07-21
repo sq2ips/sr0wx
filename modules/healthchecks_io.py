@@ -11,7 +11,7 @@ class HealthChecksIo(SR0WXModule):
     def get_data(self):
         self.__logger.info("::: Wysyłanie ping do healthchecks.io...")
 
-        res = requests.get(self.__service_url+self.__uuid)
+        res = requests.get(self.__service_url+self.__uuid, timeout=15)
         res.raise_for_status()
         if res.text != "OK":
             raise Exception("Nieprawidłowa odpowiedź serwera")

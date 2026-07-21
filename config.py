@@ -162,7 +162,7 @@ sys.path.append("modules/")
 # Marker na mapie http://wx.vhf.com.pl/
 from activity_map import ActivityMap
 activitymap = ActivityMap(
-    service_url="http://wx.vhf.com.pl/map_requests?base=",
+    service_url="https://wx.vhf.com.pl/map_requests?base=",
     callsign=MAP_CALL,
     lat=LATITUDE,
     lon=LONGITUDE,
@@ -204,7 +204,7 @@ openweather = OpenWeather(
     lat=LATITUDE,
     lon=LONGITUDE,
     api_key=openweather_key,
-    service_url="http://api.openweathermap.org/data/2.5/",
+    service_url="https://api.openweathermap.org/data/2.5/",
     current=True,
     saytime=False,
     start_message="aktualny_stan_pogody",
@@ -345,7 +345,7 @@ vhftropo = VhfTropo(
 from calendar_zoznam import CalendarZoznam
 calendarzoznam = CalendarZoznam(
     language=lang,
-    service_url="http://calendar.zoznam.sk/sunset-pl.php?city=",
+    service_url="https://calendar.zoznam.sk/sunset-pl.php?city=",
     city_id=3099424,  # Gdyna
 )
 # 776069 Białystok
@@ -400,7 +400,7 @@ meteoalertimgw = MeteoAlertImgw(
 from antistorm import Antistorm
 antistorm = Antistorm(
     language=lang,
-    service_url="http://antistorm.eu/webservice.php",
+    service_url="https://antistorm.eu/webservice.php",
     city_id=73,  # Gdynia
 )
 

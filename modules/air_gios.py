@@ -105,7 +105,7 @@ class AirGios(SR0WXModule):
         return json.loads(plaintext)
 
     def getToken(self, session):
-        code = session.get("https://powietrze.gios.gov.pl/pjp/current").text
+        code = session.get("https://powietrze.gios.gov.pl/pjp/current", timeout=15).text
         for line in code.splitlines(True):
             if "var encryptionKey = " in line:
                 return line.split()[-1].replace("\"", "").replace(";", "") 
@@ -129,6 +129,7 @@ class AirGios(SR0WXModule):
             url,
             headers=headers,
             data=data,
+            timeout=15,
         )
         response.raise_for_status()
 
@@ -163,7 +164,7 @@ class AirGios(SR0WXModule):
         
         for k in indexes.keys():
             if k not in values:
-                self.__logger.warning(f"Brak odczytu wartości {sens}")
+                self.__logger.warning(f"Brak odczytu wartości {k}")
 
         message = "informacja_o_skaz_eniu_powietrza _ "
         message += "stacja_pomiarowa "
@@ -185,6 +186,6 @@ class AirGios(SR0WXModule):
         return(
             {
                 "message": message,
-                "source": "gios_",
+                "source": "gios",
             }
         )
