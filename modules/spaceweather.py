@@ -23,21 +23,19 @@ class SpaceWeather(SR0WXModule):
         return data.json()
 
     def ProcessG(self, data):
-        Kp = data[0].index("Kp")
-        date = data[0].index("time_tag")
-        del data[0]
+        #del data[0]
         if self.__geomagneticShort:
-            val = float(data[-1][Kp])
+            val = float(data[-1]["Kp"])
             self.__logger.info(
-                f"Burze geomagnetyczne geomagnetyczne (chwilowe): Kp={val}, data: {data[-1][date]}"
+                f"Burze geomagnetyczne geomagnetyczne (chwilowe): Kp={val}, data: {data[-1]["time_tag"]}"
             )
         else:
             val_list = []
             for d in data:
                 if (
-                    datetime.now() - datetime.strptime(d[date], "%Y-%m-%d %H:%M:%S.000")
+                    datetime.now() - datetime.strptime(d["time_tag"], "%Y-%m-%d %H:%M:%S.000")
                 ).days < 1:
-                    val_list.append(float(d[Kp]))
+                    val_list.append(float(d["Kp"]))
             val = max(val_list)
             self.__logger.info(f"Burze geomagnetyczne geomagnetyczne: Kp={val}")
 
