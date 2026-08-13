@@ -97,6 +97,10 @@ import glob
 # socket for checking for other program instances
 import socket
 
+# atexit and signal for releasing PTT no matter how the script ends
+import atexit
+import signal
+
 # colorcodes
 from colorcodes import *
 
@@ -579,6 +583,52 @@ if config.serial_port is not None:
             f"Failed to open serial port {config.serial_port}@{config.serial_baud_rate}: {e}"
         )
 
+# PTT must be released even if the script dies in the middle of playback.
+# RPi.GPIO does not reset pins on interpreter exit, so a crash between
+# switching PTT on and off would leave the transmitter keyed indefinitely.
+
+ptt_released = False
+
+
+def ptt_off():
+    """Release PTT (serial and GPIO). Safe to call more than once."""
+    global ptt_released
+    if ptt_released:
+        return
+    ptt_released = True
+
+    if config.serial_port is not None:
+        try:
+            ser.close()
+            logger.info(COLOR_OKGREEN + "Serial PTT: OFF" + COLOR_ENDC)
+        except NameError:
+            # sudo gpasswd --add ${USER} dialout
+            logger.exception("Couldn't close serial port")
+        except Exception as e:
+            logger.error(f"Unable to close serial port, got error: {e}")
+
+    if not nopi:
+        try:
+            GPIO.output(config.rpi_pin, GPIO.LOW)
+            logger.info(COLOR_OKGREEN + f"GPIO PTT: OFF, PIN: {config.rpi_pin}" + COLOR_ENDC)
+            GPIO.cleanup()
+        except Exception as e:
+            logger.error(f"Unable to turn GPIO ptt off, got error: {e}")
+
+
+def ptt_signal_handler(signum, frame):
+    logger.warning(f"Got signal {signum}, releasing PTT and exiting...")
+    ptt_off()
+    sys.exit(1)
+
+
+# atexit covers every exit() call, signal handlers cover SIGTERM from
+# cron/systemd, which atexit alone would not see
+atexit.register(ptt_off)
+for sig_name in ("SIGTERM", "SIGINT", "SIGHUP"):
+    sig = getattr(signal, sig_name, None)
+    if sig is not None:
+        signal.signal(sig, ptt_signal_handler)
 
 pygame.time.delay(config.marginDelay)
 
@@ -595,54 +645,47 @@ time_audio = time.time()
 
 logger.info("playing sound samples...\n")
 
-for el in message:
-    if config.showSamples or showSamplesOverwrite:
-        print(el, end=" ", flush=True)
-    if el == "_":
-        pygame.time.wait(config.delayValue)
-    else:
-        if "upper" in dir(el):
-            try:
-                voice_channel = sound_samples[el].play()
-            except:
-                a = 1
+try:
+    for el in message:
+        if config.showSamples or showSamplesOverwrite:
+            print(el, end=" ", flush=True)
+        if el == "_":
+            pygame.time.wait(config.delayValue)
+            continue
 
-        elif "upper" not in dir(el):
-            sound = pygame.sndarray.make_sound(el)
-            if config.pygame_bug == 1:
-                sound = pygame.sndarray.make_sound(
-                    pygame.sndarray.array(sound)[
-                        : int(len(pygame.sndarray.array(sound)) / 2)
-                    ]
-                )
-            voice_channel = sound.play()
-        while voice_channel.get_busy():
-            pygame.time.Clock().tick(config.clockTick)
+        # reset on every iteration, otherwise a failed playback would fall
+        # through to the channel of the previous sample (or to no channel
+        # at all on the very first one)
+        voice_channel = None
+        try:
+            if "upper" in dir(el):
+                voice_channel = sound_samples[el].play()
+            else:
+                sound = pygame.sndarray.make_sound(el)
+                if config.pygame_bug == 1:
+                    arr = pygame.sndarray.array(sound)
+                    sound = pygame.sndarray.make_sound(arr[: len(arr) // 2])
+                voice_channel = sound.play()
+        except (KeyError, pygame.error) as e:
+            logger.error(COLOR_FAIL + f"Couldn't play sample '{el}': {e}" + COLOR_ENDC)
+
+        if voice_channel is not None:
+            while voice_channel.get_busy():
+                pygame.time.Clock().tick(config.clockTick)
         pygame.time.delay(config.timeDelay)
 
-# The following four lines give us a one second break (for CTCSS, PTT and
-# other stuff) before closing the ``pygame`` mixer and display some debug
-# informations.
+finally:
+    # The following lines give us a one second break (for CTCSS, PTT and
+    # other stuff) before closing the ``pygame`` mixer and display some debug
+    # informations.
 
-time_playing = time.time()
+    time_playing = time.time()
 
-pygame.time.delay(config.marginDelay)
+    pygame.time.delay(config.marginDelay)
 
-logger.info(COLOR_WARNING + "finishing...\n" + COLOR_ENDC)
+    logger.info(COLOR_WARNING + "finishing...\n" + COLOR_ENDC)
 
-# If we've opened serial it's now time to close it.
-try:
-    if config.serial_port is not None:
-        ser.close()
-        logger.info(COLOR_OKGREEN + "Serial PTT: OFF" + COLOR_ENDC)
-except NameError:
-    # sudo gpasswd --add ${USER} dialout
-    logger.exception("Couldn't close serial port")
-
-if not nopi:
-    GPIO.output(config.rpi_pin, GPIO.LOW)
-    logger.info(COLOR_OKGREEN + f"GPIO PTT: OFF, PIN: {config.rpi_pin}" + COLOR_ENDC)
-    GPIO.cleanup()
+    ptt_off()
 
 # Save the message to an audio file
 
