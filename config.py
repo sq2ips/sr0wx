@@ -62,22 +62,30 @@ dict_log_config = {
     },
 }
 
-# dane z pliku .env
+# dane z pliku .env, a przy uruchomieniu w kontenerze prosto ze środowiska
+# (docker run --env-file), dlatego brak pliku nie jest błędem
 if os.path.exists(".env"):
     load_dotenv()
-    airly_key = os.getenv("AIRLY_KEY")
-    openweather_key = os.getenv("OPENWEATHER_KEY")
-    meteostation_ip = os.getenv("METEOSTATION_IP").split(",")
-    LATITUDE = float(os.getenv("LATITUDE"))
-    LONGITUDE = float(os.getenv("LONGITUDE"))
-    MAP_CALL = os.getenv("MAP_CALL")
-    MAP_INFO = os.getenv("MAP_INFO")
-    HEALTHCHECK_UUID = os.getenv("HEALTHCHECK_UUID")
-    APRS_CALL = os.getenv("APRS_CALL")
-    APRS_PASSWD = os.getenv("APRS_PASSWD")
-    APRS_COMMENT = os.getenv("APRS_COMMENT")
-else:
-    raise FileNotFoundError("No .env file present.")
+
+missing = [k for k in ("LATITUDE", "LONGITUDE") if not os.getenv(k)]
+if missing:
+    raise RuntimeError(
+        "Brak wymaganej konfiguracji: "
+        + ", ".join(missing)
+        + ". Skopiuj .env.example do .env i uzupełnij, albo podaj wartości w zmiennych środowiskowych."
+    )
+
+airly_key = os.getenv("AIRLY_KEY")
+openweather_key = os.getenv("OPENWEATHER_KEY")
+meteostation_ip = os.getenv("METEOSTATION_IP", "").split(",")
+LATITUDE = float(os.getenv("LATITUDE"))
+LONGITUDE = float(os.getenv("LONGITUDE"))
+MAP_CALL = os.getenv("MAP_CALL")
+MAP_INFO = os.getenv("MAP_INFO")
+HEALTHCHECK_UUID = os.getenv("HEALTHCHECK_UUID")
+APRS_CALL = os.getenv("APRS_CALL")
+APRS_PASSWD = os.getenv("APRS_PASSWD")
+APRS_COMMENT = os.getenv("APRS_COMMENT")
 
 #####################
 

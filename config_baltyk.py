@@ -62,16 +62,23 @@ dict_log_config = {
     },
 }
 
-# dane z pliku .env
+# dane z pliku .env, a przy uruchomieniu w kontenerze prosto ze środowiska
+# (docker run --env-file), dlatego brak pliku nie jest błędem
 if os.path.exists(".env"):
     load_dotenv()
-    LATITUDE = float(os.getenv("LATITUDE"))
-    LONGITUDE = float(os.getenv("LONGITUDE"))
-    MAP_INFO_BALTYK=os.getenv("MAP_INFO_BALTYK")
-    CALL = os.getenv("CALL")
-    
-else:
-    raise FileNotFoundError("No .env file present.")
+
+missing = [k for k in ("LATITUDE", "LONGITUDE") if not os.getenv(k)]
+if missing:
+    raise RuntimeError(
+        "Brak wymaganej konfiguracji: "
+        + ", ".join(missing)
+        + ". Skopiuj .env.example do .env i uzupełnij, albo podaj wartości w zmiennych środowiskowych."
+    )
+
+LATITUDE = float(os.getenv("LATITUDE"))
+LONGITUDE = float(os.getenv("LONGITUDE"))
+MAP_INFO_BALTYK = os.getenv("MAP_INFO_BALTYK")
+CALL = os.getenv("CALL")
 
 #####################
 
