@@ -8,7 +8,6 @@ from dotenv import load_dotenv
 import os
 import logging
 import logging.handlers
-from datetime import datetime
 
 from colorcodes import *
 
@@ -20,6 +19,9 @@ def my_import(name):
         mod = getattr(mod, comp)
     return mod
 
+
+# katalog na logi, na świeżym klonie repo go nie ma
+os.makedirs("logs", exist_ok=True)
 
 # logger
 dict_log_config = {
@@ -49,15 +51,17 @@ dict_log_config = {
             "formatter": "colored_console",
             "stream": "ext://sys.stdout",
         },
+        # stała nazwa pliku, rotacja o północy, 30 dni historii. Znacznik
+        # czasu w nazwie dawał nowy plik przy każdym uruchomieniu, więc
+        # rotacja nigdy się nie odpalała i pliki narastały bez końca.
         "file": {
             "level": "INFO",
-            "class": "logging.handlers.RotatingFileHandler",
+            "class": "logging.handlers.TimedRotatingFileHandler",
             "formatter": "format_for_file",
-            "filename": "logs/"
-            + str(datetime.now().strftime("%Y-%m-%d_%H:%M"))
-            + ".log",
-            "maxBytes": 500000,
+            "filename": "logs/sr0wx.log",
+            "when": "midnight",
             "backupCount": 30,
+            "encoding": "utf-8",
         },
     },
 }
