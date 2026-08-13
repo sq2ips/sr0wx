@@ -8,7 +8,6 @@ from dotenv import load_dotenv
 import os
 import logging
 import logging.handlers
-from datetime import datetime
 
 from colorcodes import *
 
@@ -20,6 +19,9 @@ def my_import(name):
         mod = getattr(mod, comp)
     return mod
 
+
+# katalog na logi, na świeżym klonie repo go nie ma
+os.makedirs("logs", exist_ok=True)
 
 # logger
 dict_log_config = {
@@ -49,35 +51,45 @@ dict_log_config = {
             "formatter": "colored_console",
             "stream": "ext://sys.stdout",
         },
+        # stała nazwa pliku, rotacja o północy, 30 dni historii. Znacznik
+        # czasu w nazwie dawał nowy plik przy każdym uruchomieniu, więc
+        # rotacja nigdy się nie odpalała i pliki narastały bez końca.
         "file": {
             "level": "INFO",
-            "class": "logging.handlers.RotatingFileHandler",
+            "class": "logging.handlers.TimedRotatingFileHandler",
             "formatter": "format_for_file",
-            "filename": "logs/"
-            + str(datetime.now().strftime("%Y-%m-%d_%H:%M"))
-            + ".log",
-            "maxBytes": 500000,
+            "filename": "logs/sr0wx.log",
+            "when": "midnight",
             "backupCount": 30,
+            "encoding": "utf-8",
         },
     },
 }
 
-# dane z pliku .env
+# dane z pliku .env, a przy uruchomieniu w kontenerze prosto ze środowiska
+# (docker run --env-file), dlatego brak pliku nie jest błędem
 if os.path.exists(".env"):
     load_dotenv()
-    airly_key = os.getenv("AIRLY_KEY")
-    openweather_key = os.getenv("OPENWEATHER_KEY")
-    meteostation_ip = os.getenv("METEOSTATION_IP").split(",")
-    LATITUDE = float(os.getenv("LATITUDE"))
-    LONGITUDE = float(os.getenv("LONGITUDE"))
-    MAP_CALL = os.getenv("MAP_CALL")
-    MAP_INFO = os.getenv("MAP_INFO")
-    HEALTHCHECK_UUID = os.getenv("HEALTHCHECK_UUID")
-    APRS_CALL = os.getenv("APRS_CALL")
-    APRS_PASSWD = os.getenv("APRS_PASSWD")
-    APRS_COMMENT = os.getenv("APRS_COMMENT")
-else:
-    raise FileNotFoundError("No .env file present.")
+
+missing = [k for k in ("LATITUDE", "LONGITUDE") if not os.getenv(k)]
+if missing:
+    raise RuntimeError(
+        "Brak wymaganej konfiguracji: "
+        + ", ".join(missing)
+        + ". Skopiuj .env.example do .env i uzupełnij, albo podaj wartości w zmiennych środowiskowych."
+    )
+
+airly_key = os.getenv("AIRLY_KEY")
+openweather_key = os.getenv("OPENWEATHER_KEY")
+meteostation_ip = os.getenv("METEOSTATION_IP", "").split(",")
+LATITUDE = float(os.getenv("LATITUDE"))
+LONGITUDE = float(os.getenv("LONGITUDE"))
+MAP_CALL = os.getenv("MAP_CALL")
+MAP_INFO = os.getenv("MAP_INFO")
+HEALTHCHECK_UUID = os.getenv("HEALTHCHECK_UUID")
+APRS_CALL = os.getenv("APRS_CALL")
+APRS_PASSWD = os.getenv("APRS_PASSWD")
+APRS_COMMENT = os.getenv("APRS_COMMENT")
 
 #####################
 

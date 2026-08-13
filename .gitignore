@@ -12,4 +12,5 @@ audio_generator/mp3
 sr0wx.wav
 wxenv
 
-logs/*.log
+logs/*
+!logs/.keep
